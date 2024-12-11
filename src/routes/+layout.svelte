@@ -1,7 +1,6 @@
 <script lang="ts">
-	import '../app.pcss';
+	import '../app.css';
 	import type { LayoutData } from './$types';
-
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
@@ -9,6 +8,7 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from 'svelte-sonner';
 	import { MetaTags, deepMerge } from 'svelte-meta-tags';
+	import * as Sidebar from '@/components/ui/sidebar';
 
 	interface Props {
 		data: LayoutData;
@@ -35,4 +35,9 @@
 <Toaster position="top-center" />
 <MetaTags {...metaTags} />
 
-{@render children()}
+<Sidebar.Provider>
+	<main>
+		<Sidebar.Trigger />
+		{@render children?.()}
+	</main>
+</Sidebar.Provider>
