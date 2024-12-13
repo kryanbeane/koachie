@@ -13,6 +13,8 @@
 		"prepare": "husky"
 	},
 	"devDependencies": {
+		"@snaplet/copycat": "^5.1.0",
+		"@snaplet/seed": "^0.98.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-node": "^5.2.5",
 		"@sveltejs/kit": "^2.5.27",
@@ -30,6 +32,7 @@
 		"globals": "^15.0.0",
 		"husky": "^9.1.6",
 		"lucide-svelte": "^0.453.0",
+		"postgres": "^3.4.5",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.2.6",
 		"prettier-plugin-tailwindcss": "^0.6.5",
