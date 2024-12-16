@@ -32,20 +32,6 @@
 	let metaTags = $derived(deepMerge(data.baseMetaTags, $page.data.pageMetaTags || {}));
 </script>
 
-<ModeWatcher defaultMode="system" />
-<Toaster position="top-center" />
-<MetaTags {...metaTags} />
-
-<Sidebar.Provider>
-	<AppSidebar />
-	<Sidebar.Inset>
-		<header
-			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
-		>
-			<main class="flex items-center gap-2 px-4">
-				<Sidebar.Trigger class="-ml-1" />
-				{@render children?.()}
-			</main>
-		</header>
-	</Sidebar.Inset>
-</Sidebar.Provider>
+<main class="flex items-center gap-2 px-4">
+	{@render children?.()}
+</main>
