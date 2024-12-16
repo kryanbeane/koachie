@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-
 	import ArrowRightIcon from 'lucide-svelte/icons/arrow-right';
 
 	import { Button } from '@/components/ui/button';
@@ -52,7 +50,7 @@
 					class="w-full bg-transparent placeholder-muted-foreground outline-none"
 				/>
 				<Button
-					variant="none"
+					variant="default"
 					size="sm"
 					class="h-8 rounded-full border border-foreground/10 bg-gradient-to-t from-primary to-primary/70 text-primary-foreground shadow-md transition-all duration-200 hover:bg-primary/90 dark:bg-gradient-to-b"
 					type="submit"

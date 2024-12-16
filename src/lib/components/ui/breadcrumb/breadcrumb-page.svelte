@@ -1,6 +1,6 @@
 <script lang="ts">
+	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { type WithElementRef } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
 
 	let {
@@ -13,7 +13,10 @@
 
 <span
 	bind:this={ref}
-	class={cn('ml-auto text-xs tracking-widest opacity-60', className)}
+	role="link"
+	aria-disabled="true"
+	aria-current="page"
+	class={cn('font-normal text-foreground', className)}
 	{...restProps}
 >
 	{@render children?.()}
