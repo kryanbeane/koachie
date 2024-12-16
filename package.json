@@ -1,5 +1,5 @@
 {
-	"name": "acme",
+	"name": "koach",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -13,6 +13,8 @@
 		"prepare": "husky"
 	},
 	"devDependencies": {
+		"@snaplet/copycat": "^5.1.0",
+		"@snaplet/seed": "^0.98.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-node": "^5.2.5",
 		"@sveltejs/kit": "^2.5.27",
@@ -21,7 +23,7 @@
 		"@types/eslint": "^9.6.0",
 		"@types/node": "^22.7.4",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^1.0.0-next.28",
+		"bits-ui": "^1.0.0-next.70",
 		"clsx": "^2.1.1",
 		"eslint": "^9.0.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -30,6 +32,7 @@
 		"globals": "^15.0.0",
 		"husky": "^9.1.6",
 		"lucide-svelte": "^0.453.0",
+		"postgres": "^3.4.5",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.2.6",
 		"prettier-plugin-tailwindcss": "^0.6.5",
@@ -38,7 +41,7 @@
 		"svelte-check": "^4.0.0",
 		"svelte-meta-tags": "^4.0.1",
 		"sveltekit-superforms": "^2.20.0",
-		"tailwind-merge": "^2.5.4",
+		"tailwind-merge": "^2.5.5",
 		"tailwind-variants": "^0.2.1",
 		"tailwindcss": "^3.4.9",
 		"tailwindcss-animate": "^1.0.7",
@@ -56,6 +59,7 @@
 		"@fortawesome/free-brands-svg-icons": "^6.6.0",
 		"@supabase/ssr": "^0.5.1",
 		"@supabase/supabase-js": "^2.45.4",
+		"@tailwindcss/typography": "^0.5.15",
 		"dotenv": "^16.4.5",
 		"just-extend": "^6.2.0",
 		"mode-watcher": "^0.4.1",

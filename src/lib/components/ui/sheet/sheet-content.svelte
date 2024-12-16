@@ -25,21 +25,23 @@
 	import X from 'lucide-svelte/icons/x';
 	import type { Snippet } from 'svelte';
 	import SheetOverlay from './sheet-overlay.svelte';
-	import { cn } from '@/utils.js';
+	import { cn } from '$lib/utils.js';
 
 	let {
 		ref = $bindable(null),
 		class: className,
 		side = 'right',
+		portalProps,
 		children,
 		...restProps
 	}: WithoutChildrenOrChild<SheetPrimitive.ContentProps> & {
+		portalProps?: SheetPrimitive.PortalProps;
 		side?: Side;
 		children: Snippet;
 	} = $props();
 </script>
 
-<SheetPrimitive.Portal>
+<SheetPrimitive.Portal {...portalProps}>
 	<SheetOverlay />
 	<SheetPrimitive.Content bind:ref class={cn(sheetVariants({ side }), className)} {...restProps}>
 		{@render children?.()}

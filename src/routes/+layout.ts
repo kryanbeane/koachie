@@ -40,7 +40,7 @@ export const load: LayoutLoad = async ({ data, url, depends, fetch }) => {
 		data: { user }
 	} = await supabase.auth.getUser();
 
-	const title = `Acme`;
+	const title = `Koach`;
 	const description = `Lorem ipsum dolor sit amet`;
 	const canonicalUrl = new URL(url.pathname, url.origin).href;
 	const OGImage = 'https://media.fromkian.com/acme.jpg';
