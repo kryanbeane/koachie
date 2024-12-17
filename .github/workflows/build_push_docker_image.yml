@@ -27,13 +27,13 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v3
 
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v6
       with:
         context: .                         # Build context (root of the repo)
-        file: ./Dockerfile                 # Path to the Dockerfile (adjust if not in root)
+        file: ./docker/Dockerfile                 # Path to the Dockerfile (adjust if not in root)
         push: true                         # Push the image to Docker Hub
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/${{ env.repo }}:${{ env.branch }}
