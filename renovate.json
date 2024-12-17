@@ -1,4 +1,14 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended"]
+	"extends": ["config:recommended"],
+	"packageRules": [
+		{
+			"matchPackageNames": ["eslint**", "**eslint"],
+			"groupName": "eslint"
+		},
+		{
+			"matchPackageNames": ["svelte**", "**svelte", "@svelte**"],
+			"groupName": "svelte"
+		}
+	]
 }
