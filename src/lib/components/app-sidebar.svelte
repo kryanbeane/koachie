@@ -1,11 +1,9 @@
 <script lang="ts" module>
-	import BookOpen from 'lucide-svelte/icons/book-open';
 	import Bot from 'lucide-svelte/icons/bot';
 	import ChartPie from 'lucide-svelte/icons/chart-pie';
 	import Frame from 'lucide-svelte/icons/frame';
 	import GalleryVerticalEnd from 'lucide-svelte/icons/gallery-vertical-end';
 	import Map from 'lucide-svelte/icons/map';
-	import Settings2 from 'lucide-svelte/icons/settings-2';
 	import SquareTerminal from 'lucide-svelte/icons/square-terminal';
 
 	// This is sample data.
@@ -13,7 +11,7 @@
 		user: {
 			name: 'bryan',
 			email: 'm@example.com',
-			avatar: '/avatars/shadcn.jpg'
+			avatar: ''
 		},
 		teams: [
 			{
