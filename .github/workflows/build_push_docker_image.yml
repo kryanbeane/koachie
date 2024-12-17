@@ -36,5 +36,5 @@ jobs:
         file: ./docker/Dockerfile                 # Path to the Dockerfile (adjust if not in root)
         push: true                         # Push the image to Docker Hub
         tags: |
-          ${{ secrets.DOCKER_USERNAME }}/${{ env.repo }}:${{ env.branch }}
-          ${{ secrets.DOCKER_USERNAME }}/${{ env.repo }}:latest
+          koachie/dev:${{ env.branch }}
+          koachie/dev:latest
