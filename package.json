@@ -16,7 +16,7 @@
 		"@snaplet/copycat": "^5.1.0",
 		"@snaplet/seed": "^0.98.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
-		"@sveltejs/adapter-node": "^5.2.5",
+		"@sveltejs/adapter-node": "^5.2.10",
 		"@sveltejs/kit": "^2.5.27",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@tailwindcss/typography": "^0.5.14",
@@ -65,5 +65,11 @@
 		"mode-watcher": "^0.5.0",
 		"svelte-fa": "^4.0.3",
 		"svelte-sonner": "^0.3.28"
+	},
+	"optionalDependencies": {
+		"@rollup/rollup-linux-x64-gnu": "^4.9.5"
+	},
+	"resolutions": {
+		"rollup": "npm:@rollup/wasm-node@*"
 	}
 }
