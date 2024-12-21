@@ -5,11 +5,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 
-	import { ModeWatcher } from 'mode-watcher';
-	import { Toaster } from 'svelte-sonner';
-	import { MetaTags, deepMerge } from 'svelte-meta-tags';
-	import * as Sidebar from '@/components/ui/sidebar';
-	import AppSidebar from '@/components/app-sidebar.svelte';
+	import { deepMerge } from 'svelte-meta-tags';
 
 	interface Props {
 		data: LayoutData;

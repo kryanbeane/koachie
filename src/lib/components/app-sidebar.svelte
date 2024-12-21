@@ -22,22 +22,22 @@
 		],
 		navMain: [
 			{
-				title: 'Playground',
+				title: 'Library',
 				url: '#',
 				icon: SquareTerminal,
 				isActive: true,
 				items: [
 					{
-						title: 'History',
-						url: '#'
+						title: 'Programs',
+						url: '/programs'
 					},
 					{
-						title: 'Starred',
-						url: '#'
+						title: 'Workouts',
+						url: '/workouts'
 					},
 					{
-						title: 'Settings',
-						url: '#'
+						title: 'Exercises',
+						url: '/app/exercises'
 					}
 				]
 			},
