@@ -4,6 +4,7 @@
 
 	import * as Sidebar from '@/components/ui/sidebar';
 	import AppSidebar from '@/components/app-sidebar.svelte';
+	import { Separator } from '@/components/ui/separator';
 
 	interface Props {
 		data: LayoutData;
@@ -19,10 +20,17 @@
 		<header
 			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
 		>
-			<main class="flex items-center gap-2">
-				<Sidebar.Trigger class="-ml-1" />
-				{@render children?.()}
+			<main class="flex items-center gap-2 px-2">
+				<Sidebar.Trigger />
+				<Separator orientation="vertical" class="mr-2 h-4" />
+				todo_put_route_name_here
 			</main>
 		</header>
+
+		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
+			<div class="grid auto-rows-min gap-4 md:grid-cols-3">
+				{@render children?.()}
+			</div>
+		</div>
 	</Sidebar.Inset>
 </Sidebar.Provider>
