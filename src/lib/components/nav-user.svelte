@@ -7,10 +7,9 @@
 	import Bell from 'lucide-svelte/icons/bell';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import CreditCard from 'lucide-svelte/icons/credit-card';
-	import LogOut from 'lucide-svelte/icons/log-out';
 	import Sparkles from 'lucide-svelte/icons/sparkles';
+	import type { User } from '@supabase/supabase-js';
 
-	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
 	const sidebar = useSidebar();
 </script>
 
@@ -25,12 +24,12 @@
 						{...props}
 					>
 						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.name} />
+							<!-- <Avatar.Image src={user.avatar} alt={user.name} /> -->
 							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold">{user.name}</span>
-							<span class="truncate text-xs">{user.email}</span>
+							<span class="truncate font-semibold">First Name</span>
+							<span class="truncate text-xs">you@example.com</span>
 						</div>
 						<ChevronsUpDown class="ml-auto size-4" />
 					</Sidebar.MenuButton>
@@ -45,12 +44,12 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.name} />
+							<!-- <Avatar.Image src={user.avatar} alt={user.name} /> -->
 							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold">{user.name}</span>
-							<span class="truncate text-xs">{user.email}</span>
+							<span class="truncate font-semibold">Full Name</span>
+							<span class="truncate text-xs">you@exampke.com</span>
 						</div>
 					</div>
 				</DropdownMenu.Label>
@@ -77,10 +76,6 @@
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
-					<LogOut />
-					Log out
-				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</Sidebar.MenuItem>

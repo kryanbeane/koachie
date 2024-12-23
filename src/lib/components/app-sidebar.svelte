@@ -6,8 +6,10 @@
 	import Map from 'lucide-svelte/icons/map';
 	import SquareTerminal from 'lucide-svelte/icons/square-terminal';
 
+	export let data: PageData;
+
 	// This is sample data.
-	const data = {
+	const sample_data = {
 		user: {
 			name: 'bryan',
 			email: 'm@example.com',
@@ -88,6 +90,7 @@
 	import TeamSwitcher from '$lib/components/team-switcher.svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
+	import type { PageData } from '../../routes/(landing)/$types';
 
 	let {
 		ref = $bindable(null),
@@ -98,14 +101,14 @@
 
 <Sidebar.Root bind:ref {collapsible} {...restProps}>
 	<Sidebar.Header>
-		<TeamSwitcher teams={data.teams} />
+		<TeamSwitcher teams={sample_data.teams} />
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain items={data.navMain} />
-		<NavProjects projects={data.projects} />
+		<NavMain items={sample_data.navMain} />
+		<NavProjects projects={sample_data.projects} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={data.user} />
+		<NavUser />
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>
