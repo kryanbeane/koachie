@@ -2,7 +2,6 @@
 	import { type Snippet } from 'svelte';
 
 	import Navbar from './components/navbar.svelte';
-	import Footer from './components/footer.svelte';
 
 	interface Props {
 		children?: Snippet;
@@ -15,5 +14,3 @@
 	<Navbar />
 	{@render children?.()}
 </div>
-
-<Footer />

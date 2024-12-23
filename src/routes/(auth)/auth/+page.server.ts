@@ -58,7 +58,11 @@ export const actions: Actions = {
 		const { data, error: authError } = await supabase.auth.signInWithOAuth({
 			provider: method as Provider,
 			options: {
-				redirectTo: `${url.origin}/app`
+				redirectTo: `${url.origin}/app`,
+				queryParams: {
+					access_type: 'offline',
+					prompt: 'consent'
+				}
 			}
 		});
 

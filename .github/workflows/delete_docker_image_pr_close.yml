@@ -25,12 +25,12 @@ jobs:
 
     - name: Delete Docker Image
       run: |
-        IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/${{ env.repo }}:${{ env.branch }}
+        IMAGE_NAME=koachie/dev/${{ env.repo }}:${{ env.branch }}
         echo "Deleting image: $IMAGE_NAME"
 
         # Call Docker Hub API to delete the image tag
         curl -s -X DELETE \
-          -u "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" \
-          "https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_USERNAME }}/${{ env.repo }}/tags/${{ env.branch }}/" \
+          -u "koachie/dev:${{ secrets.DOCKER_PASSWORD }}" \
+          "https://hub.docker.com/v2/repositories/koachie/dev/${{ env.repo }}/tags/${{ env.branch }}/" \
         && echo "Image deleted: $IMAGE_NAME" \
         || echo "Failed to delete image: $IMAGE_NAME"

@@ -28,6 +28,6 @@
 	let metaTags = $derived(deepMerge(data.baseMetaTags, $page.data.pageMetaTags || {}));
 </script>
 
-<main class="flex items-center gap-2 px-4">
+<main>
 	{@render children?.()}
 </main>
