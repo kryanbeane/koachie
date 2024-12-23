@@ -5,7 +5,9 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 
-	import { deepMerge } from 'svelte-meta-tags';
+	import { deepMerge, MetaTags } from 'svelte-meta-tags';
+	import { ModeWatcher } from 'mode-watcher';
+	import { Toaster } from 'svelte-sonner';
 
 	interface Props {
 		data: LayoutData;
@@ -27,6 +29,10 @@
 
 	let metaTags = $derived(deepMerge(data.baseMetaTags, $page.data.pageMetaTags || {}));
 </script>
+
+<ModeWatcher defaultMode="system" />
+<Toaster position="top-center" />
+<MetaTags {...metaTags} />
 
 <main>
 	{@render children?.()}
