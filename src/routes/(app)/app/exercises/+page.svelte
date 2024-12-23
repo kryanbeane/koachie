@@ -2,8 +2,10 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Button } from '@/components/ui/button';
 	import { type PageData } from './$types';
-
+	import { routeStore } from '@/stores/route.store';
 	export let data: PageData;
+
+	routeStore.set('Exercises');
 
 	let exercises = data.exercises;
 </script>
@@ -18,7 +20,7 @@
 				</Card.CardHeader>
 				<Card.CardContent></Card.CardContent>
 				<Card.CardFooter class="flex justify-between">
-					<Button variant="outline">Cancel</Button>
+					<Button variant="outline">cancel</Button>
 					<Button>Deploy</Button>
 				</Card.CardFooter>
 			</Card.Card>

@@ -5,6 +5,10 @@
 	import * as Sidebar from '@/components/ui/sidebar';
 	import AppSidebar from '@/components/app-sidebar.svelte';
 	import { Separator } from '@/components/ui/separator';
+	import { subscribe } from 'diagnostics_channel';
+	import { routeStore } from '@/stores/route.store';
+
+	let route = routeStore.subscribe((value) => value);
 
 	interface Props {
 		data: LayoutData;
@@ -23,7 +27,7 @@
 			<main class="flex items-center gap-2 px-2">
 				<Sidebar.Trigger />
 				<Separator orientation="vertical" class="mr-2 h-4" />
-				todo_put_route_name_here
+				{route}
 			</main>
 		</header>
 
