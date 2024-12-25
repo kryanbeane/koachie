@@ -11,7 +11,7 @@
 		children: import('svelte').Snippet;
 	}
 
-	let { data, children }: Props = $props();
+	let { children }: Props = $props();
 </script>
 
 <Sidebar.Provider>

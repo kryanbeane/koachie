@@ -31,11 +31,11 @@
 				items: [
 					{
 						title: 'Programs',
-						url: '/programs'
+						url: '/app/programs'
 					},
 					{
 						title: 'Workouts',
-						url: '/workouts'
+						url: '/app/workouts'
 					},
 					{
 						title: 'Exercises',
