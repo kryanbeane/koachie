@@ -1,6 +1,12 @@
 <script lang="ts">
 	import type { Exercise, ExerciseInstance } from '@/schemas/exercises';
+	import { tick } from 'svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Command from '$lib/components/ui/command/index.js';
+	import * as Popover from '$lib/components/ui/popover/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { ChevronsUpDown, Check } from 'lucide-svelte/icons';
+	import { cn } from '$lib/utils.js';
 
 	let exerciseInstances: ExerciseInstance[] = [
 		{
@@ -36,12 +42,60 @@
 	function getExerciseById(exerciseId: string): Exercise | undefined {
 		return exercises.find((exercise) => exercise.id === exerciseId);
 	}
+
+	let open = $state(false);
+	let value = $state('');
+	let triggerRef = $state<HTMLButtonElement>(null!);
+
+	const selectedValue = $derived(exercises.find((f) => f.name === value));
+
+	function closeAndFocusTrigger() {
+		open = false;
+		tick().then(() => {
+			triggerRef.focus();
+		});
+	}
 </script>
 
-<Card.Root class="bg-muted/50">
-	<Card.Header>
-		<Card.Title></Card.Title>
-		<!-- <Card.Description>{exercise.note}</Card.Description> -->
-	</Card.Header>
-	<Card.Content class=""></Card.Content>
+<Card.Root class="bg-muted/50 outline-double">
+	<Card.Content class="">
+		<Popover.Root bind:open>
+			<Popover.Trigger bind:ref={triggerRef}>
+				{#snippet child({ props })}
+					<Button
+						variant="outline"
+						class="justify-between"
+						{...props}
+						role="combobox"
+						aria-expanded={open}
+					>
+						{selectedValue?.name || 'Select an exercise...'}
+						<ChevronsUpDown class="opacity-50" />
+					</Button>
+				{/snippet}
+			</Popover.Trigger>
+			<Popover.Content class="p-0">
+				<Command.Root>
+					<Command.Input placeholder="Search exercises..." />
+					<Command.List>
+						<Command.Empty>No exercises found.</Command.Empty>
+						<Command.Group>
+							{#each exercises as exercise}
+								<Command.Item
+									value={exercise.name}
+									onSelect={() => {
+										value = exercise.name;
+										closeAndFocusTrigger();
+									}}
+								>
+									<Check class={cn(value !== exercise.name && 'text-transparent')} />
+									{exercise.name}
+								</Command.Item>
+							{/each}
+						</Command.Group>
+					</Command.List>
+				</Command.Root>
+			</Popover.Content>
+		</Popover.Root>
+	</Card.Content>
 </Card.Root>
