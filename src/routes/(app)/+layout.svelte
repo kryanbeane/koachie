@@ -5,10 +5,7 @@
 	import * as Sidebar from '@/components/ui/sidebar';
 	import AppSidebar from '@/components/app-sidebar.svelte';
 	import { Separator } from '@/components/ui/separator';
-	import { subscribe } from 'diagnostics_channel';
 	import { routeStore } from '@/stores/route.store';
-
-	let route = routeStore.subscribe((value) => value);
 
 	interface Props {
 		data: LayoutData;
@@ -27,12 +24,13 @@
 			<main class="flex items-center gap-2 px-2">
 				<Sidebar.Trigger />
 				<Separator orientation="vertical" class="mr-2 h-4" />
-				{route}
+				{$routeStore}
 			</main>
 		</header>
 
-		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-			<div class="grid auto-rows-min gap-4 md:grid-cols-3">
+		<div class="flex flex-1 flex-col p-4 pt-0">
+			<!-- Render children without grid -->
+			<div class="flex flex-1">
 				{@render children?.()}
 			</div>
 		</div>

@@ -35,7 +35,7 @@
 					},
 					{
 						title: 'Workouts',
-						url: '/workouts'
+						url: '/app/workouts'
 					},
 					{
 						title: 'Exercises',
