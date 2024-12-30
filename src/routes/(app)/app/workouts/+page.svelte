@@ -7,6 +7,8 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { ChevronsUpDown, Check } from 'lucide-svelte/icons';
 	import { cn } from '$lib/utils.js';
+	import * as Table from '$lib/components/ui/table/index.js';
+	import Input from '@/components/ui/input/input.svelte';
 
 	let exerciseInstances: ExerciseInstance[] = [
 		{
@@ -58,18 +60,19 @@
 </script>
 
 <Card.Root class="bg-muted/50 outline-double">
-	<Card.Content class="">
+	<Card.Content>
 		<Popover.Root bind:open>
-			<Popover.Trigger bind:ref={triggerRef}>
+			<Popover.Trigger bind:ref={triggerRef} class="w-full">
 				{#snippet child({ props })}
+					<!-- TODO: Change so that text is centered left and icon is centered right -->
 					<Button
 						variant="outline"
-						class="justify-between"
+						class="max-w-xs justify-between"
 						{...props}
 						role="combobox"
 						aria-expanded={open}
 					>
-						{selectedValue?.name || 'Select an exercise...'}
+						{selectedValue?.name || 'Select a new exercise...'}
 						<ChevronsUpDown class="opacity-50" />
 					</Button>
 				{/snippet}
@@ -97,5 +100,32 @@
 				</Command.Root>
 			</Popover.Content>
 		</Popover.Root>
+
+		<Table.Root>
+			<Table.Header>
+				<Table.Row>
+					<Table.Head>Set</Table.Head>
+					<Table.Head>Weight (Kg)</Table.Head>
+					<Table.Head>Reps</Table.Head>
+					<Table.Head>Rest</Table.Head>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
+				<Table.Row>
+					<Table.Cell>1</Table.Cell>
+					<Table.Cell>-</Table.Cell>
+					<Table.Cell>5-7</Table.Cell>
+					<Table.Cell>02:45</Table.Cell>
+				</Table.Row>
+				<Table.Row>
+					<Table.Cell>2</Table.Cell>
+					<Table.Cell>-</Table.Cell>
+					<Table.Cell>4-8</Table.Cell>
+					<Table.Cell>03:00</Table.Cell>
+				</Table.Row>
+			</Table.Body>
+		</Table.Root>
+
+		<Input type="text" placeholder="Enter notes here..." class="max-w-xs" />
 	</Card.Content>
 </Card.Root>
