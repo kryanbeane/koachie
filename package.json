@@ -36,6 +36,7 @@
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.2.6",
 		"prettier-plugin-tailwindcss": "^0.6.5",
+		"supazod": "^1.1.2",
 		"super-sitemap": "^1.0.0",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
