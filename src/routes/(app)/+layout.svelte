@@ -5,6 +5,7 @@
 	import * as Sidebar from '@/components/ui/sidebar';
 	import AppSidebar from '@/components/app-sidebar.svelte';
 	import { Separator } from '@/components/ui/separator';
+	import { ThemeToggle } from '@/components/theme-controller';
 
 	interface Props {
 		data: LayoutData;
@@ -25,6 +26,7 @@
 				<Separator orientation="vertical" class="mr-2 h-4" />
 				todo_put_route_name_here
 			</main>
+			<div class="mx-4 ml-auto items-end"><ThemeToggle /></div>
 		</header>
 
 		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">

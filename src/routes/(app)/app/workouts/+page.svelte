@@ -8,7 +8,9 @@
 	import { ChevronsUpDown, Check } from 'lucide-svelte/icons';
 	import { cn } from '$lib/utils.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import Input from '@/components/ui/input/input.svelte';
+	import { Input } from '@/components/ui/input';
+	import TimeWidget from './_components/time_widget.svelte';
+	import NoOutlineInput from '@/components/ui/input/no_outline_input.svelte';
 
 	let exerciseInstances: ExerciseInstance[] = [
 		{
@@ -59,7 +61,7 @@
 	}
 </script>
 
-<Card.Root class="bg-muted/50 outline-double">
+<Card.Root class="m-4 w-96 bg-muted/50 outline-double outline-white/25">
 	<Card.Content>
 		<Popover.Root bind:open>
 			<Popover.Trigger bind:ref={triggerRef} class="w-full">
@@ -104,28 +106,56 @@
 		<Table.Root>
 			<Table.Header>
 				<Table.Row>
-					<Table.Head>Set</Table.Head>
-					<Table.Head>Weight (Kg)</Table.Head>
-					<Table.Head>Reps</Table.Head>
-					<Table.Head>Rest</Table.Head>
+					<Table.Head class="flex-1">Set</Table.Head>
+					<Table.Head class="flex-1">Weight (kg)</Table.Head>
+					<Table.Head class="flex-1">Reps</Table.Head>
+					<Table.Head class="flex-1">RIR</Table.Head>
+					<Table.Head class="flex-1">Rest</Table.Head>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
 				<Table.Row>
-					<Table.Cell>1</Table.Cell>
-					<Table.Cell>-</Table.Cell>
-					<Table.Cell>5-7</Table.Cell>
-					<Table.Cell>02:45</Table.Cell>
-				</Table.Row>
-				<Table.Row>
-					<Table.Cell>2</Table.Cell>
-					<Table.Cell>-</Table.Cell>
-					<Table.Cell>4-8</Table.Cell>
-					<Table.Cell>03:00</Table.Cell>
+					<Table.Cell class="flex-1">1</Table.Cell>
+					<Table.Cell class="flex-1">
+						<input
+							type="text"
+							id="counter-input"
+							data-input-counter
+							class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+							placeholder=""
+							value="12"
+							required
+						/>
+					</Table.Cell>
+					<Table.Cell class="flex-1">
+						<input
+							type="text"
+							id="counter-input"
+							data-input-counter
+							class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+							placeholder=""
+							value="5-8"
+							required
+						/>
+					</Table.Cell>
+					<Table.Cell class="flex-1">
+						<input
+							type="text"
+							id="counter-input"
+							data-input-counter
+							class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+							placeholder=""
+							value="1"
+							required
+						/>
+					</Table.Cell>
+					<Table.Cell class="flex-1">
+						<TimeWidget />
+					</Table.Cell>
 				</Table.Row>
 			</Table.Body>
 		</Table.Root>
 
-		<Input type="text" placeholder="Enter notes here..." class="max-w-xs" />
+		<NoOutlineInput type="text" placeholder="Enter notes here..." class="mt-2 w-full" />
 	</Card.Content>
 </Card.Root>
