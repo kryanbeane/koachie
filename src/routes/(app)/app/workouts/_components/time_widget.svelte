@@ -1,17 +1,14 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
 	let time = '00:00';
 
 	function handleTimeInput(event: Event) {
 		const input = event.target as HTMLInputElement;
-		time = input.value.replace(/\D/g, ''); // Remove non-digit characters
+		time = input.value.replace(/\D/g, '');
 
 		if (time.length > 4) {
-			time = time.slice(0, 4); // Limit to 4 digits
+			time = time.slice(0, 4);
 		}
 
-		// Format the time as MM:SS
 		if (time.length > 2) {
 			time = time.slice(0, 2) + ':' + time.slice(2);
 		}

@@ -1,16 +1,10 @@
 <script lang="ts">
 	import type { Exercise, ExerciseInstance } from '@/schemas/exercises';
-	import { tick } from 'svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { ChevronsUpDown, Check } from 'lucide-svelte/icons';
-	import { cn } from '$lib/utils.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import { Input } from '@/components/ui/input';
-	import TimeWidget from './_components/time_widget.svelte';
 	import NoOutlineInput from '@/components/ui/input/no_outline_input.svelte';
+	import SetRow from './_components/set_row.svelte';
+	import SelectExercise from './_components/select_exercise.svelte';
 
 	let exerciseInstances: ExerciseInstance[] = [
 		{
@@ -46,62 +40,11 @@
 	function getExerciseById(exerciseId: string): Exercise | undefined {
 		return exercises.find((exercise) => exercise.id === exerciseId);
 	}
-
-	let open = $state(false);
-	let value = $state('');
-	let triggerRef = $state<HTMLButtonElement>(null!);
-
-	const selectedValue = $derived(exercises.find((f) => f.name === value));
-
-	function closeAndFocusTrigger() {
-		open = false;
-		tick().then(() => {
-			triggerRef.focus();
-		});
-	}
 </script>
 
 <Card.Root class="m-4 w-96 bg-muted/50 outline-double outline-white/25">
 	<Card.Content>
-		<Popover.Root bind:open>
-			<Popover.Trigger bind:ref={triggerRef} class="w-full">
-				{#snippet child({ props })}
-					<!-- TODO: Change so that text is centered left and icon is centered right -->
-					<Button
-						variant="outline"
-						class="max-w-xs justify-between"
-						{...props}
-						role="combobox"
-						aria-expanded={open}
-					>
-						{selectedValue?.name || 'Select a new exercise...'}
-						<ChevronsUpDown class="opacity-50" />
-					</Button>
-				{/snippet}
-			</Popover.Trigger>
-			<Popover.Content class="p-0">
-				<Command.Root>
-					<Command.Input placeholder="Search exercises..." />
-					<Command.List>
-						<Command.Empty>No exercises found.</Command.Empty>
-						<Command.Group>
-							{#each exercises as exercise}
-								<Command.Item
-									value={exercise.name}
-									onSelect={() => {
-										value = exercise.name;
-										closeAndFocusTrigger();
-									}}
-								>
-									<Check class={cn(value !== exercise.name && 'text-transparent')} />
-									{exercise.name}
-								</Command.Item>
-							{/each}
-						</Command.Group>
-					</Command.List>
-				</Command.Root>
-			</Popover.Content>
-		</Popover.Root>
+		<SelectExercise {exercises} />
 
 		<Table.Root>
 			<Table.Header>
@@ -114,45 +57,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				<Table.Row>
-					<Table.Cell class="flex-1">1</Table.Cell>
-					<Table.Cell class="flex-1">
-						<input
-							type="text"
-							id="counter-input"
-							data-input-counter
-							class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-							placeholder=""
-							value="12"
-							required
-						/>
-					</Table.Cell>
-					<Table.Cell class="flex-1">
-						<input
-							type="text"
-							id="counter-input"
-							data-input-counter
-							class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-							placeholder=""
-							value="5-8"
-							required
-						/>
-					</Table.Cell>
-					<Table.Cell class="flex-1">
-						<input
-							type="text"
-							id="counter-input"
-							data-input-counter
-							class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-							placeholder=""
-							value="1"
-							required
-						/>
-					</Table.Cell>
-					<Table.Cell class="flex-1">
-						<TimeWidget />
-					</Table.Cell>
-				</Table.Row>
+				<SetRow />
 			</Table.Body>
 		</Table.Root>
 
