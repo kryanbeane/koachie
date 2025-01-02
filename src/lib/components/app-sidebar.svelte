@@ -31,7 +31,7 @@
 				items: [
 					{
 						title: 'Programs',
-						url: '/programs'
+						url: '/app/programs'
 					},
 					{
 						title: 'Workouts',
