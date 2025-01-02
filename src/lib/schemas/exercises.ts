@@ -29,13 +29,15 @@ const customVariableSchema = z.object({
 });
 
 export const exercisePerformanceSchema = z.array(
-	z.object({
-		order: z.number().int().min(1),
-		reps: z.number().int().min(0),
-		weight: z.number().int().min(0),
-		restTime: z.string().time(),
-		customVariables: z.array(customVariableSchema).max(3).optional()
-	})
+	z
+		.object({
+			order: z.number().int().min(1),
+			reps: z.number().int().min(0),
+			weight: z.number().int().min(0),
+			restTime: z.string().time(),
+			customVariables: z.array(customVariableSchema).max(3).optional()
+		})
+		.optional()
 );
 
 export type ExercisePerformance = z.infer<typeof exercisePerformanceSchema>;
