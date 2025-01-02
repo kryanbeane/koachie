@@ -5,6 +5,7 @@
 	import * as Sidebar from '@/components/ui/sidebar';
 	import AppSidebar from '@/components/app-sidebar.svelte';
 	import { Separator } from '@/components/ui/separator';
+	import { routeStore } from '@/stores/route.store';
 	import { ThemeToggle } from '@/components/theme-controller';
 
 	interface Props {
@@ -24,7 +25,7 @@
 			<main class="flex items-center gap-2 px-2">
 				<Sidebar.Trigger />
 				<Separator orientation="vertical" class="mr-2 h-4" />
-				todo_put_route_name_here
+				{$routeStore}
 			</main>
 			<div class="mx-4 ml-auto items-end"><ThemeToggle /></div>
 		</header>
