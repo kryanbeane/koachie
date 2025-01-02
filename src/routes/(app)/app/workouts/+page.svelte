@@ -25,17 +25,19 @@
 	];
 </script>
 
-<Card.Root class="flex h-full w-full flex-col">
-	<Card.Content class="flex flex-grow flex-col p-4">
-		<Input type="text" placeholder="Enter text here..." class="mb-4" />
+<div class="flex items-center justify-center align-middle">
+	<Card.Root class="flex h-auto max-h-full w-min max-w-full flex-col">
+		<Card.Content class="flex flex-grow flex-col p-4">
+			<Input type="text" placeholder="Enter text here..." class="mb-4" />
 
-		{#each exerciseInstances as exercise_instance}
-			<ExerciseInstanceCard {exercise_instance} />
-		{/each}
+			{#each exerciseInstances as exercise_instance}
+				<ExerciseInstanceCard {exercise_instance} />
+			{/each}
+		</Card.Content>
 
-		<div class="flex justify-end space-x-2">
+		<Card.Footer>
 			<Button variant="outline">Cancel</Button>
 			<Button variant="default">Submit</Button>
-		</div>
-	</Card.Content>
-</Card.Root>
+		</Card.Footer>
+	</Card.Root>
+</div>
