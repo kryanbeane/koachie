@@ -56,6 +56,7 @@ export const exerciseInstanceSchema = z.object({
 	id: z.string().uuid(),
 	client_id: z.string().uuid().nullable(),
 	exercise_id: z.string().uuid(),
+	workout_id: z.string().uuid(),
 	created_at: z.string().datetime(),
 	updated_at: z.string().datetime(),
 	performance: exercisePerformanceSchema
