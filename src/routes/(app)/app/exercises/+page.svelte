@@ -39,7 +39,7 @@
 	}
 </script>
 
-<div class="h-screen w-full flex-1 overflow-hidden">
+<div class="h-full w-full flex-1 overflow-hidden">
 	<Resizable.PaneGroup
 		direction="horizontal"
 		{onLayoutChange}

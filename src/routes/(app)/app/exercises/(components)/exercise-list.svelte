@@ -30,14 +30,13 @@
 			<!-- Card Wrapper -->
 			<div
 				class={cn(
-					'group relative flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
+					'group relative flex items-start gap-4 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
 					'bg-muted'
 				)}
 				tabindex="0"
 				role="button"
 				on:click={() => handleExerciseClick(exercise)}
 				on:keydown={(e) => e.key === 'Enter' && handleExerciseClick(exercise)}
-				on:click={() => handleExerciseClick(exercise)}
 			>
 				<!-- Hover Buttons -->
 				<div
@@ -85,27 +84,43 @@
 					</button>
 				</div>
 
-				<!-- Content -->
-				<div class="flex w-full flex-col gap-1">
-					<div class="flex items-center">
-						<div class="flex items-center gap-2">
+				<!-- Main Content -->
+				<div class="flex w-full justify-between">
+					<!-- Left Section (Details) -->
+					<div class="flex w-[55%] flex-col gap-1">
+						<div class="flex items-center">
 							<div class="font-semibold">{exercise.name}</div>
 						</div>
+						<div class="text-xs font-medium">{exercise.movement_type}</div>
+						<div class="line-clamp-2 text-xs text-muted-foreground">
+							{exercise.note.substring(0, 300)}
+						</div>
+						{#if exercise.muscle_groups.length}
+							<div class="flex items-center gap-2">
+								{#each exercise.muscle_groups as group}
+									<Badge>
+										{group}
+									</Badge>
+								{/each}
+							</div>
+						{/if}
 					</div>
-					<div class="text-xs font-medium">{exercise.movement_type}</div>
-				</div>
-				<div class="line-clamp-2 text-xs text-muted-foreground">
-					{exercise.note.substring(0, 300)}
-				</div>
-				{#if exercise.muscle_groups.length}
-					<div class="flex items-center gap-2">
-						{#each exercise.muscle_groups as group}
-							<Badge>
-								{group}
-							</Badge>
-						{/each}
+
+					<div class="w-[40%]">
+						<div
+							class="scrollbar-thin scrollbar-thumb-gray-200 max-h-24 overflow-y-auto rounded-md border-2 border-gray-500 p-1"
+						>
+							<h3 class="text-md text-center font-semibold text-white underline">Instructions</h3>
+							<ul class="space-y-2">
+								{#each exercise.instructions as instruction}
+									<li class="rounded-md border border-gray-500 p-1 text-center text-sm text-white">
+										{instruction}
+									</li>
+								{/each}
+							</ul>
+						</div>
 					</div>
-				{/if}
+				</div>
 			</div>
 		{/each}
 	</div>

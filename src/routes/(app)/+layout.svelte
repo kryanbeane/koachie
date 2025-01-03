@@ -6,13 +6,14 @@
 	import AppSidebar from '@/components/app-sidebar.svelte';
 	import { Separator } from '@/components/ui/separator';
 	import { routeStore } from '@/stores/route.store';
+	import { ThemeToggle } from '@/components/theme-controller';
 
 	interface Props {
 		data: LayoutData;
 		children: import('svelte').Snippet;
 	}
 
-	let { data, children }: Props = $props();
+	let { children }: Props = $props();
 </script>
 
 <Sidebar.Provider>
@@ -26,11 +27,11 @@
 				<Separator orientation="vertical" class="mr-2 h-4" />
 				{$routeStore}
 			</main>
+			<div class="mx-4 ml-auto items-end"><ThemeToggle /></div>
 		</header>
 
-		<div class="flex flex-1 flex-col p-4 pt-0">
-			<!-- Render children without grid -->
-			<div class="flex flex-1">
+		<div class="flex h-full flex-1 flex-col gap-4 overflow-hidden p-4 pt-0">
+			<div class="h-full flex-grow overflow-hidden">
 				{@render children?.()}
 			</div>
 		</div>

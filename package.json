@@ -23,7 +23,7 @@
 		"@types/eslint": "^9.6.0",
 		"@types/node": "^22.7.4",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^1.0.0-next.74",
+		"bits-ui": "1.0.0-next.74",
 		"clsx": "^2.1.1",
 		"eslint": "^9.0.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -37,6 +37,7 @@
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.2.6",
 		"prettier-plugin-tailwindcss": "^0.6.5",
+		"supazod": "^1.1.2",
 		"super-sitemap": "^1.0.0",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
@@ -61,11 +62,13 @@
 		"@supabase/ssr": "^0.5.1",
 		"@supabase/supabase-js": "^2.45.4",
 		"@tailwindcss/typography": "^0.5.15",
+		"datetime": "^0.0.3",
 		"dotenv": "^16.4.5",
 		"just-extend": "^6.2.0",
 		"mode-watcher": "^0.5.0",
 		"svelte-fa": "^4.0.3",
-		"svelte-sonner": "^0.3.28"
+		"svelte-sonner": "^0.3.28",
+		"uuid": "^11.0.3"
 	},
 	"optionalDependencies": {
 		"@rollup/rollup-linux-x64-gnu": "^4.9.5"
