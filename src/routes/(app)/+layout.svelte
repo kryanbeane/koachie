@@ -30,8 +30,8 @@
 			<div class="mx-4 ml-auto items-end"><ThemeToggle /></div>
 		</header>
 
-		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-			<div class="flex-grow overflow-y-auto">
+		<div class="flex h-full flex-1 flex-col gap-4 overflow-hidden p-4 pt-0">
+			<div class="h-full flex-grow overflow-hidden">
 				{@render children?.()}
 			</div>
 		</div>
