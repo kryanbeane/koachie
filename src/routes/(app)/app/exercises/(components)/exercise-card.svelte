@@ -49,14 +49,24 @@
 		editMode = false;
 	}
 
+	// function addMuscleGroup(group: string) {
+	// 	if (!exercise.muscle_groups.includes(group)) {
+	// 		exercise.muscle_groups = [...exercise.muscle_groups, group];
+	// 	}
+	// }
+
 	function addMuscleGroup(group: string) {
 		if (!exercise.muscle_groups.includes(group)) {
-			exercise.muscle_groups = [...exercise.muscle_groups, group];
+			exercise = { ...exercise, muscle_groups: [...exercise.muscle_groups, group] };
 		}
 	}
 
+	// function removeMuscleGroup(group: string) {
+	// 	exercise.muscle_groups = exercise.muscle_groups.filter((g: string) => g !== group);
+	// }
+
 	function removeMuscleGroup(group: string) {
-		exercise.muscle_groups = exercise.muscle_groups.filter((g: string) => g !== group);
+		exercise = { ...exercise, muscle_groups: exercise.muscle_groups.filter((g) => g !== group) };
 	}
 
 	function addInstruction() {
@@ -312,17 +322,17 @@
 						{#snippet child({ props })}
 							<Button
 								variant="outline"
-								class="w-[200px] justify-between"
+								class="flex w-[220px] justify-between"
 								{...props}
 								role="combobox"
 								aria-expanded={openMovement}
 							>
-								{selectedMovementType || 'Select a Movement Type...'}
-								<ChevronsUpDown class="opacity-50" />
+								{selectedMovementType || 'Select a Movement Type'}
+								<ChevronsUpDown class="opacity-50 " />
 							</Button>
 						{/snippet}
 					</Popover.Trigger>
-					<Popover.Content class="w-[200px] p-0">
+					<Popover.Content class="w-[220px] p-0">
 						<Command.Root>
 							<Command.Input placeholder="Search Movement types..." />
 							<Command.List>
@@ -389,17 +399,18 @@
 						{#snippet child({ props })}
 							<Button
 								variant="outline"
-								class="w-[200px] justify-between"
+								class="w-[220px] justify-between"
 								{...props}
 								role="combobox"
 								aria-expanded={openMuscle}
 							>
 								{selectedMuscleGroup || 'Select a Muscle Group...'}
-								<ChevronsUpDown class="opacity-50" />
+
+								<ChevronsUpDown class="align-right opacity-50" />
 							</Button>
 						{/snippet}
 					</Popover.Trigger>
-					<Popover.Content class="w-[200px] p-0">
+					<Popover.Content class="w-[220px] p-0">
 						<Command.Root>
 							<Command.Input placeholder="Search Muscle groups..." />
 							<Command.List>
@@ -410,10 +421,14 @@
 											value={muscleGroup}
 											onSelect={() => {
 												valueMuscle = muscleGroup;
-												closeAndFocusTriggerMuscle();
+												addMuscleGroup(valueMuscle);
 											}}
 										>
-											<Check class={cn(valueMuscle !== muscleGroup && 'text-transparent')} />
+											<Check
+												class={cn(
+													!exercise.muscle_groups.includes(muscleGroup) && 'text-transparent'
+												)}
+											/>
 											{muscleGroup}
 										</Command.Item>
 									{/each}
