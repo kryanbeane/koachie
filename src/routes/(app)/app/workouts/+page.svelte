@@ -1,15 +1,10 @@
 <script lang="ts">
 	import { routeStore } from '@/stores/route.store';
-	import WorkoutsStuff from './(components)/(table)/workouts_stuff.svelte';
+	import WorkoutView from './(components)/(table)/workouts_view.svelte';
 
 	routeStore.set('Workouts');
 
 	export let data;
 </script>
 
-<WorkoutsStuff
-	workouts={data.workouts!!}
-	defaultLayout={data.layout}
-	defaultCollapsed={data.collapsed}
-	navCollapsedSize={4}
-/>
+<WorkoutView workouts={data.workouts!!} defaultLayout={data.layout} />

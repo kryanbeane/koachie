@@ -5,29 +5,22 @@
 	import { Separator } from '@/components/ui/separator';
 	import type { Workout } from '@/schemas/workouts';
 	import { Input } from '@/components/ui/input';
-	import WorkoutDisplay from './workout-display.svelte';
+	import WorkoutDetails from './workout-details.svelte';
 	import { workoutStore } from './store';
 	import WorkoutList from './workout-list.svelte';
 
 	export let workouts: Workout[];
 	export let defaultLayout = [265, 440, 60];
-	// export let defaultCollapsed = false;
-	// export let navCollapsedSize: number;
-
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
 	}
 </script>
 
-<div class="hidden md:block">
-	<Resizable.PaneGroup
-		direction="horizontal"
-		{onLayoutChange}
-		class="h-full max-h-[800px] items-stretch"
-	>
+<div class="hidden h-full overflow-hidden md:block">
+	<Resizable.PaneGroup direction="horizontal" {onLayoutChange} class="">
 		<Resizable.Pane defaultSize={defaultLayout[1]} minSize={30}>
 			<Tabs.Root value="all">
-				<div class="flex items-center px-4 py-2">
+				<div class="flex items-center px-4">
 					<div
 						class="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 					>
@@ -49,18 +42,14 @@
 						</Tabs.Trigger>
 					</Tabs.List>
 				</div>
-				<Separator />
+				<Separator class="my-2" />
 
 				<Tabs.Content value="all" class="m-0">
 					<WorkoutList items={workouts} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</Resizable.Pane>
-		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={defaultLayout[2]}>
-			<WorkoutDisplay
-				workout={workouts.find((item) => item.id === $workoutStore.selected) || null}
-			/>
-		</Resizable.Pane>
+		<Separator orientation="vertical" />
+		<WorkoutDetails workout={workouts.find((item) => item.id === $workoutStore.selected) || null} />
 	</Resizable.PaneGroup>
 </div>
