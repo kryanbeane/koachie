@@ -3,44 +3,47 @@
 
 	import { cn } from '$lib/utils.js';
 
-	export let exercise: {
-		id: number;
-		name: string;
-		movement_type: string;
-		note: string;
-		muscle_groups: string[];
-		instructions: string[];
-	};
+	import * as Command from '$lib/components/ui/command/index.js';
+	import * as Popover from '$lib/components/ui/popover/index.js';
+	import { tick } from 'svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
+	import Check from 'lucide-svelte/icons/check';
+	import type { Exercise } from '@/schemas/exercises';
 
-	export let editMode = false;
+	let { exercise, createMode = $bindable(true), editMode } = $props();
+
+	console.log(exercise);
+
+	// let editMode = $state(false);
 
 	// Handle main click on the card
-	function handleExerciseClick(exercise: { id: number }) {
+	function handleExerciseClick(exercise: { id: string }) {
 		console.log('Exercise clicked:', exercise.id);
 	}
 
 	// Handle edit button click
-	function handleEdit(event: Event, exercise: { id: number }) {
+	function handleEdit(event: Event, exercise: { id: string }) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Edit clicked for:', exercise.id);
 		editMode = true;
 	}
 
 	// Handle delete button click
-	function handleDelete(event: Event, exercise: { id: number }) {
+	function handleDelete(event: Event, exercise: { id: string }) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Delete clicked for:', exercise.id);
 	}
 
 	// Handle save button click
-	function handleSave(event: Event, exercise: { id: number }) {
+	function handleSave(event: Event, exercise: { id: string }) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Save clicked for:', exercise.id);
 		editMode = false;
 	}
 
 	// Handle cancel button click
-	function handleCancel(event: Event, exercise: { id: number }) {
+	function handleCancel(event: Event, exercise: { id: string }) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Cancel clicked for:', exercise.id);
 		editMode = false;
@@ -53,7 +56,7 @@
 	}
 
 	function removeMuscleGroup(group: string) {
-		exercise.muscle_groups = exercise.muscle_groups.filter((g) => g !== group);
+		exercise.muscle_groups = exercise.muscle_groups.filter((g: string) => g !== group);
 	}
 
 	function addInstruction() {
@@ -61,11 +64,49 @@
 	}
 
 	function removeInstruction(index: number) {
-		exercise.instructions = exercise.instructions.filter((_, i) => i !== index);
+		exercise.instructions = exercise.instructions.filter((_: any, i: number) => i !== index);
+	}
+
+	function handleCreate(event: Event, exercise: { id: string }) {
+		event.stopPropagation(); // Prevent triggering the parent card click
+		console.log('Create clicked for:', exercise.id);
+		// createMode = false;
+	}
+
+	function handleCancelCreate(event: Event, exercise: { id: string }) {
+		event.stopPropagation(); // Prevent triggering the parent card click
+		console.log('Cancel clicked for:', exercise.id);
+		createMode = false;
 	}
 
 	let allMuscleGroups = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders'];
 	let allMovementTypes = ['Strength', 'Cardio', 'Flexibility'];
+
+	let openMovement = $state(false);
+	let valueMovement = $state('');
+	let triggerRefMovement = $state<HTMLButtonElement>(null!);
+
+	let openMuscle = $state(false);
+	let valueMuscle = $state('');
+	let triggerRefMuscle = $state<HTMLButtonElement>(null!);
+
+	function closeAndFocusTriggerMovement() {
+		openMovement = false;
+		tick().then(() => {
+			triggerRefMovement.focus();
+		});
+	}
+
+	function closeAndFocusTriggerMuscle() {
+		openMuscle = false;
+		tick().then(() => {
+			triggerRefMuscle.focus();
+		});
+	}
+
+	const selectedMovementType = $derived(allMovementTypes.find((f: string) => f === valueMovement));
+
+	const selectedMuscleGroup = $derived(allMuscleGroups.find((f: string) => f === valueMuscle));
 </script>
 
 <!-- Card Wrapper -->
@@ -79,10 +120,10 @@
 	)}
 	tabindex="0"
 	role="button"
-	on:click={() => handleExerciseClick(exercise)}
-	on:keydown={(e) => e.key === 'Enter' && handleExerciseClick(exercise)}
+	onclick={() => handleExerciseClick(exercise)}
+	onkeydown={(e) => e.key === 'Enter' && handleExerciseClick(exercise)}
 >
-	{#if editMode}
+	{#if editMode && !createMode}
 		<!-- Sidebar (Only in Edit Mode) -->
 		<div class="absolute right-0 top-0 h-full w-2 rounded-l-md bg-accent"></div>
 
@@ -93,7 +134,7 @@
 			<button
 				class="mr-2 rounded-md bg-gray-200 p-2 transition-all hover:bg-gray-300"
 				aria-label="Save"
-				on:click={(e) => handleSave(e, exercise)}
+				onclick={(e) => handleSave(e, exercise)}
 			>
 				<svg
 					class="h-4 w-4 text-gray-800"
@@ -113,7 +154,7 @@
 			<button
 				class="mr-2 rounded-md bg-red-200 p-2 transition-all hover:bg-red-300"
 				aria-label="Cancel"
-				on:click={(e) => handleCancel(e, exercise)}
+				onclick={(e) => handleCancel(e, exercise)}
 			>
 				<svg
 					class="h-4 w-4 text-gray-800"
@@ -131,7 +172,7 @@
 				</svg>
 			</button>
 		</div>
-	{:else}
+	{:else if !createMode}
 		<!-- Default Mode: Edit & Delete Buttons -->
 		<div
 			class="absolute right-0 top-1/2 flex -translate-y-1/2 translate-x-4 flex-col gap-2 opacity-0 transition-all duration-300 ease-in-out group-hover:translate-x-0 group-hover:opacity-100"
@@ -139,7 +180,7 @@
 			<button
 				class="mr-2 rounded-md bg-gray-200 p-2 transition-all hover:bg-gray-300"
 				aria-label="Edit"
-				on:click={(e) => handleEdit(e, exercise)}
+				onclick={(e) => handleEdit(e, exercise)}
 			>
 				<svg
 					class="h-4 w-4 text-gray-800"
@@ -159,7 +200,7 @@
 			<button
 				class="mr-2 rounded-md bg-red-200 p-2 transition-all hover:bg-red-300"
 				aria-label="Delete"
-				on:click={(e) => handleDelete(e, exercise)}
+				onclick={(e) => handleDelete(e, exercise)}
 			>
 				<svg
 					class="h-4 w-4 text-gray-800"
@@ -175,6 +216,51 @@
 						d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
 					/>
 				</svg>
+			</button>
+		</div>
+	{:else if createMode}
+		<!-- Sidebar (Only in Edit Mode) -->
+		<div class="absolute right-0 top-0 h-full w-2 rounded-l-md bg-accent"></div>
+
+		<!-- Edit Mode Buttons: Save & Cancel -->
+		<div
+			class="absolute right-0 top-1/2 flex -translate-y-1/2 translate-x-0 flex-col gap-2 opacity-100"
+		>
+			<button
+				class="mr-2 rounded-md bg-green-200 p-2 transition-all hover:bg-green-300"
+				aria-label="Edit"
+				onclick={(e) => handleCreate(e, exercise)}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-plus text-black"><path d="M5 12h14" /><path d="M12 5v14" /></svg
+				>
+			</button>
+			<button
+				class="mr-2 rounded-md bg-red-200 p-2 transition-all hover:bg-red-300"
+				aria-label="Delete"
+				onclick={(e) => handleCancelCreate(e, exercise)}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="lucide lucide-x text-black"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg
+				>
 			</button>
 		</div>
 	{/if}
@@ -194,26 +280,7 @@
 					<div class="font-semibold">{exercise.name}</div>
 				{/if}
 			</div>
-			{#if editMode}
-				<!-- <input
-                            type="text"
-                            class="w-full bg-transparent text-white font-semibold text-xs"
-                            value={exercise.movement_type}
-                        /> -->
-				<select
-					id="movement-type"
-					bind:value={exercise.movement_type}
-					class="w-fit rounded-md border border-white bg-transparent px-3 py-1 text-sm text-white"
-				>
-					<option value="" disabled>Select movement type</option>
-					{#each allMovementTypes as type}
-						<option value={type}>{type}</option>
-					{/each}
-				</select>
-			{:else}
-				<div class="text-xs font-medium">{exercise.movement_type}</div>
-			{/if}
-			<div class="line-clamp-2 text-xs text-muted-foreground">
+			<div class="mt-1 line-clamp-2 text-xs text-muted-foreground">
 				{#if editMode}
 					<input
 						type="text"
@@ -224,6 +291,63 @@
 					{exercise.note.substring(0, 300)}
 				{/if}
 			</div>
+			{#if editMode}
+				<!-- <input
+                            type="text"
+                            class="w-full bg-transparent text-white font-semibold text-xs"
+                            value={exercise.movement_type}
+                        /> -->
+				<!-- <select
+					id="movement-type"
+					bind:value={exercise.movement_type}
+					class="w-fit rounded-md border border-white bg-transparent px-3 py-1 text-sm text-white"
+				>
+					<option value="" disabled>Select movement type</option>
+					{#each allMovementTypes as type}
+						<option value={type}>{type}</option>
+					{/each}
+				</select> -->
+				<Popover.Root bind:open={openMovement}>
+					<Popover.Trigger bind:ref={triggerRefMovement}>
+						{#snippet child({ props })}
+							<Button
+								variant="outline"
+								class="w-[200px] justify-between"
+								{...props}
+								role="combobox"
+								aria-expanded={openMovement}
+							>
+								{selectedMovementType || 'Select a Movement Type...'}
+								<ChevronsUpDown class="opacity-50" />
+							</Button>
+						{/snippet}
+					</Popover.Trigger>
+					<Popover.Content class="w-[200px] p-0">
+						<Command.Root>
+							<Command.Input placeholder="Search Movement types..." />
+							<Command.List>
+								<Command.Empty>No Movement types found.</Command.Empty>
+								<Command.Group>
+									{#each allMovementTypes as movementType}
+										<Command.Item
+											value={movementType}
+											onSelect={() => {
+												valueMovement = movementType;
+												closeAndFocusTriggerMovement();
+											}}
+										>
+											<Check class={cn(valueMovement !== movementType && 'text-transparent')} />
+											{movementType}
+										</Command.Item>
+									{/each}
+								</Command.Group>
+							</Command.List>
+						</Command.Root>
+					</Popover.Content>
+				</Popover.Root>
+			{:else}
+				<div class="text-xs font-medium">{exercise.movement_type}</div>
+			{/if}
 			{#if editMode}
 				<div
 					class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex gap-2 overflow-x-auto py-2"
@@ -237,7 +361,7 @@
 
 							<button
 								type="button"
-								on:click={() => removeMuscleGroup(group)}
+								onclick={() => removeMuscleGroup(group)}
 								class="text-red-500 hover:text-red-700"
 							>
 								&times;
@@ -246,8 +370,8 @@
 						<!-- </span> -->
 					{/each}
 				</div>
-				<select
-					on:change={(event) => {
+				<!-- <select
+					onchange={(event) => {
 						const target = event.target as HTMLSelectElement | null;
 						if (target) {
 							addMuscleGroup(target.value);
@@ -259,7 +383,45 @@
 					{#each allMuscleGroups as group}
 						<option value={group}>{group}</option>
 					{/each}
-				</select>
+				</select> -->
+				<Popover.Root bind:open={openMuscle}>
+					<Popover.Trigger bind:ref={triggerRefMuscle}>
+						{#snippet child({ props })}
+							<Button
+								variant="outline"
+								class="w-[200px] justify-between"
+								{...props}
+								role="combobox"
+								aria-expanded={openMuscle}
+							>
+								{selectedMuscleGroup || 'Select a Muscle Group...'}
+								<ChevronsUpDown class="opacity-50" />
+							</Button>
+						{/snippet}
+					</Popover.Trigger>
+					<Popover.Content class="w-[200px] p-0">
+						<Command.Root>
+							<Command.Input placeholder="Search Muscle groups..." />
+							<Command.List>
+								<Command.Empty>No muscles groups found.</Command.Empty>
+								<Command.Group>
+									{#each allMuscleGroups as muscleGroup}
+										<Command.Item
+											value={muscleGroup}
+											onSelect={() => {
+												valueMuscle = muscleGroup;
+												closeAndFocusTriggerMuscle();
+											}}
+										>
+											<Check class={cn(valueMuscle !== muscleGroup && 'text-transparent')} />
+											{muscleGroup}
+										</Command.Item>
+									{/each}
+								</Command.Group>
+							</Command.List>
+						</Command.Root>
+					</Popover.Content>
+				</Popover.Root>
 			{:else if exercise.muscle_groups.length}
 				<div
 					class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex gap-2 overflow-x-auto py-2"
@@ -301,7 +463,7 @@
 								/>
 								<button
 									type="button"
-									on:click={() => removeInstruction(index)}
+									onclick={() => removeInstruction(index)}
 									class="ml-2 text-red-500 hover:text-red-700"
 								>
 									&times;
@@ -310,7 +472,7 @@
 						{/each}
 
 						<li class="rounded-md border border-gray-500 p-1 text-center text-sm text-white">
-							<button type="button" on:click={addInstruction}> + Add Instruction </button>
+							<button type="button" onclick={addInstruction}> + Add Instruction </button>
 						</li>
 					</ul>
 				{:else}
