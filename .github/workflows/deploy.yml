@@ -1,15 +1,21 @@
 name: deploy to vercel
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - master
+  pull_request_target:
+    branches: [master]
+    types: [opened, synchronize, reopened, ready_for_review]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: |
-         vercel build 
-         vercel pull --yes
-      - uses: amondnet/vercel-action@v25.2.0
+      - uses: actions/checkout@v4
+      - uses: ./
+        id: vercel-action
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
-          vercel-org-id: ${{ secrets.ORG_ID}} #Required
-          vercel-project-id: ${{ secrets.PROJECT_ID}}
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-comment: false
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
