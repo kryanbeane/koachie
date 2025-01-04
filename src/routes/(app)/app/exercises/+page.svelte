@@ -10,9 +10,11 @@
 	import Search from 'lucide-svelte/icons/search';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import ExerciseList from './(components)/exercise-list.svelte';
+	import ExerciseCard from './(components)/exercise-card.svelte';
 	import { on } from 'events';
 	import { onDestroy } from 'svelte';
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 
@@ -23,6 +25,27 @@
 	export let defaultLayout = [60, 40];
 	export let defaultCollapsed = false;
 	let isCollapsed = defaultCollapsed;
+	let showExerciseCard = false; // State to track visibility
+
+	let exercise = {
+		id: 1,
+		name: 'Bench Press',
+		note: 'This is a note',
+		movement_type: 'Strength',
+		muscle_groups: ['Chest', 'Triceps'],
+		instructions: ['Step 1', 'Step 2', 'Step 3']
+	};
+
+	function checkScreenSize() {
+		isCollapsed = window.innerWidth < 640; // Adjust breakpoint as needed
+	}
+
+	// Attach event listener for dynamic resizing
+	onMount(() => {
+		checkScreenSize();
+		window.addEventListener('resize', checkScreenSize);
+		return () => window.removeEventListener('resize', checkScreenSize);
+	});
 
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
@@ -37,6 +60,10 @@
 		isCollapsed = false;
 		document.cookie = `PaneForge:collapsed=${false}`;
 	}
+
+	function toggleExerciseCard() {
+		showExerciseCard = !showExerciseCard; // Toggle visibility
+	}
 </script>
 
 <div class="h-full w-full flex-1 overflow-hidden">
@@ -50,6 +77,26 @@
 				<!-- Static Header: Search bar and filter buttons -->
 				<div class="flex-shrink-0">
 					<div class="flex items-center px-6 py-2">
+						<!-- svelte-ignore a11y_consider_explicit_label -->
+						<button
+							class="rounded-md p-2 transition-all duration-200 ease-in-out
+						{showExerciseCard ? 'bg-green-600' : 'bg-accent'} 
+						text-white hover:bg-green-500 active:bg-green-700"
+							on:click={toggleExerciseCard}
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-plus"><path d="M5 12h14" /><path d="M12 5v14" /></svg
+							>
+						</button>
 						<div
 							class="w-full bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 						>
@@ -72,6 +119,13 @@
 							</Tabs.Trigger>
 						</Tabs.List>
 					</div>
+					<!-- Exercise Card Placeholder (Visible when button is clicked) -->
+					{#if showExerciseCard}
+						<div class="p-4">
+							<ExerciseCard {exercise} editMode={true} />
+						</div>
+					{/if}
+
 					<Separator />
 				</div>
 
