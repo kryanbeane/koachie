@@ -3,10 +3,11 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 export async function fetchExercises(client: SupabaseClient): Promise<Exercise[]> {
 	const { data: exercises, error } = await client.from('exercises').select('*');
-	if (exercises && !error) {
+	console.log('DATA', exercises);
+	if (!error) {
 		return exercises;
 	} else {
-		return [];
+		throw error;
 	}
 }
 
@@ -15,7 +16,7 @@ export async function createExercise(client: SupabaseClient, exercise: Exercise)
 	if (data && !error) {
 		return data;
 	} else {
-		return null;
+		throw error;
 	}
 }
 
@@ -24,7 +25,7 @@ export async function updateExercise(client: SupabaseClient, exercise: Exercise)
 	if (data && !error) {
 		return data;
 	} else {
-		return null;
+		throw error;
 	}
 }
 
@@ -33,6 +34,6 @@ export async function deleteExercise(client: SupabaseClient, exercise: Exercise)
 	if (data && !error) {
 		return data;
 	} else {
-		return null;
+		throw error;
 	}
 }
