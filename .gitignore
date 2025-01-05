@@ -22,3 +22,6 @@ vite.config.ts.timestamp-*
 
 # ESLint
 .eslintcache
+
+# Yarn
+.yarn/*
