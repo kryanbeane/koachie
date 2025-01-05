@@ -10,6 +10,12 @@
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import Check from 'lucide-svelte/icons/check';
 	import type { Exercise } from '@/schemas/exercises';
+	import {
+		createExercise,
+		deleteExercise,
+		fetchExercises,
+		updateExercise
+	} from '$lib/database/exercises';
 
 	let { exercise, createMode = $bindable(true), editMode } = $props();
 
@@ -49,21 +55,11 @@
 		editMode = false;
 	}
 
-	// function addMuscleGroup(group: string) {
-	// 	if (!exercise.muscle_groups.includes(group)) {
-	// 		exercise.muscle_groups = [...exercise.muscle_groups, group];
-	// 	}
-	// }
-
 	function addMuscleGroup(group: string) {
 		if (!exercise.muscle_groups.includes(group)) {
 			exercise = { ...exercise, muscle_groups: [...exercise.muscle_groups, group] };
 		}
 	}
-
-	// function removeMuscleGroup(group: string) {
-	// 	exercise.muscle_groups = exercise.muscle_groups.filter((g: string) => g !== group);
-	// }
 
 	function removeMuscleGroup(group: string) {
 		exercise = { ...exercise, muscle_groups: exercise.muscle_groups.filter((g) => g !== group) };
