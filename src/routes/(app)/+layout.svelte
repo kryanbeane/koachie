@@ -16,24 +16,27 @@
 	let { children }: Props = $props();
 </script>
 
-<Sidebar.Provider>
-	<AppSidebar />
-	<Sidebar.Inset>
-		<header
-			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
-		>
-			<main class="flex items-center gap-2 px-2">
-				<Sidebar.Trigger />
-				<Separator orientation="vertical" class="mr-2 h-4" />
-				{$routeStore}
-			</main>
-			<div class="mx-4 ml-auto items-end"><ThemeToggle /></div>
-		</header>
+<div class="flex h-screen w-screen flex-col overflow-hidden">
+	<Sidebar.Provider class="flex flex-1 overflow-hidden">
+		<AppSidebar />
 
-		<div class="flex h-full flex-1 flex-col gap-4 overflow-hidden p-4 pt-0">
-			<div class="h-full flex-grow overflow-hidden">
-				{@render children?.()}
-			</div>
-		</div>
-	</Sidebar.Inset>
-</Sidebar.Provider>
+		<Sidebar.Inset class="flex h-full w-full flex-col">
+			<header
+				class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+			>
+				<div class="flex items-center gap-2 px-2">
+					<Sidebar.Trigger />
+					<Separator orientation="vertical" class="mr-2 h-4" />
+					{$routeStore}
+				</div>
+				<div class="mx-4 ml-auto items-end"><ThemeToggle /></div>
+			</header>
+
+			<main class="flex flex-1 flex-col overflow-hidden">
+				<div class="flex-grow overflow-hidden">
+					{@render children?.()}
+				</div>
+			</main>
+		</Sidebar.Inset>
+	</Sidebar.Provider>
+</div>
