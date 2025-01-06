@@ -10,16 +10,9 @@
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import Check from 'lucide-svelte/icons/check';
 	import type { Exercise } from '@/schemas/exercises';
-	import {
-		createExercise,
-		deleteExercise,
-		fetchExercises,
-		updateExercise
-	} from '$lib/database/exercises';
+	import { invalidateAll } from '$app/navigation';
 
 	let { exercise, createMode = $bindable(true), editMode } = $props();
-
-	console.log(exercise);
 
 	// let editMode = $state(false);
 
@@ -35,16 +28,54 @@
 		editMode = true;
 	}
 
+	async function handleDeleteExercise() {
+		const response = await fetch(`/api/exercises`, {
+			method: 'DELETE',
+
+			headers: {
+				'Content-Type': 'application/json'
+			},
+
+			body: JSON.stringify({ id: exercise.id })
+		});
+
+		if (response.ok) {
+			console.log('Exercise deleted:', exercise.id);
+		}
+
+		invalidateAll();
+	}
+
 	// Handle delete button click
 	function handleDelete(event: Event, exercise: { id: string }) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Delete clicked for:', exercise.id);
+		handleDeleteExercise();
+	}
+
+	async function handleUpdateExercise() {
+		const response = await fetch(`/api/exercises`, {
+			method: 'PUT',
+
+			headers: {
+				'Content-Type': 'application/json'
+			},
+
+			body: JSON.stringify(exercise)
+		});
+
+		if (response.ok) {
+			console.log('Exercise updated:', exercise.id);
+		}
+
+		invalidateAll();
 	}
 
 	// Handle save button click
 	function handleSave(event: Event, exercise: { id: string }) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Save clicked for:', exercise.id);
+		handleUpdateExercise();
 		editMode = false;
 	}
 
@@ -62,21 +93,44 @@
 	}
 
 	function removeMuscleGroup(group: string) {
-		exercise = { ...exercise, muscle_groups: exercise.muscle_groups.filter((g) => g !== group) };
+		exercise = {
+			...exercise,
+			muscle_groups: exercise.muscle_groups.filter((g: string) => g !== group)
+		};
 	}
 
 	function addInstruction() {
-		exercise.instructions = [...exercise.instructions, ''];
+		exercise = { ...exercise, instructions: [...exercise.instructions, ''] };
 	}
 
 	function removeInstruction(index: number) {
-		exercise.instructions = exercise.instructions.filter((_: any, i: number) => i !== index);
+		exercise = {
+			...exercise,
+			instructions: exercise.instructions.filter((_: any, i: number) => i !== index)
+		};
+	}
+
+	async function handleAddExercise() {
+		await fetch('/api/exercises', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				name: exercise.name,
+				note: exercise.note,
+				movement_type: exercise.movement_type,
+				muscle_groups: exercise.muscle_groups,
+				instructions: exercise.instructions
+			})
+		});
 	}
 
 	function handleCreate(event: Event, exercise: { id: string }) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Create clicked for:', exercise.id);
-		// createMode = false;
+
+		handleAddExercise();
+		createMode = false;
+		invalidateAll();
 	}
 
 	function handleCancelCreate(event: Event, exercise: { id: string }) {
@@ -100,13 +154,6 @@
 		openMovement = false;
 		tick().then(() => {
 			triggerRefMovement.focus();
-		});
-	}
-
-	function closeAndFocusTriggerMuscle() {
-		openMuscle = false;
-		tick().then(() => {
-			triggerRefMuscle.focus();
 		});
 	}
 
@@ -272,47 +319,33 @@
 	{/if}
 
 	<!--Main Content -->
+
 	<div class="flex w-full justify-between">
 		<!-- Left Section (Details) -->
 		<div class="flex w-[55%] flex-col gap-1">
 			<div class="flex items-center">
-				{#if editMode}
+				{#if editMode || createMode}
 					<input
 						type="text"
 						class="w-full bg-transparent text-xl font-semibold text-white"
-						value={exercise.name}
+						bind:value={exercise.name}
 					/>
 				{:else}
 					<div class="font-semibold">{exercise.name}</div>
 				{/if}
 			</div>
 			<div class="mt-1 line-clamp-2 text-xs text-muted-foreground">
-				{#if editMode}
+				{#if editMode || createMode}
 					<input
 						type="text"
 						class="w-full bg-transparent text-xs font-semibold text-white"
-						value={exercise.note}
+						bind:value={exercise.note}
 					/>
 				{:else}
 					{exercise.note.substring(0, 300)}
 				{/if}
 			</div>
 			{#if editMode}
-				<!-- <input
-                            type="text"
-                            class="w-full bg-transparent text-white font-semibold text-xs"
-                            value={exercise.movement_type}
-                        /> -->
-				<!-- <select
-					id="movement-type"
-					bind:value={exercise.movement_type}
-					class="w-fit rounded-md border border-white bg-transparent px-3 py-1 text-sm text-white"
-				>
-					<option value="" disabled>Select movement type</option>
-					{#each allMovementTypes as type}
-						<option value={type}>{type}</option>
-					{/each}
-				</select> -->
 				<Popover.Root bind:open={openMovement}>
 					<Popover.Trigger bind:ref={triggerRefMovement}>
 						{#snippet child({ props })}
@@ -359,9 +392,6 @@
 					class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex gap-2 overflow-x-auto py-2"
 				>
 					{#each exercise.muscle_groups as group}
-						<!-- <span
-                        class="flex items-center gap-2 px-3 py-1 text-sm border border-gray-300 rounded-full bg-gray-100 text-gray-800 whitespace-nowrap"
-                        > -->
 						<Badge>
 							{group}
 
@@ -373,23 +403,8 @@
 								&times;
 							</button>
 						</Badge>
-						<!-- </span> -->
 					{/each}
 				</div>
-				<!-- <select
-					onchange={(event) => {
-						const target = event.target as HTMLSelectElement | null;
-						if (target) {
-							addMuscleGroup(target.value);
-						}
-					}}
-					class="w-fit rounded-md border border-white bg-transparent px-3 py-1 text-sm text-white"
-				>
-					<option value="" disabled>Select a muscle group</option>
-					{#each allMuscleGroups as group}
-						<option value={group}>{group}</option>
-					{/each}
-				</select> -->
 				<Popover.Root bind:open={openMuscle}>
 					<Popover.Trigger bind:ref={triggerRefMuscle}>
 						{#snippet child({ props })}
