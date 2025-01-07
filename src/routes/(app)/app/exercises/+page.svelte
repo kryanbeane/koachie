@@ -1,9 +1,6 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card/index.js';
 	import { type PageData } from './$types';
 	import { routeStore } from '@/stores/route.store';
-	import CreateExerciseCard from '@/components/createExerciseCard.svelte';
-	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
 	import Separator from '@/components/ui/separator/separator.svelte';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
@@ -11,11 +8,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import ExerciseList from './(components)/exercise-list.svelte';
 	import ExerciseCard from './(components)/exercise-card.svelte';
-	import { on } from 'events';
-	import { onDestroy } from 'svelte';
-	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { onMount } from 'svelte';
-	import { BellOffIcon } from 'lucide-svelte';
 	import type { Exercise } from '@/schemas/exercises';
 
 	export let data: PageData;

@@ -2,7 +2,7 @@
 	import type { Exercise } from '@/schemas/exercises';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import NoOutlineInput from './no_outline_input.svelte';
+	import NoOutlineInput from '../no_outline_input.svelte';
 	import SelectExercise from './select_exercise.svelte';
 	import SetRow from './set_row.svelte';
 

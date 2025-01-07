@@ -6,12 +6,12 @@
 	import type { CreateWorkoutFormSchema, Workout } from '@/schemas/workouts';
 	import { Input } from '@/components/ui/input';
 	import WorkoutDetails from './workout-details.svelte';
-	import { workoutStore } from './store';
 	import WorkoutList from './workout-list.svelte';
-	import { z } from 'zod';
 	import { type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { workoutStore } from '@/stores/workout.store';
+	import { getAllWorkoutState } from '@/stores/allWorkoutState.svelte';
 
-	export let workouts: Workout[];
+	let workoutsState = getAllWorkoutState();
 	export let defaultLayout = [265, 440, 60];
 
 	function onLayoutChange(sizes: number[]) {
@@ -48,13 +48,13 @@
 			<Separator class="my-2" />
 
 			<Tabs.Content value="all" class="m-0">
-				<WorkoutList items={workouts} />
+				<WorkoutList items={workoutsState.workouts} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</Resizable.Pane>
 	<Separator orientation="vertical" />
 	<WorkoutDetails
 		{data}
-		workout={workouts.find((item) => item.id === $workoutStore.selected) || null}
+		workout={workoutsState.workouts.find((item) => item.id === $workoutStore.selected) || null}
 	/>
 </Resizable.PaneGroup>

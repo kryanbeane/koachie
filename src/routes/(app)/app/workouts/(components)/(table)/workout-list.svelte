@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { workoutStore } from './store.js';
 	import { cn } from '$lib/utils.js';
 	import type { Workout } from '@/schemas/workouts.js';
 	import { ScrollArea } from '@/components/ui/scroll-area/index.js';
-	import { formatTimeAgo } from './utils.js';
 	import { onMount } from 'svelte';
+	import { workoutStore } from '@/stores/workout.store';
 
 	export let items: Workout[];
 
@@ -42,9 +41,7 @@
 								'ml-auto text-xs',
 								$workoutStore.selected === item.id ? 'text-foreground' : 'text-muted-foreground'
 							)}
-						>
-							{formatTimeAgo(new Date(item.created_at))}
-						</div>
+						></div>
 					</div>
 				</div>
 			</button>

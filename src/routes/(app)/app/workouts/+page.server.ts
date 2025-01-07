@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types.js';
 import { fail } from 'assert';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { getWorkouts } from '@/services/workouts.js';
 
 export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) => {
 	const layoutCookie = cookies.get('PaneForge:layout');
@@ -14,9 +15,7 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 	if (layoutCookie) layout = JSON.parse(layoutCookie);
 
 	if (collapsedCookie) collapsed = JSON.parse(collapsedCookie);
-
-	const { data: workouts } = await supabase.from('workouts').select('*');
-
+	const workouts = await getWorkouts(supabase);
 	return { layout, collapsed, workouts, form: await superValidate(zod(createWorkoutFormSchema)) };
 };
 

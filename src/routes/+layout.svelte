@@ -8,6 +8,7 @@
 	import { deepMerge, MetaTags } from 'svelte-meta-tags';
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from 'svelte-sonner';
+	import { setAllWorkoutState } from '@/stores/allWorkoutState.svelte';
 
 	interface Props {
 		data: LayoutData;
@@ -28,6 +29,8 @@
 	});
 
 	let metaTags = $derived(deepMerge(data.baseMetaTags, $page.data.pageMetaTags || {}));
+
+	setAllWorkoutState();
 </script>
 
 <ModeWatcher defaultMode="system" />

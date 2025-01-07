@@ -10,12 +10,11 @@
 	} from '@/schemas/workouts';
 	import { EllipsisVertical, Trash2 } from 'lucide-svelte';
 	import * as Form from '$lib/components/ui/form/index.js';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { type SuperValidated, type Infer, superForm, superValidate } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import NameInput from '@/components/ui/input/name-input.svelte';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
-	import ExerciseInstanceCard from '../exercise_instance_card.svelte';
 
 	export let workout: Workout | null = null;
 
