@@ -7,4 +7,4 @@
 	export let data;
 </script>
 
-<WorkoutView workouts={data.workouts!!} defaultLayout={data.layout} />
+<WorkoutView data={data.form} workouts={data.workouts!!} defaultLayout={data.layout} />

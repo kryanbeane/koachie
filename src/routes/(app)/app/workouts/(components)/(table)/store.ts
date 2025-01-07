@@ -12,6 +12,9 @@ function createWorkoutStore() {
 		subscribe: store.subscribe,
 		setWorkout: (id: Workout['id']) => {
 			store.update((store) => ({ ...store, selected: id }));
+		},
+		clearWorkout: () => {
+			store.update((store) => ({ ...store, selected: null }));
 		}
 	};
 }

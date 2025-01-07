@@ -9,7 +9,8 @@ export const workoutSchema = z.object({
 	coach_id: z.string().uuid().nullable().optional(),
 	created_at: z.string().datetime(),
 	updated_at: z.string().datetime(),
-	name: z.string().max(100)
+	name: z.string().max(100),
+	description: z.string().max(500)
 });
 
 export type Workout = z.infer<typeof workoutSchema>;
@@ -24,3 +25,10 @@ export const workoutAssignment = z.object({
 });
 
 export type WorkoutAssignment = z.infer<typeof workoutAssignment>;
+
+export const createWorkoutFormSchema = z.object({
+	name: z.string().min(2).max(50),
+	description: z.string().max(500)
+});
+
+export type CreateWorkoutFormSchema = typeof createWorkoutFormSchema;

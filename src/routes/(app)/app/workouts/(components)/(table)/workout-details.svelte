@@ -3,14 +3,32 @@
 	import * as DropdownMenu from '@/components/ui/dropdown-menu';
 	import { Separator } from '@/components/ui/separator';
 	import * as Tooltip from '@/components/ui/tooltip/index';
-	import type { Workout } from '@/schemas/workouts';
+	import {
+		createWorkoutFormSchema,
+		type CreateWorkoutFormSchema,
+		type Workout
+	} from '@/schemas/workouts';
 	import { EllipsisVertical, Trash2 } from 'lucide-svelte';
-	import WorkoutCard from '../workout_card.svelte';
+	import * as Form from '$lib/components/ui/form/index.js';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import NameInput from '@/components/ui/input/name-input.svelte';
+	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
+	import ExerciseInstanceCard from '../exercise_instance_card.svelte';
 
 	export let workout: Workout | null = null;
+
+	export let data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
+
+	const form = superForm(data, {
+		validators: zodClient(createWorkoutFormSchema)
+	});
+
+	const { form: formData, enhance } = form;
 </script>
 
-<div class="flex h-full flex-col">
+<div class="flex h-full min-w-[26rem] flex-col">
 	<div class="mb-1 flex items-center p-2">
 		<div class="ml-auto flex items-center gap-2">
 			<Tooltip.Root>
@@ -44,9 +62,47 @@
 		</DropdownMenu.Root>
 	</div>
 	<Separator />
+
 	{#if workout}
-		<WorkoutCard {workout} />
+		<div class="m-4">
+			<NameInput placeholder={workout.name} value={workout.name} />
+			<Textarea placeholder="Workout description..." value={workout.description} class="mt-2" />
+
+			<ScrollArea orientation="vertical">
+				<!-- {#each exerciseInstances as exercise_instance} -->
+				<!-- <ExerciseInstanceCard {exercise_instance} /> -->
+				<!-- {/each} -->
+			</ScrollArea>
+		</div>
 	{:else}
-		<div class="p-8 text-center text-muted-foreground">No workout selected</div>
+		<!-- <div class="p-8 text-center text-muted-foreground">No workout selected</div> -->
+		<form method="POST" use:enhance class="m-4 h-full">
+			<Form.Field {form} name="name">
+				<Form.Control>
+					{#snippet children({ props })}
+						<NameInput placeholder="Workout Name..." {...props} bind:value={$formData.name} />
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="description">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Textarea
+							placeholder="Workout description..."
+							{...props}
+							bind:value={$formData.description}
+						/>
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Button>Submit</Form.Button>
+		</form>
+
+		<!-- <Button variant="secondary" size="sm" class="mx-2">
+			<PlusSquareIcon size="24" />
+			Create
+		</Button> -->
 	{/if}
 </div>

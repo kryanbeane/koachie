@@ -3,17 +3,22 @@
 	import * as Resizable from '$lib/components/ui/resizable';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { Separator } from '@/components/ui/separator';
-	import type { Workout } from '@/schemas/workouts';
+	import type { CreateWorkoutFormSchema, Workout } from '@/schemas/workouts';
 	import { Input } from '@/components/ui/input';
 	import WorkoutDetails from './workout-details.svelte';
 	import { workoutStore } from './store';
 	import WorkoutList from './workout-list.svelte';
+	import { z } from 'zod';
+	import { type Infer, type SuperValidated } from 'sveltekit-superforms';
 
 	export let workouts: Workout[];
 	export let defaultLayout = [265, 440, 60];
+
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
 	}
+
+	export let data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
 </script>
 
 <Resizable.PaneGroup direction="horizontal" {onLayoutChange} class="h-full overflow-hidden">
@@ -32,6 +37,7 @@
 						</div>
 					</form>
 				</div>
+
 				<Tabs.List class="ml-auto">
 					<Tabs.Trigger value="all" class="text-zinc-600 dark:text-zinc-200">All mail</Tabs.Trigger>
 					<Tabs.Trigger value="unread" class="text-zinc-600 dark:text-zinc-200">
@@ -47,5 +53,8 @@
 		</Tabs.Root>
 	</Resizable.Pane>
 	<Separator orientation="vertical" />
-	<WorkoutDetails workout={workouts.find((item) => item.id === $workoutStore.selected) || null} />
+	<WorkoutDetails
+		{data}
+		workout={workouts.find((item) => item.id === $workoutStore.selected) || null}
+	/>
 </Resizable.PaneGroup>

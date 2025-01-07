@@ -1,4 +1,8 @@
-import type { PageServerLoad } from './$types.js';
+import { createWorkoutFormSchema } from '@/schemas/workouts.js';
+import type { Actions, PageServerLoad } from './$types.js';
+import { fail } from 'assert';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) => {
 	const layoutCookie = cookies.get('PaneForge:layout');
@@ -13,5 +17,19 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 	const { data: workouts } = await supabase.from('workouts').select('*');
 
-	return { layout, collapsed, workouts };
+	return { layout, collapsed, workouts, form: await superValidate(zod(createWorkoutFormSchema)) };
+};
+
+export const actions: Actions = {
+	default: async (event) => {
+		const form = await superValidate(event, zod(createWorkoutFormSchema));
+		if (!form.valid) {
+			return fail(400, {
+				form
+			});
+		}
+		return {
+			form
+		};
+	}
 };

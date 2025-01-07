@@ -4,7 +4,22 @@
 	import type { Workout } from '@/schemas/workouts.js';
 	import { ScrollArea } from '@/components/ui/scroll-area/index.js';
 	import { formatTimeAgo } from './utils.js';
+	import { onMount } from 'svelte';
+
 	export let items: Workout[];
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			workoutStore.clearWorkout();
+		}
+	}
+
+	onMount(() => {
+		window.addEventListener('keydown', handleKeydown);
+		return () => {
+			window.removeEventListener('keydown', handleKeydown);
+		};
+	});
 </script>
 
 <ScrollArea class="h-screen">

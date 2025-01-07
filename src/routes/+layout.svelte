@@ -34,6 +34,6 @@
 <Toaster position="top-center" />
 <MetaTags {...metaTags} />
 
-<main>
+<main class="flex items-center gap-2 px-4">
 	{@render children?.()}
 </main>
