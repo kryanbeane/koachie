@@ -1,6 +1,8 @@
-import { createBrowserClient, createServerClient, isBrowser } from '@supabase/ssr';
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
 import { type MetaTagsProps } from 'svelte-meta-tags';
+
+import { createBrowserClient, createServerClient, isBrowser } from '@supabase/ssr';
+
 import type { LayoutLoad } from './$types';
 
 export const load: LayoutLoad = async ({ data, url, depends, fetch }) => {

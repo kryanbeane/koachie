@@ -1,6 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 
-import { getExercises, addExercise, editExercise, removeExercise } from '@/services/exercises';
+import { addExercise, editExercise, getExercises, removeExercise } from '@/services/exercises';
 
 export const GET: RequestHandler = async (event) => {
 	const exercises = await getExercises(event.locals.supabase);

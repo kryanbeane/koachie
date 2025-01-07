@@ -1,10 +1,11 @@
-import { createWorkoutFormSchema } from '@/schemas/workouts.js';
-import type { Actions, PageServerLoad } from './$types.js';
 import { fail } from 'assert';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+
+import { createWorkoutFormSchema } from '@/schemas/workouts.js';
 import { getWorkouts } from '@/services/workouts.js';
 
+import type { Actions, PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) => {
 	const layoutCookie = cookies.get('PaneForge:layout');
 	const collapsedCookie = cookies.get('PaneForge:collapsed');
