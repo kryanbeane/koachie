@@ -20,9 +20,9 @@ export async function createWorkout(client: SupabaseClient, workout: Workout) {
 }
 
 export async function updateWorkout(client: SupabaseClient, workout: Workout) {
-	const { data, error } = await client.from('workouts').upsert([workout]);
-	if (data && !error) {
-		return data;
+	const { data: returnedWorkout, error } = await client.from('workouts').upsert([workout]);
+	if (returnedWorkout && !error) {
+		return returnedWorkout;
 	} else {
 		throw error;
 	}

@@ -1,4 +1,3 @@
-// File for CRUD operations on exercises
 import type { RequestHandler } from '@sveltejs/kit';
 
 import { getExercises, addExercise, editExercise, removeExercise } from '@/services/exercises';
