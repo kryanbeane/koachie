@@ -16,9 +16,6 @@
 	let workoutsState = getAllWorkoutState();
 	let selectedWorkoutState = getSelectedWorkoutState();
 
-	let currentWorkout =
-		workoutsState.workouts?.find((item) => item.id === selectedWorkoutState.workout?.id) ?? null;
-
 	workoutsState.set(data.workouts);
 	routeStore.set('Workouts');
 
@@ -61,5 +58,8 @@
 		</Tabs.Root>
 	</Resizable.Pane>
 	<Separator orientation="vertical" />
-	<WorkoutSidePanel data={data.form} workout={currentWorkout} />
+	<WorkoutSidePanel
+		data={data.form}
+		workout={workoutsState.workouts?.find((item) => item.id === selectedWorkoutState.workout?.id)}
+	/>
 </Resizable.PaneGroup>
