@@ -61,5 +61,5 @@
 		</Tabs.Root>
 	</Resizable.Pane>
 	<Separator orientation="vertical" />
-	<WorkoutSidePanel workouts={data.workouts} data={data.form} workout={currentWorkout} />
+	<WorkoutSidePanel data={data.form} workout={currentWorkout} />
 </Resizable.PaneGroup>

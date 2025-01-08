@@ -9,7 +9,12 @@
 	} from '@/schemas/workouts';
 	import { EllipsisVertical, Trash2 } from 'lucide-svelte';
 	import * as Form from '$lib/components/ui/form/index.js';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import {
+		type SuperValidated,
+		type Infer,
+		superForm,
+		type FormResult
+	} from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import NameInput from '@/components/ui/input/name-input.svelte';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
@@ -17,18 +22,21 @@
 	import { toast } from 'svelte-sonner';
 	import { getAllWorkoutState } from '@/stores/all_workout_state.svelte';
 	import Button from '@/components/ui/button/button.svelte';
+	import type { ActionData } from '../../$types';
 
 	export let workout: Workout | null = null;
-	export let workouts: Workout[]; // this is from the load func, will be repopulated once action is submitted
 	export let data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
 	let workoutsState = getAllWorkoutState();
 
 	const form = superForm(data, {
 		validators: zodClient(createWorkoutFormSchema),
-		onUpdated({ form }) {
-			//TODO Decide if we call the POST API here or in action
-			console.debug('Resetting page workouts');
-			workoutsState.set(workouts); // refresh workouts?
+
+		onUpdate({ form, result }) {
+			const action = result.data as FormResult<ActionData>;
+			if (form.valid && action.workout) {
+				workoutsState.add(action.workout[0]);
+				toast.success(`Workout ${action.workout[0].name} Updated!`);
+			}
 		}
 	});
 
