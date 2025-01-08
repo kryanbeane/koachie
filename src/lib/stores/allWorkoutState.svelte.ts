@@ -6,12 +6,17 @@ export class AllWorkoutState {
 
 	constructor() {}
 
+	//TODO Add more robustness, ie. check if workout already exists
 	add(workout: Workout) {
 		this.workouts.push(workout);
 	}
 
 	set(workouts: Workout[]) {
 		this.workouts = workouts;
+	}
+
+	remove(workout: Workout) {
+		this.workouts = this.workouts.filter((w) => w.id !== workout.id);
 	}
 }
 
