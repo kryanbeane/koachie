@@ -15,20 +15,20 @@
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { toast } from 'svelte-sonner';
-	import { getAllWorkoutState } from '@/stores/allWorkoutState.svelte';
+	import { getAllWorkoutState } from '@/stores/all_workout_state.svelte';
 	import Button from '@/components/ui/button/button.svelte';
 
 	export let workout: Workout | null = null;
+	export let workouts: Workout[]; // this is from the load func, will be repopulated once action is submitted
 	export let data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
 	let workoutsState = getAllWorkoutState();
 
 	const form = superForm(data, {
 		validators: zodClient(createWorkoutFormSchema),
-		onUpdated({ form: workout }) {
-			if (workout.data) {
-				toast.success(`Workout ${workout.data.name} Created!`);
-				workoutsState.add(workout.data);
-			}
+		onUpdated({ form }) {
+			//TODO Decide if we call the POST API here or in action
+			console.debug('Resetting page workouts');
+			workoutsState.set(workouts); // refresh workouts?
 		}
 	});
 

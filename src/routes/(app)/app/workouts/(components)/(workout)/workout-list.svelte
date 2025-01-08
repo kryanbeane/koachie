@@ -3,13 +3,15 @@
 	import type { Workout } from '@/schemas/workouts.js';
 	import { ScrollArea } from '@/components/ui/scroll-area/index.js';
 	import { onMount } from 'svelte';
-	import { workoutStore } from '@/stores/workout.store';
+	import { getSelectedWorkoutState } from '@/stores/selected_workout_state.svelte';
+
+	let selectedWorkoutState = getSelectedWorkoutState();
 
 	export let workouts: Workout[];
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') {
-			workoutStore.clearWorkout();
+			selectedWorkoutState.clear();
 		}
 	}
 
@@ -27,9 +29,9 @@
 			<button
 				class={cn(
 					'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-					$workoutStore.selected === workout.id && 'bg-muted'
+					selectedWorkoutState.workout?.id === workout.id && 'bg-muted'
 				)}
-				on:click={() => workoutStore.setWorkout(workout.id)}
+				on:click={() => selectedWorkoutState.set(workout)}
 			>
 				<div class="flex w-full flex-col gap-1">
 					<div class="flex items-center">
@@ -39,7 +41,9 @@
 						<div
 							class={cn(
 								'ml-auto text-xs',
-								$workoutStore.selected === workout.id ? 'text-foreground' : 'text-muted-foreground'
+								selectedWorkoutState.workout?.id === workout.id
+									? 'text-foreground'
+									: 'text-muted-foreground'
 							)}
 						></div>
 					</div>

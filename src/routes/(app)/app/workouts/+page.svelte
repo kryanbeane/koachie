@@ -2,23 +2,27 @@
 	import { routeStore } from '@/stores/route.store';
 	import * as Resizable from '$lib/components/ui/resizable';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import type { PageData } from './$types';
-	import { getAllWorkoutState } from '@/stores/allWorkoutState.svelte';
+	import { getAllWorkoutState } from '@/stores/all_workout_state.svelte';
 	import Search from 'lucide-svelte/icons/search';
 	import { Separator } from '@/components/ui/separator';
 	import { Input } from '@/components/ui/input';
-	import { workoutStore } from '@/stores/workout.store';
+	import { getSelectedWorkoutState } from '@/stores/selected_workout_state.svelte';
 	import WorkoutList from './(components)/(workout)/workout-list.svelte';
 	import WorkoutSidePanel from './(components)/(workout)/workout-side-panel.svelte';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 
 	let workoutsState = getAllWorkoutState();
-	workoutsState.set(data.workouts);
+	let selectedWorkoutState = getSelectedWorkoutState();
 
+	let currentWorkout =
+		workoutsState.workouts?.find((item) => item.id === selectedWorkoutState.workout?.id) ?? null;
+
+	workoutsState.set(data.workouts);
 	routeStore.set('Workouts');
 
-	export let defaultLayout = [265, 440, 60];
+	let defaultLayout = [265, 440, 60];
 
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
@@ -57,8 +61,5 @@
 		</Tabs.Root>
 	</Resizable.Pane>
 	<Separator orientation="vertical" />
-	<WorkoutSidePanel
-		data={data.form}
-		workout={workoutsState.workouts.find((item) => item.id === $workoutStore.selected) || null}
-	/>
+	<WorkoutSidePanel workouts={data.workouts} data={data.form} workout={currentWorkout} />
 </Resizable.PaneGroup>
