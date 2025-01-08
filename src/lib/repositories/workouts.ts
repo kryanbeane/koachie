@@ -10,17 +10,20 @@ export async function fetchWorkouts(client: SupabaseClient): Promise<Workout[]> 
 	}
 }
 
-export async function createWorkout(client: SupabaseClient, workout: Workout) {
-	const { data, error } = await client.from('workouts').insert([workout]);
+export async function createWorkout(client: SupabaseClient, workout: Workout): Promise<Workout[]> {
+	const { data, error } = await client.from('workouts').insert([workout]).select('*');
 	if (data && !error) {
-		return data;
+		return data as Workout[];
 	} else {
 		throw error;
 	}
 }
 
 export async function updateWorkout(client: SupabaseClient, workout: Workout) {
-	const { data: returnedWorkout, error } = await client.from('workouts').upsert([workout]);
+	const { data: returnedWorkout, error } = await client
+		.from('workouts')
+		.upsert([workout])
+		.select('*');
 	if (returnedWorkout && !error) {
 		return returnedWorkout;
 	} else {
@@ -29,7 +32,7 @@ export async function updateWorkout(client: SupabaseClient, workout: Workout) {
 }
 
 export async function deleteWorkout(client: SupabaseClient, workout: Workout) {
-	const { data, error } = await client.from('workouts').delete().eq('id', workout.id);
+	const { data, error } = await client.from('workouts').delete().eq('id', workout.id).select('*');
 	if (data && !error) {
 		return data;
 	} else {

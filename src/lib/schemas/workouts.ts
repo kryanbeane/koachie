@@ -5,10 +5,10 @@ import { z } from 'zod';
  */
 
 export const workoutSchema = z.object({
-	id: z.string().uuid(),
+	id: z.string().uuid().optional(),
 	coach_id: z.string().uuid().nullable().optional(),
-	created_at: z.string().datetime(),
-	updated_at: z.string().datetime(),
+	created_at: z.string().datetime().optional(),
+	updated_at: z.string().datetime().optional(),
 	name: z.string().max(100),
 	description: z.string().max(500)
 });

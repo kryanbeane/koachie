@@ -3,7 +3,7 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 import { createWorkoutFormSchema } from '@/schemas/workouts.js';
-import { getWorkouts } from '@/services/workouts.js';
+import { addWorkout, getWorkouts } from '@/services/workouts.js';
 
 import type { Actions, PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) => {
@@ -16,8 +16,16 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 	if (layoutCookie) layout = JSON.parse(layoutCookie);
 
 	if (collapsedCookie) collapsed = JSON.parse(collapsedCookie);
+
+	const form = await superValidate(zod(createWorkoutFormSchema));
 	const workouts = await getWorkouts(supabase);
-	return { layout, collapsed, workouts, form: await superValidate(zod(createWorkoutFormSchema)) };
+
+	return {
+		layout,
+		collapsed,
+		workouts,
+		form
+	};
 };
 
 export const actions: Actions = {
@@ -28,6 +36,7 @@ export const actions: Actions = {
 				form
 			});
 		}
+		addWorkout(event.locals.supabase, form.data);
 		return {
 			form
 		};

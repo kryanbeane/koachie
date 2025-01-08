@@ -10,18 +10,26 @@
 	} from '@/schemas/workouts';
 	import { EllipsisVertical, Trash2 } from 'lucide-svelte';
 	import * as Form from '$lib/components/ui/form/index.js';
-	import { type SuperValidated, type Infer, superForm, superValidate } from 'sveltekit-superforms';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import NameInput from '@/components/ui/input/name-input.svelte';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
+	import { toast } from 'svelte-sonner';
+	import { getAllWorkoutState } from '@/stores/allWorkoutState.svelte';
 
 	export let workout: Workout | null = null;
-
 	export let data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
+	let workoutsState = getAllWorkoutState();
 
 	const form = superForm(data, {
-		validators: zodClient(createWorkoutFormSchema)
+		validators: zodClient(createWorkoutFormSchema),
+		onUpdated({ form: workout }) {
+			if (workout.data) {
+				toast.success(`Workout ${workout.data.name} Created!`);
+				workoutsState.add(workout.data);
+			}
+		}
 	});
 
 	const { form: formData, enhance } = form;
@@ -37,7 +45,6 @@
 					disabled={!workout}
 				>
 					<Trash2 class="size-4" />
-					<span class="sr-only">Delete Workout</span>
 				</Tooltip.Trigger>
 				<Tooltip.Content>Delete Workout</Tooltip.Content>
 			</Tooltip.Root>
@@ -50,13 +57,9 @@
 				disabled={!workout}
 			>
 				<EllipsisVertical class="size-4" />
-				<span class="sr-only">More</span>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content align="end">
 				<DropdownMenu.Item>Mark as unread</DropdownMenu.Item>
-				<DropdownMenu.Item>Star thread</DropdownMenu.Item>
-				<DropdownMenu.Item>Add label</DropdownMenu.Item>
-				<DropdownMenu.Item>Mute thread</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>
@@ -68,9 +71,9 @@
 			<Textarea placeholder="Workout description..." value={workout.description} class="mt-2" />
 
 			<ScrollArea orientation="vertical">
-				<!-- {#each exerciseInstances as exercise_instance} -->
-				<!-- <ExerciseInstanceCard {exercise_instance} /> -->
-				<!-- {/each} -->
+				<!-- {#each exerciseInstances as exercise_instance}
+					<ExerciseInstanceCard {exercise_instance} />
+				{/each} -->
 			</ScrollArea>
 		</div>
 	{:else}

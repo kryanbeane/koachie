@@ -8,9 +8,7 @@ import {
 import type { Workout } from '@/schemas/workouts';
 
 export async function getWorkouts(supabase: SupabaseClient): Promise<Workout[]> {
-	const workout = await fetchWorkouts(supabase);
-	console.log('SERVICE WORKOUTS,', workout);
-	return workout;
+	return fetchWorkouts(supabase);
 }
 
 export async function addWorkout(supabase: SupabaseClient, workout: Workout) {
