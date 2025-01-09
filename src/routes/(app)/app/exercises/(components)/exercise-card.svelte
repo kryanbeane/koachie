@@ -9,7 +9,6 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import Check from 'lucide-svelte/icons/check';
-	import type { Exercise } from '@/schemas/exercises';
 	import { invalidateAll } from '$app/navigation';
 
 	let { exercise, createMode = $bindable(true), editMode } = $props();

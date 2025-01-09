@@ -1,12 +1,12 @@
-import { fail, redirect, error } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
-
-import type { Provider } from '@supabase/supabase-js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 import { emailAuthSchema } from '@/schemas';
+import { error, fail, redirect } from '@sveltejs/kit';
 
+import type { Actions, PageServerLoad } from './$types';
+
+import type { Provider } from '@supabase/supabase-js';
 export const load: PageServerLoad = async () => {
 	throw redirect(303, '/login');
 };
