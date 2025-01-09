@@ -16,7 +16,11 @@ export async function getExercises(supabase: SupabaseClient): Promise<Exercise[]
 }
 
 export async function addExercise(supabase: SupabaseClient, exercise: Exercise) {
-	return await createExercise(supabase, exercise);
+	const e = await createExercise(supabase, exercise);
+	if (!e) {
+		throw new Error('Failed to add exercise');
+	}
+	return e;
 }
 
 export async function editExercise(supabase: SupabaseClient, exercise: Exercise) {

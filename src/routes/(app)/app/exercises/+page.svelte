@@ -30,17 +30,13 @@
 	export let defaultCollapsed = false;
 	let isCollapsed = defaultCollapsed;
 
-	let exercise: Exercise = {
-		id: '1',
-		created_at: '2021-09-01T00:00:00.000Z',
-		updated_at: '2021-09-01T00:00:00.000Z',
+	let exercise = {
 		name: 'Push-up',
 		note: 'Hello',
 		instructions: ['Step 1', 'Step 2', 'Step 3'],
 		muscle_groups: ['Chest', 'Triceps'],
 		movement_type: 'Strength',
-		video: '',
-		coach_id: '1'
+		video: ''
 	};
 
 	function checkScreenSize() {
@@ -70,6 +66,7 @@
 
 	function toggleExerciseCard() {
 		createMode = !createMode; // Toggle visibility
+		console.log('Toggle Exercise Card', createMode);
 	}
 </script>
 
@@ -146,7 +143,7 @@
 
 					{#if createMode}
 						<div class="p-4">
-							<ExerciseCard {exercise} editMode={true} bind:createMode />
+							<ExerciseCard {exercise} editMode={false} bind:createMode />
 						</div>
 					{/if}
 
@@ -165,4 +162,3 @@
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
 </div>
-ur m
