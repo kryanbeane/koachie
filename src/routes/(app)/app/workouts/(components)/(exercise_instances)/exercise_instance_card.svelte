@@ -2,9 +2,9 @@
 	import type { Exercise } from '@/schemas/exercises';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import NoOutlineInput from './no_outline_input.svelte';
 	import SelectExercise from './select_exercise.svelte';
 	import SetRow from './set_row.svelte';
+	import NoOutlineInput from '../(other)/no_outline_input.svelte';
 
 	let { exercise_instance: ExerciseInstance } = $props();
 

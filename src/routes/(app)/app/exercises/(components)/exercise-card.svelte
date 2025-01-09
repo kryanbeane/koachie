@@ -7,15 +7,14 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import Check from 'lucide-svelte/icons/check';
-	import { createExerciseSchema, type Exercise } from '@/schemas/exercises';
+	import { createExerciseSchema } from '@/schemas/exercises';
 	import { updateExerciseSchema } from '@/schemas/exercises';
 	import { invalidateAll } from '$app/navigation';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Proportions } from 'lucide-svelte';
 
 	let { exercise, createMode = $bindable(true), editMode } = $props();
 
