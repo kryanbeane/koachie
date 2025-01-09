@@ -11,10 +11,13 @@ export async function fetchExercises(client: SupabaseClient): Promise<Exercise[]
 	}
 }
 
-export async function createExercise(client: SupabaseClient, exercise: Exercise) {
-	const { data, error } = await client.from('exercises').insert([exercise]);
+export async function createExercise(
+	client: SupabaseClient,
+	exercise: Exercise
+): Promise<Exercise[]> {
+	const { data, error } = await client.from('exercises').insert([exercise]).select('*');
 	if (data && !error) {
-		return data;
+		return data as Exercise[];
 	} else {
 		throw error;
 	}

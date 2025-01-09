@@ -20,7 +20,10 @@
 	let { exercise, createMode = $bindable(true), editMode } = $props();
 
 	const createForm = superForm(exercise, {
-		validators: zodClient(createExerciseSchema)
+		validators: zodClient(createExerciseSchema),
+		onSubmit: () => {
+			createMode = false;
+		}
 	});
 
 	const { form: createFormData, enhance: createEnhance } = createForm;
@@ -167,10 +170,7 @@
 	function handleCreate(event: Event, exercise: { id: string }) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Create clicked for:', exercise.id);
-
-		handleAddExercise();
 		createMode = false;
-		invalidateAll();
 	}
 
 	function handleCancelCreate(event: Event, exercise: { id: string }) {
@@ -179,7 +179,7 @@
 		createMode = false;
 	}
 
-	let allMuscleGroups = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders'];
+	let allMuscleGroups = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders', 'Biceps'];
 	let allMovementTypes = ['Strength', 'Cardio', 'Flexibility'];
 
 	let openMovement = $state(false);
@@ -736,10 +736,10 @@
 								<ul class="space-y-2">
 									{#each $createFormData.instructions as instruction, index}
 										<li class="flex items-center">
-											<input
+											<Input
 												type="text"
 												class="w-full bg-transparent text-xs font-semibold text-white"
-												bind:value={$createFormData.instructions[index]}
+												value={instruction}
 												placeholder="Add instruction"
 											/>
 											<button

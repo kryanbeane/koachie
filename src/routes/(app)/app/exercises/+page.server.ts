@@ -24,7 +24,8 @@ export const actions: Actions = {
 			});
 		}
 		console.log('FORM DATA', form.data);
-		addExercise(event.locals.supabase, form.data);
+
+		await addExercise(event.locals.supabase, form.data);
 		return {
 			form
 		};
