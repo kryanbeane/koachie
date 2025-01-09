@@ -7,8 +7,10 @@ import { addExercise } from '@/services/exercises';
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {
 	const exercisesData = await fetchExercises(supabase);
-	console.log('EXECISES DATA PAGE LOAD', exercisesData);
+
+	const ex = await superValidate(zod(createExerciseSchema));
 	return {
+		ex,
 		exercises: exercisesData,
 		createForm: await superValidate(zod(createExerciseSchema)),
 		updateForm: await superValidate(zod(updateExerciseSchema))
@@ -23,7 +25,7 @@ export const actions: Actions = {
 				form
 			});
 		}
-		console.log('FORM DATA', form.data);
+		console.log('ACTION DATA', form.data);
 
 		await addExercise(event.locals.supabase, form.data);
 		return {

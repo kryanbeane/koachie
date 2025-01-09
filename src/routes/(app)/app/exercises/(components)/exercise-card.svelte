@@ -7,18 +7,35 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import Check from 'lucide-svelte/icons/check';
-	import { createExerciseSchema } from '@/schemas/exercises';
+	import { createExerciseSchema, type CreateExercise, type Exercise } from '@/schemas/exercises';
 	import { updateExerciseSchema } from '@/schemas/exercises';
 	import { invalidateAll } from '$app/navigation';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { superForm } from 'sveltekit-superforms';
+	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 
-	let { exercise, createMode = $bindable(true), editMode } = $props();
+	let exercise = {
+		name: 'Push-up',
+		note: 'Hello',
+		instructions: ['Step 1', 'Step 2', 'Step 3'],
+		muscle_groups: ['Chest', 'Triceps'],
+		movement_type: 'Strength',
+		video: ''
+	};
 
-	const createForm = superForm(exercise, {
+	let {
+		createMode = $bindable(true),
+		editMode,
+		ex
+	}: {
+		ex: SuperValidated<Infer<CreateExercise>>;
+		editMode: boolean;
+		createMode: boolean;
+	} = $props();
+
+	const createForm = superForm(ex, {
 		validators: zodClient(createExerciseSchema),
 		onSubmit: () => {
 			createMode = false;
@@ -27,64 +44,56 @@
 
 	const { form: createFormData, enhance: createEnhance } = createForm;
 
-	const updateForm = superForm(exercise, {
+	const updateForm = superForm(ex, {
 		validators: zodClient(updateExerciseSchema)
 	});
 
 	const { form: updateFormData, enhance: updateEnhance } = updateForm;
 
 	// Handle edit Button click
-	function handleEdit(event: Event, exercise: { id: string }) {
+	function handleEdit(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Edit clicked for:', exercise.id);
 		editMode = true;
 	}
 
 	async function handleDeleteExercise() {
-		const response = await fetch(`/api/exercises`, {
-			method: 'DELETE',
-
-			headers: {
-				'Content-Type': 'application/json'
-			},
-
-			body: JSON.stringify({ id: exercise.id })
-		});
-
-		if (response.ok) {
-			console.log('Exercise deleted:', exercise.id);
-		}
-
-		invalidateAll();
+		// const response = await fetch(`/api/exercises`, {
+		// 	method: 'DELETE',
+		// 	headers: {
+		// 		'Content-Type': 'application/json'
+		// 	},
+		// 	body: JSON.stringify({ id: exercise.id })
+		// });
+		// if (response.ok) {
+		// 	console.log('Exercise deleted:', exercise.id);
+		// }
+		// invalidateAll();
 	}
 
 	// Handle delete Button click
-	function handleDelete(event: Event, exercise: { id: string }) {
+	function handleDelete(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Delete clicked for:', exercise.id);
 		handleDeleteExercise();
 	}
 
 	async function handleUpdateExercise() {
-		const response = await fetch(`/api/exercises`, {
-			method: 'PUT',
-
-			headers: {
-				'Content-Type': 'application/json'
-			},
-
-			body: JSON.stringify(exercise)
-		});
-
-		if (response.ok) {
-			console.log('Exercise updated:', exercise.id);
-		}
-
-		invalidateAll();
+		// 	const response = await fetch(`/api/exercises`, {
+		// 		method: 'PUT',
+		// 		headers: {
+		// 			'Content-Type': 'application/json'
+		// 		},
+		// 		body: JSON.stringify(exercise)
+		// 	});
+		// 	if (response.ok) {
+		// 		console.log('Exercise updated:', exercise.id);
+		// 	}
+		// 	invalidateAll();
 	}
 
 	// Handle save Button click
-	function handleSave(event: Event, exercise: { id: string }) {
+	function handleSave(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Save clicked for:', exercise.id);
 		handleUpdateExercise();
@@ -92,7 +101,7 @@
 	}
 
 	// Handle cancel Button click
-	function handleCancel(event: Event, exercise: { id: string }) {
+	function handleCancel(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Cancel clicked for:', exercise.id);
 		editMode = false;
@@ -101,17 +110,11 @@
 	function addMuscleGroup(group: string) {
 		if (createMode) {
 			if (!$createFormData.muscle_groups.includes(group)) {
-				$createFormData = {
-					...$createFormData,
-					muscle_groups: [...$createFormData.muscle_groups, group]
-				};
+				$createFormData.muscle_groups = [...$createFormData.muscle_groups, group];
 			}
 		} else {
 			if (!$updateFormData.muscle_groups.includes(group)) {
-				$updateFormData = {
-					...$updateFormData,
-					muscle_groups: [...$updateFormData.muscle_groups, group]
-				};
+				$updateFormData.muscle_groups = [...$updateFormData.muscle_groups, group];
 			}
 		}
 	}
@@ -136,6 +139,7 @@
 		} else {
 			$updateFormData = { ...$updateFormData, instructions: [...$updateFormData.instructions, ''] };
 		}
+		console.log($createFormData.instructions);
 	}
 
 	function removeInstruction(index: number) {
@@ -172,7 +176,7 @@
 		createMode = false;
 	}
 
-	function handleCancelCreate(event: Event, exercise: { id: string }) {
+	function handleCancelCreate(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Cancel clicked for:', exercise.id);
 		createMode = false;

@@ -9,7 +9,6 @@
 	import ExerciseList from './(components)/exercise-list.svelte';
 	import ExerciseCard from './(components)/exercise-card.svelte';
 	import { onMount } from 'svelte';
-	import type { Exercise } from '@/schemas/exercises';
 
 	export let data: PageData;
 
@@ -22,15 +21,6 @@
 	export let defaultLayout = [60, 40];
 	export let defaultCollapsed = false;
 	let isCollapsed = defaultCollapsed;
-
-	let exercise = {
-		name: 'Push-up',
-		note: 'Hello',
-		instructions: ['Step 1', 'Step 2', 'Step 3'],
-		muscle_groups: ['Chest', 'Triceps'],
-		movement_type: 'Strength',
-		video: ''
-	};
 
 	function checkScreenSize() {
 		isCollapsed = window.innerWidth < 640; // Adjust breakpoint as needed
@@ -136,7 +126,7 @@
 
 					{#if createMode}
 						<div class="p-4">
-							<ExerciseCard {exercise} editMode={false} bind:createMode />
+							<ExerciseCard ex={data.ex} editMode={false} bind:createMode />
 						</div>
 					{/if}
 
@@ -147,7 +137,7 @@
 				<div class="flex-1 overflow-auto">
 					<Tabs.Content value="all" class="m-0 h-full">
 						<div class="mt-4 h-full">
-							<ExerciseList {exercises} />
+							<ExerciseList ex={data.ex} {exercises} />
 						</div>
 					</Tabs.Content>
 				</div>

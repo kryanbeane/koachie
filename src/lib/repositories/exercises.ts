@@ -3,7 +3,6 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 export async function fetchExercises(client: SupabaseClient): Promise<Exercise[]> {
 	const { data: exercises, error } = await client.from('exercises').select('*');
-	console.log('DATA', exercises);
 	if (!error) {
 		return exercises;
 	} else {
