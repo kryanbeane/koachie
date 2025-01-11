@@ -37,9 +37,9 @@ export const updateExerciseSchema = z.object({
 
 export type Exercise = z.infer<typeof exerciseSchema>;
 
-export type CreateExercise = typeof createExerciseSchema;
+export type CreateExercise = z.infer<typeof createExerciseSchema>;
 
-export type UpdateExercise = typeof updateExerciseSchema;
+export type UpdateExercise = z.infer<typeof updateExerciseSchema>;
 /**
  * Exercise performance schemas
  */

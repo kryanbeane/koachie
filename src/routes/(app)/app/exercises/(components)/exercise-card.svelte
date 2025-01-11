@@ -7,7 +7,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import Check from 'lucide-svelte/icons/check';
-	import { createExerciseSchema, type Exercise } from '@/schemas/exercises';
+	import { createExerciseSchema, type CreateExercise, type Exercise } from '@/schemas/exercises';
 	import { updateExerciseSchema } from '@/schemas/exercises';
 	import { invalidateAll } from '$app/navigation';
 	import * as Form from '$lib/components/ui/form/index.js';
@@ -15,85 +15,92 @@
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Proportions } from 'lucide-svelte';
+	import { muscleGroupEnum, movementTypeEnum } from '$lib/data/enums.js';
 
-	let { exercise, createMode = $bindable(true), editMode } = $props();
-
-	const createForm = superForm(exercise, {
+	let {
+		createMode = $bindable(true),
+		editMode,
+		ex,
+		exercise
+	}: {
+		ex: SuperValidated<CreateExercise>;
+		editMode: boolean;
+		createMode: boolean;
+		exercise: Exercise | null;
+	} = $props();
+	const createForm = superForm(ex, {
 		validators: zodClient(createExerciseSchema),
 		onSubmit: () => {
 			createMode = false;
 		}
 	});
-
 	const { form: createFormData, enhance: createEnhance } = createForm;
 
-	const updateForm = superForm(exercise, {
+	const updateForm = superForm(exercise!!, {
 		validators: zodClient(updateExerciseSchema)
 	});
 
 	const { form: updateFormData, enhance: updateEnhance } = updateForm;
 
 	// Handle edit Button click
-	function handleEdit(event: Event, exercise: { id: string }) {
+	function handleEdit(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Edit clicked for:', exercise.id);
 		editMode = true;
 	}
 
-	async function handleDeleteExercise() {
-		const response = await fetch(`/api/exercises`, {
-			method: 'DELETE',
+	// async function handleDeleteExercise() {
+	// 	const response = await fetch(`/api/exercises`, {
+	// 		method: 'DELETE',
 
-			headers: {
-				'Content-Type': 'application/json'
-			},
+	// 		headers: {
+	// 			'Content-Type': 'application/json'
+	// 		},
 
-			body: JSON.stringify({ id: exercise.id })
-		});
+	// 		body: JSON.stringify({ id: exercise.id })
+	// 	});
 
-		if (response.ok) {
-			console.log('Exercise deleted:', exercise.id);
-		}
+	// 	if (response.ok) {
+	// 		console.log('Exercise deleted:', exercise.id);
+	// 	}
 
-		invalidateAll();
-	}
+	// }
 
-	// Handle delete Button click
-	function handleDelete(event: Event, exercise: { id: string }) {
-		event.stopPropagation(); // Prevent triggering the parent card click
-		console.log('Delete clicked for:', exercise.id);
-		handleDeleteExercise();
-	}
+	// // Handle delete Button click
+	// function handleDelete(event: Event, exercise: Exercise) {
+	// 	event.stopPropagation(); // Prevent triggering the parent card click
+	// 	console.log('Delete clicked for:', exercise.id);
+	// 	handleDeleteExercise();
+	// }
 
-	async function handleUpdateExercise() {
-		const response = await fetch(`/api/exercises`, {
-			method: 'PUT',
+	// async function handleUpdateExercise() {
+	// 	const response = await fetch(`/api/exercises`, {
+	// 		method: 'PUT',
 
-			headers: {
-				'Content-Type': 'application/json'
-			},
+	// 		headers: {
+	// 			'Content-Type': 'application/json'
+	// 		},
 
-			body: JSON.stringify(exercise)
-		});
+	// 		body: JSON.stringify(exercise)
+	// 	});
 
-		if (response.ok) {
-			console.log('Exercise updated:', exercise.id);
-		}
+	// 	if (response.ok) {
+	// 		console.log('Exercise updated:', exercise.id);
+	// 	}
 
-		invalidateAll();
-	}
+	// 	invalidateAll();
+	// }
 
 	// Handle save Button click
-	function handleSave(event: Event, exercise: { id: string }) {
+	function handleSave(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Save clicked for:', exercise.id);
-		handleUpdateExercise();
+		//handleUpdateExercise();
 		editMode = false;
 	}
 
 	// Handle cancel Button click
-	function handleCancel(event: Event, exercise: { id: string }) {
+	function handleCancel(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Cancel clicked for:', exercise.id);
 		editMode = false;
@@ -134,6 +141,7 @@
 	function addInstruction() {
 		if (createMode) {
 			$createFormData = { ...$createFormData, instructions: [...$createFormData.instructions, ''] };
+			console.log('INSTRUCTIONS', $createFormData.instructions);
 		} else {
 			$updateFormData = { ...$updateFormData, instructions: [...$updateFormData.instructions, ''] };
 		}
@@ -153,34 +161,14 @@
 		}
 	}
 
-	async function handleAddExercise() {
-		await fetch('/api/exercises', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				name: exercise.name,
-				note: exercise.note,
-				movement_type: exercise.movement_type,
-				muscle_groups: exercise.muscle_groups,
-				instructions: exercise.instructions
-			})
-		});
-	}
-
-	function handleCreate(event: Event, exercise: { id: string }) {
-		event.stopPropagation(); // Prevent triggering the parent card click
-		console.log('Create clicked for:', exercise.id);
-		createMode = false;
-	}
-
-	function handleCancelCreate(event: Event, exercise: { id: string }) {
+	function handleCancelCreate(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Cancel clicked for:', exercise.id);
 		createMode = false;
 	}
 
-	let allMuscleGroups = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders', 'Biceps'];
-	let allMovementTypes = ['Strength', 'Cardio', 'Flexibility'];
+	let allMuscleGroups = Object.values(muscleGroupEnum.Values);
+	let allMovementTypes = Object.values(movementTypeEnum.Values);
 
 	let openMovement = $state(false);
 	let movementValue = $state('');
@@ -221,17 +209,17 @@
 		<div class="flex w-full items-start">
 			<div class="flex w-[55%] flex-col gap-1">
 				<div class="flex items-center">
-					<div class="font-semibold">{exercise.name}</div>
+					<div class="font-semibold">{exercise!!.name}</div>
 				</div>
 				<div class="mt-1 line-clamp-2 text-xs text-muted-foreground">
-					{exercise.note.substring(0, 300)}
+					{exercise!!.note.substring(0, 300)}
 				</div>
-				<div class="text-xs font-medium">{exercise.movement_type}</div>
+				<div class="text-xs font-medium">{exercise!!.movement_type}</div>
 
 				<div
 					class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex gap-2 overflow-x-auto py-2"
 				>
-					{#each exercise.muscle_groups as group (group)}
+					{#each exercise!!.muscle_groups as group (group)}
 						<span class=" whitespace-nowrap">
 							<Badge>{group}</Badge>
 						</span>
@@ -240,7 +228,7 @@
 			</div>
 
 			<!-- Instructions Section -->
-			{#if exercise.instructions.length > 0}
+			{#if exercise!!.instructions.length > 0}
 				<div
 					class={cn(
 						'ml-10 w-[40%] transform transition-all duration-300 ease-in-out',
@@ -255,7 +243,7 @@
 						<h3 class="text-md mb-1 text-center font-semibold text-white">Instructions</h3>
 
 						<ul class="space-y-2">
-							{#each exercise.instructions as instruction}
+							{#each exercise!!.instructions as instruction}
 								<li class="rounded-md border border-gray-500 p-1 text-center text-sm text-white">
 									{instruction}
 								</li>
@@ -272,7 +260,7 @@
 			<Button
 				class="mr-2 rounded-md bg-gray-200 p-3 transition-all hover:bg-gray-300"
 				aria-label="Edit"
-				onclick={(e) => handleEdit(e, exercise)}
+				onclick={(e) => handleEdit(e, exercise!!)}
 			>
 				<svg
 					class="h-4 w-4 text-gray-800"
@@ -289,27 +277,29 @@
 					/>
 				</svg>
 			</Button>
+			<form method="POST" action="?/deleteExercise">
+				<Input type="hidden" name="id" value={exercise!!} />
 
-			<Button
-				class="mr-2 rounded-md bg-red-200 p-3 transition-all hover:bg-red-300"
-				aria-label="Delete"
-				onclick={(e) => handleDelete(e, exercise)}
-			>
-				<svg
-					class="h-4 w-4 text-gray-800"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
+				<Form.Button
+					class="mr-2 rounded-md bg-red-200 p-3 transition-all hover:bg-red-300"
+					aria-label="Delete"
 				>
-					<path
-						stroke="currentColor"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
-					/>
-				</svg>
-			</Button>
+					<svg
+						class="h-4 w-4 text-gray-800"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+						/>
+					</svg>
+				</Form.Button>
+			</form>
 		</div>
 	</div>
 {:else if editMode && !createMode}
@@ -320,7 +310,7 @@
 			'border-gray-500 bg-gray-800'
 		)}
 	>
-		<form method="POST" use:updateEnhance class="flex w-full gap-6">
+		<form method="POST" action="?/updateExercise" use:updateEnhance class="flex w-full gap-6">
 			<!-- Left Column -->
 			<div class="w-1/2 space-y-3">
 				<Form.Field form={updateForm} name="name">
@@ -406,13 +396,13 @@
 					{#each $updateFormData.muscle_groups as group}
 						<Badge>
 							{group}
-							<button
+							<Button
 								type="button"
 								onclick={() => removeMuscleGroup(group)}
 								class="text-red-500 hover:text-red-700"
 							>
 								&times;
-							</button>
+							</Button>
 						</Badge>
 					{/each}
 				</div>
@@ -489,17 +479,17 @@
 												bind:value={$updateFormData.instructions[index]}
 												placeholder="Add instruction"
 											/>
-											<button
+											<Button
 												type="button"
 												onclick={() => removeInstruction(index)}
 												class="ml-2 text-red-500 hover:text-red-700"
 											>
 												&times;
-											</button>
+											</Button>
 										</li>
 									{/each}
 									<li class="rounded-md border border-gray-500 p-2 text-center text-sm text-white">
-										<button type="button" onclick={addInstruction}> + Add Instruction </button>
+										<Button type="button" onclick={addInstruction}>+ Add Instruction</Button>
 									</li>
 								</ul>
 							</div>
@@ -514,7 +504,7 @@
 				<Form.Button
 					class="flex h-10 w-10 items-center justify-center rounded-md bg-gray-200 text-gray-800 transition-all hover:bg-gray-300"
 					aria-label="Save"
-					onclick={(e) => handleSave(e, exercise)}
+					onclick={(e) => handleSave(e, exercise!!)}
 				>
 					<svg
 						class="h-4 w-4 text-gray-800"
@@ -534,7 +524,7 @@
 				<Button
 					class="flex h-10 w-10 items-center justify-center rounded-md bg-red-200 text-gray-800 transition-all hover:bg-red-300"
 					aria-label="Cancel"
-					onclick={(e) => handleCancel(e, exercise)}
+					onclick={(e) => handleCancel(e, exercise!!)}
 				>
 					<svg
 						class="h-4 w-4 text-gray-800"
@@ -562,7 +552,7 @@
 			'border-gray-500 bg-gray-800'
 		)}
 	>
-		<form method="POST" use:createEnhance class="flex w-full gap-6">
+		<form method="POST" action="?/createExercise" use:createEnhance class="flex w-full gap-6">
 			<!-- Left Column -->
 			<div class="w-1/2 space-y-3">
 				<Form.Field form={createForm} name="name">
@@ -572,6 +562,7 @@
 								{...props}
 								class="w-full bg-transparent text-xl font-semibold text-white"
 								bind:value={$createFormData.name}
+								placeholder="Exercise Name"
 							/>
 						{/snippet}
 					</Form.Control>
@@ -584,6 +575,7 @@
 							<Input
 								{...props}
 								class="w-full bg-transparent text-xs font-semibold text-white"
+								placeholder="Type a note about the exercise here"
 								bind:value={$createFormData.note}
 							/>
 						{/snippet}
@@ -653,13 +645,13 @@
 					{#each $createFormData.muscle_groups as group}
 						<Badge>
 							{group}
-							<button
+							<Button
 								type="button"
 								onclick={() => removeMuscleGroup(group)}
 								class="text-red-500 hover:text-red-700"
 							>
 								&times;
-							</button>
+							</Button>
 						</Badge>
 					{/each}
 				</div>
@@ -739,20 +731,20 @@
 											<Input
 												type="text"
 												class="w-full bg-transparent text-xs font-semibold text-white"
-												value={instruction}
+												bind:value={$createFormData.instructions[index]}
 												placeholder="Add instruction"
 											/>
-											<button
+											<Button
 												type="button"
 												onclick={() => removeInstruction(index)}
 												class="ml-2 text-red-500 hover:text-red-700"
 											>
 												&times;
-											</button>
+											</Button>
 										</li>
 									{/each}
 									<li class="rounded-md border border-gray-500 p-2 text-center text-sm text-white">
-										<button type="button" onclick={addInstruction}> + Add Instruction </button>
+										<Button type="button" onclick={addInstruction}>+ Add Instruction</Button>
 									</li>
 								</ul>
 							</div>
@@ -785,7 +777,7 @@
 				<Button
 					class="flex h-10 w-10 items-center justify-center rounded-md bg-gray-200 text-gray-800 transition-all hover:bg-gray-300"
 					aria-label="Delete"
-					onclick={(e) => handleCancelCreate(e, exercise)}
+					onclick={(e) => handleCancelCreate(e, exercise!!)}
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
