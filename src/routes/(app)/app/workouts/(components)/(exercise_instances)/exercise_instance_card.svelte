@@ -3,10 +3,14 @@
 	import * as Table from "$lib/components/ui/table/index.js";
 	import SetRow from "./set_row.svelte";
 	import NoOutlineInput from "../(other)/no_outline_input.svelte";
-	import type { CreateExerciseInstance } from "@/schemas/exercises";
+	import { type CreateExerciseInstance } from "@/schemas/exercises";
+	import { buttonVariants } from "@/components/ui/button";
+	import { cn } from "tailwind-variants";
 
 	let { instance }: { instance: CreateExerciseInstance } = $props();
-
+	$effect(() => {
+		console.log(instance);
+	});
 	// let exercises: Exercise[] = [
 	// 	{
 	// 		id: '085b5a1a-5392-4453-9b2d-27ea7a7db052',
@@ -39,6 +43,7 @@
 		<Table.Root>
 			<Table.Header>
 				<Table.Row>
+					<!-- TODO: Construct this as variables including custom ones -->
 					<Table.Head class="flex-1">Set</Table.Head>
 					<Table.Head class="flex-1">Weight (kg)</Table.Head>
 					<Table.Head class="flex-1">Reps</Table.Head>
@@ -46,9 +51,29 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				<SetRow {instance} />
+				<SetRow setPerformance={instance.performance} />
 			</Table.Body>
 		</Table.Root>
+
+		<button
+			class={cn(buttonVariants({ variant: "default", size: "sm" }), "mx-4")}
+			type="button"
+			onclick={() => {
+				const perf = [
+					...instance.performance,
+					{
+						order: instance.performance.length,
+						weight: null,
+						reps: null,
+						restTime: "03:00"
+					}
+				];
+
+				instance.performance = perf;
+				console.log("Added set performance");
+			}}
+			>Add a Set
+		</button>
 
 		<NoOutlineInput type="text" placeholder="Enter notes here..." class="mt-2 w-full" />
 	</Card.Content>

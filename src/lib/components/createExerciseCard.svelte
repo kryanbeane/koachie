@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
-	import * as Card from '$lib/components/ui/card/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
+	import * as Card from "$lib/components/ui/card/index.js";
+	import { Badge } from "$lib/components/ui/badge/index.js";
 
 	// New exercise data
 	interface Exercise {
@@ -14,16 +14,16 @@
 	}
 
 	let newExercise: Exercise = {
-		name: '',
-		note: '',
-		movementType: '',
+		name: "",
+		note: "",
+		movementType: "",
 		muscleGroups: [],
 		instructions: []
 	};
 
 	// Example data for dropdowns
-	let allMuscleGroups = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders'];
-	let allMovementTypes = ['Strength', 'Cardio', 'Flexibility'];
+	let allMuscleGroups = ["Chest", "Back", "Legs", "Arms", "Shoulders"];
+	let allMovementTypes = ["Strength", "Cardio", "Flexibility"];
 
 	function addMuscleGroup(group: string) {
 		if (!newExercise.muscleGroups.includes(group)) {
@@ -36,7 +36,7 @@
 	}
 
 	function addInstruction() {
-		newExercise.instructions = [...newExercise.instructions, ''];
+		newExercise.instructions = [...newExercise.instructions, ""];
 	}
 
 	function removeInstruction(index: number) {
@@ -44,20 +44,20 @@
 	}
 
 	function createExercise() {
-		dispatch('create', newExercise);
+		dispatch("create", newExercise);
 		resetForm();
 	}
 
 	function cancelCreation() {
-		dispatch('cancel');
+		dispatch("cancel");
 		resetForm();
 	}
 
 	function resetForm() {
 		newExercise = {
-			name: '',
-			note: '',
-			movementType: '',
+			name: "",
+			note: "",
+			movementType: "",
 			muscleGroups: [],
 			instructions: []
 		};
@@ -139,7 +139,7 @@
 
 							<button
 								type="button"
-								on:click={() => removeMuscleGroup(group)}
+								onclick={() => removeMuscleGroup(group)}
 								class="text-red-500 hover:text-red-700"
 							>
 								&times;
@@ -149,7 +149,7 @@
 					{/each}
 				</div>
 				<select
-					on:change={(event) => {
+					onchange={(event) => {
 						const target = event.target as HTMLSelectElement | null;
 						if (target) {
 							addMuscleGroup(target.value);
@@ -185,7 +185,7 @@
 			>
 				<button
 					type="button"
-					on:click={addInstruction}
+					onclick={addInstruction}
 					class="mt-2 rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-700 hover:bg-blue-200"
 				>
 					+ Add Instruction
@@ -201,7 +201,7 @@
 							/>
 							<button
 								type="button"
-								on:click={() => removeInstruction(index)}
+								onclick={() => removeInstruction(index)}
 								class="ml-2 text-red-500 hover:text-red-700"
 							>
 								&times;
@@ -216,14 +216,14 @@
 			<div class="mt-4 flex justify-between">
 				<button
 					type="button"
-					on:click={createExercise}
+					onclick={createExercise}
 					class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
 				>
 					Create
 				</button>
 				<button
 					type="button"
-					on:click={cancelCreation}
+					onclick={cancelCreation}
 					class="rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300"
 				>
 					Cancel

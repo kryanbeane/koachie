@@ -31,7 +31,7 @@
 					"flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
 					selectedWorkoutState.workout?.id === workout.id && "bg-muted"
 				)}
-				on:click={() => {
+				onclick={() => {
 					selectedWorkoutState.set(workout);
 				}}
 			>

@@ -30,8 +30,14 @@
 </script>
 
 <script lang="ts">
-	export let workout: Workout | null = null;
-	export let data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
+	let {
+		workout,
+		data
+	}: {
+		workout: Workout | null;
+		data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
+	} = $props();
+
 	let workoutsState = getAllWorkoutState();
 
 	const form = superForm(data, {
@@ -63,20 +69,18 @@
 		}
 	}
 
-	let exercise_instances: CreateExerciseInstance[];
-	$: exercise_instances = [
+	let exercise_instances: CreateExerciseInstance[] = $state([
 		{
 			performance: [
 				{
 					order: 0,
 					reps: null,
 					weight: null,
-					restTime: "02:30",
-					customVariables: []
+					restTime: "02:30"
 				}
 			]
 		}
-	];
+	]);
 
 	const { form: formData, enhance } = form;
 
@@ -158,7 +162,7 @@
 			<button
 				class={cn(buttonVariants({ variant: "outline", size: "sm" }), "mx-4")}
 				type="button"
-				on:click={newExerciseInstance}
+				onclick={newExerciseInstance}
 			>
 				<GitBranchPlus />
 				Add Exercise

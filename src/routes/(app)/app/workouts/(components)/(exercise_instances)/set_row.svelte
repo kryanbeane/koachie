@@ -1,11 +1,10 @@
 <script lang="ts">
 	import * as Table from "$lib/components/ui/table";
-	import type { CreateExerciseInstance, SetPerformance } from "@/schemas/exercises";
+	import type { SetPerformance } from "@/schemas/exercises";
 	import { InputWithVariant } from "$lib/components/ui/input";
 	import TimeWidget from "./time_widget.svelte";
 
-	let { instance }: { instance: CreateExerciseInstance } = $props();
-	let setPerformances: SetPerformance[] = instance.performance;
+	let { setPerformance }: { setPerformance: SetPerformance[] } = $props();
 </script>
 
 {#snippet field(field: number | null, placeholder: string)}
@@ -18,7 +17,7 @@
 	</Table.Cell>
 {/snippet}
 
-{#each setPerformances as set}
+{#each setPerformance as set}
 	<Table.Row>
 		<Table.Cell class="flex-1">{set.order + 1}</Table.Cell>
 		{@render field(set.weight, "50 kg")}
