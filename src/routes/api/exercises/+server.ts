@@ -14,7 +14,6 @@ export const POST: RequestHandler = async (event) => {
 		const newExercise = await addExercise(event.locals.supabase, exercise);
 		return new Response(JSON.stringify(newExercise), { status: 201 });
 	} catch (error) {
-		console.error('Error adding exercise:', error); // Debugging output
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 		return new Response(JSON.stringify({ error: errorMessage }), {
 			status: 500
@@ -29,7 +28,6 @@ export const PUT: RequestHandler = async (event) => {
 };
 
 export const DELETE: RequestHandler = async (event) => {
-	console.log('POST request received!');
 	const exercise = await event.request.json();
 	const deletedExercise = await removeExercise(event.locals.supabase, exercise);
 	return new Response(JSON.stringify(deletedExercise));

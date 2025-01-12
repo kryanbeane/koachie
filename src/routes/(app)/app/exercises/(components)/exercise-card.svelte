@@ -7,12 +7,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import Check from 'lucide-svelte/icons/check';
-	import {
-		createExerciseSchema,
-		type CreateExercise,
-		type Exercise,
-		type UpdateExercise
-	} from '@/schemas/exercises';
+	import { createExerciseSchema, type Exercise } from '@/schemas/exercises';
 	import { updateExerciseSchema } from '@/schemas/exercises';
 	import { invalidateAll } from '$app/navigation';
 	import * as Form from '$lib/components/ui/form/index.js';
@@ -34,6 +29,7 @@
 		exercise: Exercise | null;
 	} = $props();
 	const createForm = superForm(ex, {
+		id: 'create-exercise-form',
 		validators: zodClient(createExerciseSchema),
 		onSubmit: () => {
 			createMode = false;
@@ -42,6 +38,7 @@
 	const { form: createFormData, enhance: createEnhance } = createForm;
 
 	const updateForm = superForm(exercise!!, {
+		id: 'update-exercise-form',
 		validators: zodClient(updateExerciseSchema),
 		onSubmit: () => {
 			console.log('Submitting form...');
@@ -51,62 +48,23 @@
 
 	const { form: updateFormData, enhance: updateEnhance } = updateForm;
 
+	const deleteForm = superForm(exercise!!, {
+		id: 'delete-exercise-form',
+		validators: zodClient(updateExerciseSchema),
+		onSubmit: () => {
+			console.log('Submitting Delete form...');
+			$deleteFormData = { ...exercise!! };
+		}
+	});
+
+	const { form: deleteFormData, enhance: deleteEnhance } = deleteForm;
+
 	// Handle edit Button click
 	function handleEdit(event: Event, exercise: Exercise) {
 		console.log('Edit clicked for:', exercise.id);
-		$updateFormData.id = exercise.id;
+		$updateFormData = { ...exercise };
 		editMode = true;
 	}
-
-	// async function handleDeleteExercise() {
-	// 	const response = await fetch(`/api/exercises`, {
-	// 		method: 'DELETE',
-
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-
-	// 		body: JSON.stringify({ id: exercise.id })
-	// 	});
-
-	// 	if (response.ok) {
-	// 		console.log('Exercise deleted:', exercise.id);
-	// 	}
-
-	// }
-
-	// // Handle delete Button click
-	// function handleDelete(event: Event, exercise: Exercise) {
-	// 	event.stopPropagation(); // Prevent triggering the parent card click
-	// 	console.log('Delete clicked for:', exercise.id);
-	// 	handleDeleteExercise();
-	// }
-
-	// async function handleUpdateExercise() {
-	// 	const response = await fetch(`/api/exercises`, {
-	// 		method: 'PUT',
-
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-
-	// 		body: JSON.stringify(exercise)
-	// 	});
-
-	// 	if (response.ok) {
-	// 		console.log('Exercise updated:', exercise.id);
-	// 	}
-
-	// 	invalidateAll();
-	// }
-
-	// // Handle save Button click
-	// function handleSave(event: Event, exercise: Exercise) {
-	// 	event.stopPropagation(); // Prevent triggering the parent card click
-	// 	console.log('Save clicked for:', exercise.id);
-	// 	//handleUpdateExercise();
-	// 	editMode = false;
-	// }
 
 	// Handle cancel Button click
 	function handleCancel(event: Event, exercise: Exercise) {
@@ -286,8 +244,15 @@
 					/>
 				</svg>
 			</Button>
-			<form method="POST" action="?/deleteExercise">
-				<Input type="hidden" name="id" bind:value={$updateFormData} />
+			<form method="POST" action="?/deleteExercise" use:deleteEnhance>
+				<Form.Field form={deleteForm} name="deleteExercise">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Input type="hidden" name="id" bind:value={$deleteFormData.id} />
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
 
 				<Form.Button
 					class="mr-2 rounded-md bg-red-200 p-3 transition-all hover:bg-red-300"

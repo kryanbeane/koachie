@@ -43,9 +43,10 @@ export const actions: Actions = {
 	},
 	updateExercise: async (event) => {
 		console.log('Update action triggered!');
-		const form = await superValidate(event, zod(updateExerciseSchema));
+		const form = await superValidate(event, zod(exerciseSchema));
 		if (!form.valid) {
 			return fail(400, {
+				error: 'Invalid form data',
 				form
 			});
 		}
@@ -66,7 +67,7 @@ export const actions: Actions = {
 		};
 	},
 	deleteExercise: async (event) => {
-		const form = await superValidate(event, zod(createExerciseSchema));
+		const form = await superValidate(event, zod(exerciseSchema));
 		const exerciseData = form.data;
 		if (!exerciseData) {
 			return fail(400, { error: 'Exercise data is missing' });
@@ -81,7 +82,7 @@ export const actions: Actions = {
 		}
 
 		return {
-			success: true
+			form
 		};
 	}
 };
