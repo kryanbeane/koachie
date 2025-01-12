@@ -59,6 +59,7 @@
 	</Resizable.Pane>
 	<Separator orientation="vertical" />
 	<WorkoutSidePanel
+		{workoutsState}
 		data={data.form}
 		workout={workoutsState.workouts?.find((item) => item.id === selectedWorkoutState.workout?.id)}
 	/>

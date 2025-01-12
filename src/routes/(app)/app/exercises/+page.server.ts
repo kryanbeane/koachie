@@ -34,11 +34,10 @@ export const actions: Actions = {
 			form.data.muscle_groups = form.data.muscle_groups[0].split(',');
 		}
 
-		console.log('FORM DATA', form.data);
-
-		await addExercise(event.locals.supabase, form.data);
+		const exercise = (await addExercise(event.locals.supabase, form.data)).at(0);
 		return {
-			form
+			form,
+			exercise
 		};
 	},
 	updateExercise: async (event) => {
@@ -59,11 +58,10 @@ export const actions: Actions = {
 			form.data.muscle_groups = form.data.muscle_groups[0].split(',');
 		}
 
-		console.log('FORM DATA', form.data);
-
-		await editExercise(event.locals.supabase, form.data);
+		const exercise = (await editExercise(event.locals.supabase, form.data)).at(0);
 		return {
-			form
+			form,
+			exercise
 		};
 	},
 	deleteExercise: async (event) => {
@@ -73,16 +71,17 @@ export const actions: Actions = {
 			return fail(400, { error: 'Exercise data is missing' });
 		}
 
-		console.log('FORM DATA', exerciseData);
-
 		// Delete from the database
 		const success = await removeExercise(event.locals.supabase, exerciseData);
 		if (!success) {
 			return fail(500, { error: 'Failed to delete exercise' });
 		}
 
+		const id = exerciseData.id;
+
 		return {
-			form
+			form,
+			id
 		};
 	}
 };

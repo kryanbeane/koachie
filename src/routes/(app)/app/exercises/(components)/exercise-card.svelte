@@ -9,30 +9,39 @@
 	import Check from 'lucide-svelte/icons/check';
 	import { createExerciseSchema, type Exercise } from '@/schemas/exercises';
 	import { updateExerciseSchema } from '@/schemas/exercises';
-	import { invalidateAll } from '$app/navigation';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { superForm, type SuperValidated } from 'sveltekit-superforms';
+	import { superForm, type FormResult, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { muscleGroupEnum, movementTypeEnum } from '$lib/data/enums.js';
+	import { toast } from 'svelte-sonner';
+	import type { ActionData } from '../$types';
+	import type { AllExerciseState } from '@/stores/all_exercise_state.svelte';
 
 	let {
 		createMode = $bindable(true),
 		editMode,
 		ex,
-		exercise
+		exercise,
+		exercisesState
 	}: {
 		ex: SuperValidated<Exercise>;
 		editMode: boolean;
 		createMode: boolean;
 		exercise: Exercise | null;
+		exercisesState: AllExerciseState;
 	} = $props();
 	const createForm = superForm(ex, {
 		id: 'create-exercise-form',
 		validators: zodClient(createExerciseSchema),
-		onSubmit: () => {
+		onUpdate({ form, result }) {
 			createMode = false;
+			const action = result.data as FormResult<ActionData>;
+			if (form.valid && action.exercise) {
+				exercisesState.add(action.exercise);
+				toast.success(`Exercise ${action.exercise.name} created successfully.`);
+			}
 		}
 	});
 	const { form: createFormData, enhance: createEnhance } = createForm;
@@ -40,9 +49,13 @@
 	const updateForm = superForm(exercise!!, {
 		id: 'update-exercise-form',
 		validators: zodClient(updateExerciseSchema),
-		onSubmit: () => {
-			console.log('Submitting form...');
+		onUpdate({ form, result }) {
 			editMode = false;
+			const action = result.data as FormResult<ActionData>;
+			if (form.valid && action.exercise) {
+				exercisesState.update(action.exercise);
+				toast.success(`Exercise ${action.exercise.name} updated successfully.`);
+			}
 		}
 	});
 
@@ -51,9 +64,13 @@
 	const deleteForm = superForm(exercise!!, {
 		id: 'delete-exercise-form',
 		validators: zodClient(updateExerciseSchema),
-		onSubmit: () => {
-			console.log('Submitting Delete form...');
+		onUpdate({ form, result }) {
 			$deleteFormData = { ...exercise!! };
+			const action = result.data as FormResult<ActionData>;
+			if (form.valid && action.id) {
+				exercisesState.remove(action.id);
+				toast.success(`Exercise deleted successfully.`);
+			}
 		}
 	});
 

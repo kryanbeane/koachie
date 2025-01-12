@@ -9,6 +9,7 @@
 	import ExerciseList from './(components)/exercise-list.svelte';
 	import ExerciseCard from './(components)/exercise-card.svelte';
 	import { onMount } from 'svelte';
+	import { getAllExerciseState } from '@/stores/all_exercise_state.svelte';
 
 	export let data: PageData;
 
@@ -16,7 +17,8 @@
 
 	routeStore.set('Exercises');
 
-	let exercises = data.exercises;
+	let exercisesState = getAllExerciseState();
+	exercisesState.set(data.exercises);
 
 	export let defaultLayout = [60, 40];
 	export let defaultCollapsed = false;
@@ -127,6 +129,7 @@
 					{#if createMode}
 						<div class="p-4">
 							<ExerciseCard
+								{exercisesState}
 								ex={data.ex}
 								exercise={{
 									name: '',
@@ -149,7 +152,7 @@
 				<div class="flex-1 overflow-auto">
 					<Tabs.Content value="all" class="m-0 h-full">
 						<div class="mt-4 h-full">
-							<ExerciseList ex={data.ex} {exercises} />
+							<ExerciseList ex={data.ex} {exercisesState} />
 						</div>
 					</Tabs.Content>
 				</div>
