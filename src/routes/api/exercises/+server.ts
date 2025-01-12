@@ -30,6 +30,7 @@ export const PUT: RequestHandler = async (event) => {
 };
 
 export const DELETE: RequestHandler = async (event) => {
+	console.log('POST request received!');
 	const exercise = await event.request.json();
 	const deletedExercise = await removeExercise(event.locals.supabase, exercise);
 	return new Response(JSON.stringify(deletedExercise));

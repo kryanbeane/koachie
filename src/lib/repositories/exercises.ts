@@ -23,10 +23,17 @@ export async function createExercise(
 	}
 }
 
-export async function updateExercise(client: SupabaseClient, exercise: Exercise) {
-	const { data, error } = await client.from('exercises').upsert([exercise]);
+export async function updateExercise(
+	client: SupabaseClient,
+	exercise: Exercise
+): Promise<Exercise[]> {
+	const { data, error } = await client
+		.from('exercises')
+		.update([exercise])
+		.eq('id', exercise.id)
+		.select('*');
 	if (data && !error) {
-		return data;
+		return data as Exercise[];
 	} else {
 		throw error;
 	}

@@ -27,6 +27,10 @@ export const createExerciseSchema = z.object({
 });
 
 export const updateExerciseSchema = z.object({
+	id: z.string().uuid().optional(),
+	coach_id: z.string().uuid().nullable().optional(),
+	created_at: z.string().datetime().optional(),
+	updated_at: z.string().datetime().optional(),
 	name: z.string().max(100),
 	note: z.string().max(250),
 	instructions: z.array(z.string().max(250)),

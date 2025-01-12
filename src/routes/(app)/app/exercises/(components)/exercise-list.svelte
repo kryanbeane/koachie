@@ -3,10 +3,10 @@
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import ExerciseCard from './exercise-card.svelte';
 	import { cn } from '$lib/utils.js';
-	import type { CreateExercise, Exercise } from '@/schemas/exercises';
+	import type { CreateExercise, Exercise, UpdateExercise } from '@/schemas/exercises';
 	import type { SuperValidated, Infer } from 'sveltekit-superforms';
 
-	export let ex: SuperValidated<CreateExercise>;
+	export let ex: SuperValidated<UpdateExercise>;
 	export let exercises: Exercise[];
 </script>
 

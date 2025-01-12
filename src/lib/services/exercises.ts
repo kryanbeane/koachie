@@ -24,7 +24,11 @@ export async function addExercise(supabase: SupabaseClient, exercise: Exercise) 
 }
 
 export async function editExercise(supabase: SupabaseClient, exercise: Exercise) {
-	return await updateExercise(supabase, exercise);
+	const e = await updateExercise(supabase, exercise);
+	if (!e) {
+		throw new Error('Failed to update exercise');
+	}
+	return e;
 }
 
 export async function removeExercise(supabase: SupabaseClient, exercise: Exercise) {

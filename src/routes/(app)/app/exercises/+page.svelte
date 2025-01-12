@@ -22,15 +22,6 @@
 	export let defaultCollapsed = false;
 	let isCollapsed = defaultCollapsed;
 
-	let exercise = {
-		name: 'Push-up',
-		note: 'Hello',
-		instructions: ['Step 1', 'Step 2', 'Step 3'],
-		muscle_groups: ['Chest', 'Triceps'],
-		movement_type: 'Strength',
-		video: ''
-	};
-
 	function checkScreenSize() {
 		isCollapsed = window.innerWidth < 640; // Adjust breakpoint as needed
 	}

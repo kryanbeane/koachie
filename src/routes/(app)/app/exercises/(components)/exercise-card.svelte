@@ -7,7 +7,12 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
 	import Check from 'lucide-svelte/icons/check';
-	import { createExerciseSchema, type CreateExercise, type Exercise } from '@/schemas/exercises';
+	import {
+		createExerciseSchema,
+		type CreateExercise,
+		type Exercise,
+		type UpdateExercise
+	} from '@/schemas/exercises';
 	import { updateExerciseSchema } from '@/schemas/exercises';
 	import { invalidateAll } from '$app/navigation';
 	import * as Form from '$lib/components/ui/form/index.js';
@@ -23,7 +28,7 @@
 		ex,
 		exercise
 	}: {
-		ex: SuperValidated<CreateExercise>;
+		ex: SuperValidated<Exercise>;
 		editMode: boolean;
 		createMode: boolean;
 		exercise: Exercise | null;
@@ -37,15 +42,19 @@
 	const { form: createFormData, enhance: createEnhance } = createForm;
 
 	const updateForm = superForm(exercise!!, {
-		validators: zodClient(updateExerciseSchema)
+		validators: zodClient(updateExerciseSchema),
+		onSubmit: () => {
+			console.log('Submitting form...');
+			editMode = false;
+		}
 	});
 
 	const { form: updateFormData, enhance: updateEnhance } = updateForm;
 
 	// Handle edit Button click
 	function handleEdit(event: Event, exercise: Exercise) {
-		event.stopPropagation(); // Prevent triggering the parent card click
 		console.log('Edit clicked for:', exercise.id);
+		$updateFormData.id = exercise.id;
 		editMode = true;
 	}
 
@@ -91,13 +100,13 @@
 	// 	invalidateAll();
 	// }
 
-	// Handle save Button click
-	function handleSave(event: Event, exercise: Exercise) {
-		event.stopPropagation(); // Prevent triggering the parent card click
-		console.log('Save clicked for:', exercise.id);
-		//handleUpdateExercise();
-		editMode = false;
-	}
+	// // Handle save Button click
+	// function handleSave(event: Event, exercise: Exercise) {
+	// 	event.stopPropagation(); // Prevent triggering the parent card click
+	// 	console.log('Save clicked for:', exercise.id);
+	// 	//handleUpdateExercise();
+	// 	editMode = false;
+	// }
 
 	// Handle cancel Button click
 	function handleCancel(event: Event, exercise: Exercise) {
@@ -278,7 +287,7 @@
 				</svg>
 			</Button>
 			<form method="POST" action="?/deleteExercise">
-				<Input type="hidden" name="id" value={exercise!!} />
+				<Input type="hidden" name="id" bind:value={$updateFormData} />
 
 				<Form.Button
 					class="mr-2 rounded-md bg-red-200 p-3 transition-all hover:bg-red-300"
@@ -316,6 +325,7 @@
 				<Form.Field form={updateForm} name="name">
 					<Form.Control>
 						{#snippet children({ props })}
+							<Input type="hidden" name="id" bind:value={$updateFormData.id} />
 							<Input
 								{...props}
 								class="w-full bg-transparent text-xl font-semibold text-white"
@@ -345,6 +355,11 @@
 							<Popover.Root bind:open={openMovement} {...props}>
 								<Popover.Trigger bind:ref={triggerRefMovement}>
 									{#snippet child({ props })}
+										<Input
+											type="hidden"
+											name="movement_type"
+											bind:value={$updateFormData.movement_type}
+										/>
 										<Button
 											variant="outline"
 											class="flex w-full justify-between"
@@ -413,6 +428,11 @@
 							<Popover.Root bind:open={openMuscle} {...props}>
 								<Popover.Trigger bind:ref={triggerRefMuscle}>
 									{#snippet child({ props })}
+										<Input
+											type="hidden"
+											name="muscle_groups"
+											bind:value={$updateFormData.muscle_groups}
+										/>
 										<Button
 											variant="outline"
 											class="w-full justify-between"
@@ -463,6 +483,7 @@
 				<Form.Field form={updateForm} name="instructions" class="flex-1">
 					<Form.Control>
 						{#snippet children({ props })}
+							<Input type="hidden" name="instructions" bind:value={$updateFormData.instructions} />
 							<div
 								class={cn(
 									'scrollbar-thin scrollbar-thumb-gray-200 overflow-y-auto rounded-md border-2 border-gray-500 p-2',
@@ -473,7 +494,7 @@
 								<ul class="space-y-2">
 									{#each $updateFormData.instructions as instruction, index}
 										<li class="flex items-center">
-											<input
+											<Input
 												type="text"
 												class="w-full bg-transparent text-xs font-semibold text-white"
 												bind:value={$updateFormData.instructions[index]}
@@ -499,12 +520,11 @@
 				</Form.Field>
 			</div>
 
-			<!-- Buttons Column (Fixed Size) -->
 			<div class="flex w-[50px] flex-col items-center justify-center gap-2">
 				<Form.Button
 					class="flex h-10 w-10 items-center justify-center rounded-md bg-gray-200 text-gray-800 transition-all hover:bg-gray-300"
 					aria-label="Save"
-					onclick={(e) => handleSave(e, exercise!!)}
+					type="submit"
 				>
 					<svg
 						class="h-4 w-4 text-gray-800"
