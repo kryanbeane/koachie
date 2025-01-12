@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-
-	import { toast } from 'svelte-sonner';
 	import LoaderCircleIcon from 'lucide-svelte/icons/loader-circle';
 	import EmailIcon from 'lucide-svelte/icons/mail';
 

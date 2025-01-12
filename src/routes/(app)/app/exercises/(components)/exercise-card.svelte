@@ -17,7 +17,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { muscleGroupEnum, movementTypeEnum } from '$lib/data/enums.js';

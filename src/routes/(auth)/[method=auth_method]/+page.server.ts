@@ -2,9 +2,10 @@ import type { PageServerLoad } from './$types';
 
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import type { MetaTagsProps } from 'svelte-meta-tags';
 
 import { emailAuthSchema } from '@/schemas';
+
+import type { MetaTagsProps } from 'svelte-meta-tags';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { method } = params;

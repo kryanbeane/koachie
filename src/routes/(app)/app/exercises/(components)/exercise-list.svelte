@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
 	import ExerciseCard from './exercise-card.svelte';
 	import { cn } from '$lib/utils.js';
 	import type { CreateExercise, Exercise, UpdateExercise } from '@/schemas/exercises';

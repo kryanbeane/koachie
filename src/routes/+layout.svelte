@@ -8,6 +8,8 @@
 	import { deepMerge, MetaTags } from 'svelte-meta-tags';
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from 'svelte-sonner';
+	import { setAllWorkoutState } from '@/stores/all_workout_state.svelte';
+	import { setSelectedWorkoutState } from '@/stores/selected_workout_state.svelte';
 
 	interface Props {
 		data: LayoutData;
@@ -28,12 +30,15 @@
 	});
 
 	let metaTags = $derived(deepMerge(data.baseMetaTags, $page.data.pageMetaTags || {}));
+
+	setAllWorkoutState();
+	setSelectedWorkoutState();
 </script>
 
 <ModeWatcher defaultMode="system" />
 <Toaster position="top-center" />
 <MetaTags {...metaTags} />
 
-<main>
+<main class="flex items-center gap-2 px-4">
 	{@render children?.()}
 </main>
