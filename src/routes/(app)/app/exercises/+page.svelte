@@ -9,7 +9,6 @@
 	import ExerciseList from './(components)/exercise-list.svelte';
 	import ExerciseCard from './(components)/exercise-card.svelte';
 	import { onMount } from 'svelte';
-	import type { Exercise } from '@/schemas/exercises';
 
 	export let data: PageData;
 
@@ -22,19 +21,6 @@
 	export let defaultLayout = [60, 40];
 	export let defaultCollapsed = false;
 	let isCollapsed = defaultCollapsed;
-
-	let exercise: Exercise = {
-		id: '1',
-		created_at: '2021-09-01T00:00:00.000Z',
-		updated_at: '2021-09-01T00:00:00.000Z',
-		name: 'Push-up',
-		note: 'Hello',
-		instructions: ['Step 1', 'Step 2', 'Step 3'],
-		muscle_groups: ['Chest', 'Triceps'],
-		movement_type: 'Strength',
-		video: '',
-		coach_id: '1'
-	};
 
 	function checkScreenSize() {
 		isCollapsed = window.innerWidth < 640; // Adjust breakpoint as needed
@@ -63,6 +49,7 @@
 
 	function toggleExerciseCard() {
 		createMode = !createMode; // Toggle visibility
+		console.log('Toggle Exercise Card', createMode);
 	}
 </script>
 
@@ -139,7 +126,19 @@
 
 					{#if createMode}
 						<div class="p-4">
-							<ExerciseCard {exercise} editMode={true} bind:createMode />
+							<ExerciseCard
+								ex={data.ex}
+								exercise={{
+									name: '',
+									note: '',
+									movement_type: '',
+									muscle_groups: [],
+									instructions: [],
+									video: ''
+								}}
+								editMode={false}
+								bind:createMode
+							/>
 						</div>
 					{/if}
 
@@ -150,7 +149,7 @@
 				<div class="flex-1 overflow-auto">
 					<Tabs.Content value="all" class="m-0 h-full">
 						<div class="mt-4 h-full">
-							<ExerciseList {exercises} />
+							<ExerciseList ex={data.ex} {exercises} />
 						</div>
 					</Tabs.Content>
 				</div>

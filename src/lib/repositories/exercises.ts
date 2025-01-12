@@ -11,28 +11,43 @@ export async function fetchExercises(client: SupabaseClient): Promise<Exercise[]
 	}
 }
 
-export async function createExercise(client: SupabaseClient, exercise: Exercise) {
-	const { data, error } = await client.from('exercises').insert([exercise]);
+export async function createExercise(
+	client: SupabaseClient,
+	exercise: Exercise
+): Promise<Exercise[]> {
+	const { data, error } = await client.from('exercises').insert([exercise]).select('*');
 	if (data && !error) {
-		return data;
+		return data as Exercise[];
 	} else {
 		throw error;
 	}
 }
 
-export async function updateExercise(client: SupabaseClient, exercise: Exercise) {
-	const { data, error } = await client.from('exercises').upsert([exercise]);
+export async function updateExercise(
+	client: SupabaseClient,
+	exercise: Exercise
+): Promise<Exercise[]> {
+	console.log('UPDATE EXERCISE', exercise);
+	const { data, error } = await client
+		.from('exercises')
+		.update([exercise])
+		.eq('id', exercise.id)
+		.select('*');
 	if (data && !error) {
-		return data;
+		return data as Exercise[];
 	} else {
 		throw error;
 	}
 }
 
-export async function deleteExercise(client: SupabaseClient, exercise: Exercise) {
-	const { data, error } = await client.from('exercises').delete().eq('id', exercise.id);
+export async function deleteExercise(
+	client: SupabaseClient,
+	exercise: Exercise
+): Promise<Exercise[]> {
+	console.log('DELETE EXERCISE', exercise);
+	const { data, error } = await client.from('exercises').delete().eq('id', exercise.id).select('*');
 	if (data && !error) {
-		return data;
+		return data as Exercise[];
 	} else {
 		throw error;
 	}

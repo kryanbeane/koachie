@@ -16,13 +16,27 @@ export async function getExercises(supabase: SupabaseClient): Promise<Exercise[]
 }
 
 export async function addExercise(supabase: SupabaseClient, exercise: Exercise) {
-	return await createExercise(supabase, exercise);
+	const e = await createExercise(supabase, exercise);
+	if (!e) {
+		throw new Error('Failed to add exercise');
+	}
+	return e;
 }
 
 export async function editExercise(supabase: SupabaseClient, exercise: Exercise) {
-	return await updateExercise(supabase, exercise);
+	console.log('SERVICE EXERCISE', exercise);
+	const e = await updateExercise(supabase, exercise);
+	if (!e) {
+		throw new Error('Failed to update exercise');
+	}
+	return e;
 }
 
 export async function removeExercise(supabase: SupabaseClient, exercise: Exercise) {
-	return await deleteExercise(supabase, exercise);
+	console.log('SERVICE EXERCISE', exercise);
+	const e = await deleteExercise(supabase, exercise);
+	if (!e) {
+		throw new Error('Failed to delete exercise');
+	}
+	return e;
 }
