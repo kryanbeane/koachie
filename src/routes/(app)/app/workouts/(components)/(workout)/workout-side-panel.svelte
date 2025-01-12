@@ -20,13 +20,13 @@
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
 	import { toast } from 'svelte-sonner';
-	import { getAllWorkoutState } from '@/stores/all_workout_state.svelte';
+	import { AllWorkoutState } from '@/stores/all_workout_state.svelte';
 	import Button from '@/components/ui/button/button.svelte';
 	import type { ActionData } from '../../$types';
 
 	export let workout: Workout | null = null;
 	export let data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
-	let workoutsState = getAllWorkoutState();
+	export let workoutsState: AllWorkoutState;
 
 	const form = superForm(data, {
 		validators: zodClient(createWorkoutFormSchema),

@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import ExerciseCard from './exercise-card.svelte';
-	import { cn } from '$lib/utils.js';
-	import type { CreateExercise, Exercise, UpdateExercise } from '@/schemas/exercises';
-	import type { SuperValidated, Infer } from 'sveltekit-superforms';
+	import type { Exercise, UpdateExercise } from '@/schemas/exercises';
+	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { AllExerciseState } from '@/stores/all_exercise_state.svelte';
 
+	export let exercisesState: AllExerciseState;
 	export let ex: SuperValidated<UpdateExercise>;
-	export let exercises: Exercise[];
 </script>
 
 <ScrollArea class="h-full overflow-hidden">
 	<div class="flex flex-col gap-2 p-4 pt-0">
-		{#each exercises as exercise}
-			<ExerciseCard {ex} {exercise} createMode={false} editMode={false} />
+		{#each exercisesState.exercises as exercise}
+			<ExerciseCard {exercisesState} {ex} {exercise} createMode={false} editMode={false} />
 		{/each}
 	</div>
 </ScrollArea>

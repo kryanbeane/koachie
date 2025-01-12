@@ -10,6 +10,7 @@
 	import { Toaster } from 'svelte-sonner';
 	import { setAllWorkoutState } from '@/stores/all_workout_state.svelte';
 	import { setSelectedWorkoutState } from '@/stores/selected_workout_state.svelte';
+	import { setAllExerciseState } from '@/stores/all_exercise_state.svelte';
 
 	interface Props {
 		data: LayoutData;
@@ -33,6 +34,7 @@
 
 	setAllWorkoutState();
 	setSelectedWorkoutState();
+	setAllExerciseState();
 </script>
 
 <ModeWatcher defaultMode="system" />

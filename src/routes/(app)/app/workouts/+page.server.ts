@@ -20,10 +20,6 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 	const form = await superValidate(zod(createWorkoutFormSchema));
 	const workouts = await getWorkouts(supabase);
 
-	console.log('================== SERVER page load ran ==================');
-	console.log(`Workouts from server: ${workouts.length}`);
-	console.log(' =========================================================');
-
 	return {
 		layout,
 		collapsed,
