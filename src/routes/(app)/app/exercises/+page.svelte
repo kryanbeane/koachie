@@ -10,6 +10,7 @@
 	import ExerciseCard from "./(components)/exercise-card.svelte";
 	import { onMount } from "svelte";
 	import type { Exercise } from "@/schemas/exercises";
+	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
 
 	export let data: PageData;
 
@@ -17,7 +18,8 @@
 
 	routeStore.set("Exercises");
 
-	let exercises = data.exercises;
+	let exercisesState = getAllExerciseState();
+	exercisesState.set(data.exercises);
 
 	export let defaultLayout = [60, 40];
 	export let defaultCollapsed = false;
@@ -63,6 +65,7 @@
 
 	function toggleExerciseCard() {
 		createMode = !createMode; // Toggle visibility
+		console.log("Toggle Exercise Card", createMode);
 	}
 </script>
 
@@ -139,7 +142,20 @@
 
 					{#if createMode}
 						<div class="p-4">
-							<ExerciseCard {exercise} editMode={true} bind:createMode />
+							<ExerciseCard
+								{exercisesState}
+								ex={data.ex}
+								exercise={{
+									name: "",
+									note: "",
+									movement_type: "",
+									muscle_groups: [],
+									instructions: [],
+									video: ""
+								}}
+								editMode={false}
+								bind:createMode
+							/>
 						</div>
 					{/if}
 
@@ -150,7 +166,7 @@
 				<div class="flex-1 overflow-auto">
 					<Tabs.Content value="all" class="m-0 h-full">
 						<div class="mt-4 h-full">
-							<ExerciseList {exercises} />
+							<ExerciseList ex={data.ex} {exercisesState} />
 						</div>
 					</Tabs.Content>
 				</div>

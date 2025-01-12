@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { routeStore } from '@/stores/route.store';
-	import * as Resizable from '$lib/components/ui/resizable';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { getAllWorkoutState } from '@/stores/all_workout_state.svelte';
-	import Search from 'lucide-svelte/icons/search';
-	import { Separator } from '@/components/ui/separator';
-	import { Input } from '@/components/ui/input';
-	import { getSelectedWorkoutState } from '@/stores/selected_workout_state.svelte';
-	import WorkoutList from './(components)/(workout)/workout-list.svelte';
-	import WorkoutSidePanel from './(components)/(workout)/workout-side-panel.svelte';
-	import type { PageData } from './$types';
+	import { routeStore } from "@/stores/route.store";
+	import * as Resizable from "$lib/components/ui/resizable";
+	import * as Tabs from "$lib/components/ui/tabs";
+	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
+	import Search from "lucide-svelte/icons/search";
+	import { Separator } from "@/components/ui/separator";
+	import { Input } from "@/components/ui/input";
+	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
+	import WorkoutList from "./(components)/(workout)/workout-list.svelte";
+	import WorkoutSidePanel from "./(components)/(workout)/workout-side-panel.svelte";
+	import type { PageData } from "./$types";
 
 	export let data: PageData;
 
@@ -17,7 +17,7 @@
 	let selectedWorkoutState = getSelectedWorkoutState();
 
 	workoutsState.set(data.workouts);
-	routeStore.set('Workouts');
+	routeStore.set("Workouts");
 
 	let defaultLayout = [265, 440, 60];
 
@@ -59,6 +59,7 @@
 	</Resizable.Pane>
 	<Separator orientation="vertical" />
 	<WorkoutSidePanel
+		{workoutsState}
 		data={data.form}
 		workout={workoutsState.workouts?.find((item) => item.id === selectedWorkoutState.workout?.id)}
 	/>

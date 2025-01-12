@@ -1,14 +1,14 @@
-import { fail } from 'assert';
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { fail } from "assert";
+import { superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
 
-import { createWorkoutFormSchema } from '@/schemas/workouts.js';
-import { addWorkout, getWorkouts } from '@/services/workouts.js';
+import { createWorkoutFormSchema } from "@/schemas/workouts.js";
+import { addWorkout, getWorkouts } from "@/services/workouts.js";
 
-import type { Actions, PageServerLoad } from './$types.js';
+import type { Actions, PageServerLoad } from "./$types.js";
 export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) => {
-	const layoutCookie = cookies.get('PaneForge:layout');
-	const collapsedCookie = cookies.get('PaneForge:collapsed');
+	const layoutCookie = cookies.get("PaneForge:layout");
+	const collapsedCookie = cookies.get("PaneForge:collapsed");
 
 	let layout: number[] | undefined;
 	let collapsed: boolean | undefined;
@@ -19,10 +19,6 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 	const form = await superValidate(zod(createWorkoutFormSchema));
 	const workouts = await getWorkouts(supabase);
-
-	console.log('================== SERVER page load ran ==================');
-	console.log(`Workouts from server: ${workouts.length}`);
-	console.log(' =========================================================');
 
 	return {
 		layout,

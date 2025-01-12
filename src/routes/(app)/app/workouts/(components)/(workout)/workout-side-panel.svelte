@@ -25,8 +25,8 @@
 	import type { ActionData } from "../../$types";
 	import { buttonVariants } from "@/components/ui/button";
 	import { cn } from "@/utils";
-	import ExerciseInstanceCard from "../(exercise_instances)/exercise_instance_card.svelte";
 	import type { CreateExerciseInstance } from "@/schemas/exercises";
+	import ExerciseInstanceCard from "../(exercise_instances)/exercise_instance_card.svelte";
 </script>
 
 <script lang="ts">
@@ -39,6 +39,7 @@
 	} = $props();
 
 	let workoutsState = getAllWorkoutState();
+	// let execises = getAll
 
 	const form = superForm(data, {
 		validators: zodClient(createWorkoutFormSchema),

@@ -1,19 +1,20 @@
 <script lang="ts">
-	import '../app.css';
-	import type { LayoutData } from './$types';
-	import { invalidate } from '$app/navigation';
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
+	import "../app.css";
+	import type { LayoutData } from "./$types";
+	import { invalidate } from "$app/navigation";
+	import { onMount } from "svelte";
+	import { page } from "$app/stores";
 
-	import { deepMerge, MetaTags } from 'svelte-meta-tags';
-	import { ModeWatcher } from 'mode-watcher';
-	import { Toaster } from 'svelte-sonner';
-	import { setAllWorkoutState } from '@/stores/all_workout_state.svelte';
-	import { setSelectedWorkoutState } from '@/stores/selected_workout_state.svelte';
+	import { deepMerge, MetaTags } from "svelte-meta-tags";
+	import { ModeWatcher } from "mode-watcher";
+	import { Toaster } from "svelte-sonner";
+	import { setAllWorkoutState } from "@/stores/all_workout_state.svelte";
+	import { setSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
+	import { setAllExerciseState } from "@/stores/all_exercise_state.svelte";
 
 	interface Props {
 		data: LayoutData;
-		children: import('svelte').Snippet;
+		children: import("svelte").Snippet;
 	}
 
 	let { data, children }: Props = $props();
@@ -22,7 +23,7 @@
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
 			if (newSession?.expires_at !== session?.expires_at) {
-				invalidate('supabase:auth');
+				invalidate("supabase:auth");
 			}
 		});
 
@@ -33,6 +34,7 @@
 
 	setAllWorkoutState();
 	setSelectedWorkoutState();
+	setAllExerciseState();
 </script>
 
 <ModeWatcher defaultMode="system" />
