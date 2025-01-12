@@ -370,21 +370,24 @@
 				</Form.Field>
 
 				<!-- Muscle Groups -->
-				<div
-					class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex gap-2 overflow-x-auto py-2"
-				>
-					{#each $updateFormData.muscle_groups as group}
-						<Badge>
-							{group}
-							<Button
-								type="button"
-								onclick={() => removeMuscleGroup(group)}
-								class="text-red-500 hover:text-red-700"
-							>
-								&times;
-							</Button>
-						</Badge>
-					{/each}
+				<div class="w-full max-w-[400px] overflow-hidden">
+					<div
+						class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100
+								flex gap-2 overflow-x-auto py-2"
+					>
+						{#each $updateFormData.muscle_groups as group}
+							<Badge class="min-w-[80px] flex-shrink-0">
+								{group}
+								<Button
+									type="button"
+									onclick={() => removeMuscleGroup(group)}
+									class="text-red-500 hover:text-red-700"
+								>
+									&times;
+								</Button>
+							</Badge>
+						{/each}
+					</div>
 				</div>
 
 				<Form.Field form={updateForm} name="muscle_groups">
