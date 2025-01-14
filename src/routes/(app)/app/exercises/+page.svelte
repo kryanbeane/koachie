@@ -11,17 +11,30 @@
 	import { onMount } from 'svelte';
 	import { getAllExerciseState } from '@/stores/all_exercise_state.svelte';
 
-	export let data: PageData;
+	let searchQuery = $state('');
 
-	let createMode = false;
+	let {
+		data,
+		defaultLayout = [60, 40],
+		defaultCollapsed
+	}: { data: PageData; defaultLayout: number[]; defaultCollapsed: boolean } = $props();
+	let createMode = $state(false);
 
 	routeStore.set('Exercises');
 
 	let exercisesState = getAllExerciseState();
 	exercisesState.set(data.exercises);
 
-	export let defaultLayout = [60, 40];
-	export let defaultCollapsed = false;
+	let filteredExercises = $derived(
+		exercisesState.exercises.filter((exercise) =>
+			exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
+		)
+	);
+
+	$effect(() => {
+		console.log('===', searchQuery);
+	});
+
 	let isCollapsed = defaultCollapsed;
 
 	function checkScreenSize() {
@@ -111,7 +124,7 @@
 									<Search
 										class="absolute left-2 top-[50%] h-4 w-4 translate-y-[-50%] text-muted-foreground"
 									/>
-									<Input placeholder="Search" class="pl-8" />
+									<Input placeholder="Search" class="pl-8" bind:value={searchQuery} />
 								</div>
 							</form>
 						</div>
@@ -152,7 +165,7 @@
 				<div class="flex-1 overflow-auto">
 					<Tabs.Content value="all" class="m-0 h-full">
 						<div class="mt-4 h-full">
-							<ExerciseList ex={data.ex} {exercisesState} />
+							<ExerciseList ex={data.ex} {exercisesState} {filteredExercises} />
 						</div>
 					</Tabs.Content>
 				</div>
@@ -160,4 +173,3 @@
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
 </div>
-ur m

@@ -11,13 +11,21 @@
 	import WorkoutSidePanel from './(components)/(workout)/workout-side-panel.svelte';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
 	let workoutsState = getAllWorkoutState();
 	let selectedWorkoutState = getSelectedWorkoutState();
 
+	let searchQuery = $state('');
+
 	workoutsState.set(data.workouts);
 	routeStore.set('Workouts');
+
+	let filteredWorkouts = $derived(
+		workoutsState.workouts.filter((workout) =>
+			workout.name.toLowerCase().includes(searchQuery.toLowerCase())
+		)
+	);
 
 	let defaultLayout = [265, 440, 60];
 
@@ -38,7 +46,7 @@
 							<Search
 								class="absolute left-2 top-[50%] h-4 w-4 translate-y-[-50%] text-muted-foreground"
 							/>
-							<Input placeholder="Search" class="pl-8" />
+							<Input placeholder="Search" class="pl-8" bind:value={searchQuery} />
 						</div>
 					</form>
 				</div>
@@ -53,7 +61,7 @@
 			<Separator class="my-2" />
 
 			<Tabs.Content value="all" class="m-0">
-				<WorkoutList workouts={workoutsState.workouts} />
+				<WorkoutList workouts={filteredWorkouts} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</Resizable.Pane>
