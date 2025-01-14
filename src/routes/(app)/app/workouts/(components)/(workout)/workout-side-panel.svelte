@@ -25,8 +25,10 @@
 	import type { ActionData } from "../../$types";
 	import { buttonVariants } from "@/components/ui/button";
 	import { cn } from "@/utils";
-	import type { CreateExerciseInstance } from "@/schemas/exercises";
+	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
 	import ExerciseInstanceCard from "../(exercise_instances)/exercise_instance_card.svelte";
+	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
+	import { onMount } from "svelte";
 </script>
 
 <script lang="ts">
@@ -39,7 +41,20 @@
 	} = $props();
 
 	let workoutsState = getAllWorkoutState();
-	// let execises = getAll
+
+	let exercises: Exercise[] = $state([]);
+	onMount(async () => {
+		let resp = await fetch("/api/exercises", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json"
+			}
+		});
+
+		exercises = JSON.parse(await resp.text());
+
+		console.log("Aaaaaaaa", resp);
+	});
 
 	const form = superForm(data, {
 		validators: zodClient(createWorkoutFormSchema),
@@ -89,7 +104,7 @@
 		exercise_instances.push({
 			performance: [
 				{
-					order: exercise_instances.length,
+					order: 0,
 					reps: null,
 					weight: null,
 					restTime: "00:00"
@@ -156,7 +171,7 @@
 
 			<ScrollArea orientation="vertical">
 				{#each exercise_instances as instance}
-					<ExerciseInstanceCard {instance} />
+					<ExerciseInstanceCard {instance} {exercises} />
 				{/each}
 			</ScrollArea>
 

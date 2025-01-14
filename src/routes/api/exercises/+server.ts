@@ -4,7 +4,6 @@ import { addExercise, editExercise, getExercises, removeExercise } from "@/servi
 
 export const GET: RequestHandler = async (event) => {
 	const exercises = await getExercises(event.locals.supabase);
-	console.log("EXERCISES ", exercises);
 	return new Response(JSON.stringify(exercises));
 };
 

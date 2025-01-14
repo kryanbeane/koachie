@@ -1,15 +1,14 @@
 <script lang="ts">
-	import { tick } from 'svelte';
-	import * as Command from '$lib/components/ui/command/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { ChevronsUpDown, Check } from 'lucide-svelte/icons';
-	import { cn } from '$lib/utils.js';
+	import { tick } from "svelte";
+	import * as Command from "$lib/components/ui/command/index.js";
+	import * as Popover from "$lib/components/ui/popover/index.js";
+	import { Button } from "$lib/components/ui/button/index.js";
+	import { cn } from "$lib/utils.js";
+	import { ChevronsUpDown, Check } from "lucide-svelte";
 
 	let { exercises } = $props();
-
 	let open = $state(false);
-	let value = $state('');
+	let value = $state("");
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
 	const selectedValue = $derived(exercises.find((f: { name: string }) => f.name === value));
@@ -34,7 +33,7 @@
 			>
 				<div class="flex w-full">
 					<span class="flex-grow text-left">
-						{selectedValue?.name || 'Select a new exercise...'}
+						{selectedValue?.name || "Select a new exercise..."}
 					</span>
 					<ChevronsUpDown class="ml-auto opacity-50" />
 				</div>
@@ -55,7 +54,7 @@
 								closeAndFocusTrigger();
 							}}
 						>
-							<Check class={cn(value !== exercise.name && 'text-transparent')} />
+							<Check class={cn(value !== exercise.name && "text-transparent")} />
 							{exercise.name}
 						</Command.Item>
 					{/each}

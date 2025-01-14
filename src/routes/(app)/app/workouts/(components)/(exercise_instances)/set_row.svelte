@@ -10,7 +10,7 @@
 {#snippet field(field: number | null, placeholder: string)}
 	<Table.Cell class="flex-1">
 		{#if field === null}
-			<InputWithVariant variant="set" type="text" {placeholder} />
+			<InputWithVariant variant="set" sizing="sm" type="text" {placeholder} />
 		{:else}
 			<InputWithVariant variant="set" type="text" {placeholder} value={field} />
 		{/if}

@@ -5,16 +5,15 @@
 	import type { WithElementRef } from "bits-ui";
 
 	export const inputVariants = tv({
-		base: "flex h-10 w-full rounded-md border-0 bg-background py-2 text-base placeholder:text-muted-foreground md:text-sm",
+		base: "flex h-8 w-full rounded-md border-0 bg-background text-base placeholder:text-muted-foreground md:text-sm",
 		variants: {
 			variant: {
 				default: "",
-				set: "text-center"
-				// set: "max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+				set: "text-center bg-transparent"
 			},
 			sizing: {
 				default: "h-10 px-4 py-2",
-				sm: "h-9 rounded-md px-3",
+				sm: "h-8 w-16 rounded-sm",
 				lg: "h-11 rounded-md px-8",
 				icon: "h-10 w-10"
 			}
