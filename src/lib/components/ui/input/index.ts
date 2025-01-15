@@ -1,9 +1,9 @@
-import Root from './input.svelte';
-import NameInput from './name-input.svelte';
+import Root from "./input.svelte";
+import InputWithVariant from "./input-with-variants.svelte";
 
 export {
 	Root,
 	//
 	Root as Input,
-	NameInput as NameInput
+	InputWithVariant
 };

@@ -1,8 +1,8 @@
-import type { Exercise } from '@/schemas/exercises';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Exercise } from "@/schemas/exercises";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function fetchExercises(client: SupabaseClient): Promise<Exercise[]> {
-	const { data: exercises, error } = await client.from('exercises').select('*');
+	const { data: exercises, error } = await client.from("exercises").select("*");
 	if (!error) {
 		return exercises;
 	} else {
@@ -14,7 +14,7 @@ export async function createExercise(
 	client: SupabaseClient,
 	exercise: Exercise
 ): Promise<Exercise[]> {
-	const { data, error } = await client.from('exercises').insert([exercise]).select('*');
+	const { data, error } = await client.from("exercises").insert([exercise]).select("*");
 	if (data && !error) {
 		return data as Exercise[];
 	} else {
@@ -26,12 +26,12 @@ export async function updateExercise(
 	client: SupabaseClient,
 	exercise: Exercise
 ): Promise<Exercise[]> {
-	console.log('UPDATE EXERCISE', exercise);
+	console.log("UPDATE EXERCISE", exercise);
 	const { data, error } = await client
-		.from('exercises')
+		.from("exercises")
 		.update([exercise])
-		.eq('id', exercise.id)
-		.select('*');
+		.eq("id", exercise.id)
+		.select("*");
 	if (data && !error) {
 		return data as Exercise[];
 	} else {
@@ -43,8 +43,8 @@ export async function deleteExercise(
 	client: SupabaseClient,
 	exercise: Exercise
 ): Promise<Exercise[]> {
-	console.log('DELETE EXERCISE', exercise);
-	const { data, error } = await client.from('exercises').delete().eq('id', exercise.id).select('*');
+	console.log("DELETE EXERCISE", exercise);
+	const { data, error } = await client.from("exercises").delete().eq("id", exercise.id).select("*");
 	if (data && !error) {
 		return data as Exercise[];
 	} else {

@@ -1,5 +1,5 @@
-import type { Exercise } from '@/schemas/exercises';
-import { getContext, setContext } from 'svelte';
+import type { Exercise } from "@/schemas/exercises";
+import { getContext, setContext } from "svelte";
 
 export class AllExerciseState {
 	exercises = $state<Exercise[]>([]);
@@ -27,7 +27,7 @@ export class AllExerciseState {
 	}
 }
 
-const KEY = 'exercises';
+const KEY = "exercises";
 
 export function setAllExerciseState(): AllExerciseState {
 	return setContext(KEY, new AllExerciseState());

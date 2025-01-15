@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
+	import { cn } from "$lib/utils.js";
 
-	import * as Command from '$lib/components/ui/command/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { tick } from 'svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
-	import Check from 'lucide-svelte/icons/check';
-	import { createExerciseSchema, type Exercise } from '@/schemas/exercises';
-	import { updateExerciseSchema } from '@/schemas/exercises';
-	import * as Form from '$lib/components/ui/form/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { superForm, type FormResult, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { muscleGroupEnum, movementTypeEnum } from '$lib/data/enums.js';
-	import { toast } from 'svelte-sonner';
-	import type { ActionData } from '../$types';
-	import type { AllExerciseState } from '@/stores/all_exercise_state.svelte';
+	import * as Command from "$lib/components/ui/command/index.js";
+	import * as Popover from "$lib/components/ui/popover/index.js";
+	import { tick } from "svelte";
+	import { Button } from "$lib/components/ui/button/index.js";
+	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
+	import Check from "lucide-svelte/icons/check";
+	import { createExerciseSchema, type Exercise } from "@/schemas/exercises";
+	import { updateExerciseSchema } from "@/schemas/exercises";
+	import * as Form from "$lib/components/ui/form/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import { superForm, type FormResult, type SuperValidated } from "sveltekit-superforms";
+	import { zodClient } from "sveltekit-superforms/adapters";
+	import { Badge } from "$lib/components/ui/badge/index.js";
+	import { muscleGroupEnum, movementTypeEnum } from "$lib/data/enums.js";
+	import { toast } from "svelte-sonner";
+	import type { ActionData } from "../$types";
+	import type { AllExerciseState } from "@/stores/all_exercise_state.svelte";
 
 	let {
 		createMode = $bindable(true),
@@ -33,7 +33,7 @@
 		exercisesState: AllExerciseState;
 	} = $props();
 	const createForm = superForm(ex, {
-		id: 'create-exercise-form',
+		id: "create-exercise-form",
 		validators: zodClient(createExerciseSchema),
 		onUpdate({ form, result }) {
 			createMode = false;
@@ -47,7 +47,7 @@
 	const { form: createFormData, enhance: createEnhance } = createForm;
 
 	const updateForm = superForm(exercise!!, {
-		id: 'update-exercise-form',
+		id: "update-exercise-form",
 		validators: zodClient(updateExerciseSchema),
 		onUpdate({ form, result }) {
 			editMode = false;
@@ -62,7 +62,7 @@
 	const { form: updateFormData, enhance: updateEnhance } = updateForm;
 
 	const deleteForm = superForm(exercise!!, {
-		id: 'delete-exercise-form',
+		id: "delete-exercise-form",
 		validators: zodClient(updateExerciseSchema),
 		onUpdate({ form, result }) {
 			$deleteFormData = { ...exercise!! };
@@ -78,7 +78,7 @@
 
 	// Handle edit Button click
 	function handleEdit(event: Event, exercise: Exercise) {
-		console.log('Edit clicked for:', exercise.id);
+		console.log("Edit clicked for:", exercise.id);
 		$updateFormData = { ...exercise };
 		editMode = true;
 	}
@@ -86,7 +86,7 @@
 	// Handle cancel Button click
 	function handleCancel(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
-		console.log('Cancel clicked for:', exercise.id);
+		console.log("Cancel clicked for:", exercise.id);
 		editMode = false;
 	}
 
@@ -124,10 +124,10 @@
 
 	function addInstruction() {
 		if (createMode) {
-			$createFormData = { ...$createFormData, instructions: [...$createFormData.instructions, ''] };
-			console.log('INSTRUCTIONS', $createFormData.instructions);
+			$createFormData = { ...$createFormData, instructions: [...$createFormData.instructions, ""] };
+			console.log("INSTRUCTIONS", $createFormData.instructions);
 		} else {
-			$updateFormData = { ...$updateFormData, instructions: [...$updateFormData.instructions, ''] };
+			$updateFormData = { ...$updateFormData, instructions: [...$updateFormData.instructions, ""] };
 		}
 	}
 
@@ -147,7 +147,7 @@
 
 	function handleCancelCreate(event: Event, exercise: Exercise) {
 		event.stopPropagation(); // Prevent triggering the parent card click
-		console.log('Cancel clicked for:', exercise.id);
+		console.log("Cancel clicked for:", exercise.id);
 		createMode = false;
 	}
 
@@ -155,11 +155,11 @@
 	let allMovementTypes = Object.values(movementTypeEnum.Values);
 
 	let openMovement = $state(false);
-	let movementValue = $state('');
+	let movementValue = $state("");
 	let triggerRefMovement = $state<HTMLButtonElement>(null!);
 
 	let openMuscle = $state(false);
-	let muscleValue = $state('');
+	let muscleValue = $state("");
 	let triggerRefMuscle = $state<HTMLButtonElement>(null!);
 
 	function closeAndFocusTriggerMovement() {
@@ -183,10 +183,10 @@
 {#if !editMode && !createMode}
 	<div
 		class={cn(
-			'group relative flex h-fit items-start gap-4 rounded-lg border p-3 text-left text-sm',
-			'bg-muted transition-all duration-300 ease-in-out',
-			!editMode && 'hover:border-accent hover:bg-accent hover:shadow-lg hover:shadow-accent/70',
-			editMode && 'border-gray-500 bg-gray-800'
+			"group relative flex h-fit items-start gap-4 rounded-lg border p-3 text-left text-sm",
+			"bg-muted transition-all duration-300 ease-in-out",
+			!editMode && "hover:border-accent hover:bg-accent hover:shadow-lg hover:shadow-accent/70",
+			editMode && "border-gray-500 bg-gray-800"
 		)}
 	>
 		<!--Main Content -->
@@ -215,13 +215,13 @@
 			{#if exercise!!.instructions.length > 0}
 				<div
 					class={cn(
-						'ml-10 w-[40%] transform transition-all duration-300 ease-in-out',
-						'group-hover:-translate-x-10'
+						"ml-10 w-[40%] transform transition-all duration-300 ease-in-out",
+						"group-hover:-translate-x-10"
 					)}
 				>
 					<div
 						class={cn(
-							'scrollbar-thin scrollbar-thumb-gray-200 max-h-24 overflow-y-auto rounded-md border-2 border-gray-500 p-1'
+							"scrollbar-thin scrollbar-thumb-gray-200 max-h-24 overflow-y-auto rounded-md border-2 border-gray-500 p-1"
 						)}
 					>
 						<h3 class="text-md mb-1 text-center font-semibold text-white">Instructions</h3>
@@ -296,9 +296,9 @@
 {:else if editMode && !createMode}
 	<div
 		class={cn(
-			'group relative flex items-start gap-4 rounded-lg border p-3 text-left text-sm',
-			'bg-muted transition-all duration-300 ease-in-out',
-			'border-gray-500 bg-gray-800'
+			"group relative flex items-start gap-4 rounded-lg border p-3 text-left text-sm",
+			"bg-muted transition-all duration-300 ease-in-out",
+			"border-gray-500 bg-gray-800"
 		)}
 	>
 		<form method="POST" action="?/updateExercise" use:updateEnhance class="flex w-full gap-6">
@@ -349,7 +349,7 @@
 											role="combobox"
 											aria-expanded={openMovement}
 										>
-											{selectedMovementTypeUpdate || 'Select a Movement Type'}
+											{selectedMovementTypeUpdate || "Select a Movement Type"}
 											<ChevronsUpDown class="opacity-50" />
 										</Button>
 									{/snippet}
@@ -370,7 +370,7 @@
 													>
 														<Check
 															class={cn(
-																$updateFormData.movement_type !== movementType && 'text-transparent'
+																$updateFormData.movement_type !== movementType && "text-transparent"
 															)}
 														/>
 														{movementType}
@@ -425,7 +425,7 @@
 											role="combobox"
 											aria-expanded={openMuscle}
 										>
-											{selectedMuscleGroup || 'Select a Muscle Group...'}
+											{selectedMuscleGroup || "Select a Muscle Group..."}
 											<ChevronsUpDown class="align-right opacity-50" />
 										</Button>
 									{/snippet}
@@ -447,7 +447,7 @@
 														<Check
 															class={cn(
 																!$updateFormData.muscle_groups.includes(muscleGroup) &&
-																	'text-transparent'
+																	"text-transparent"
 															)}
 														/>
 														{muscleGroup}
@@ -471,8 +471,8 @@
 							<Input type="hidden" name="instructions" bind:value={$updateFormData.instructions} />
 							<div
 								class={cn(
-									'scrollbar-thin scrollbar-thumb-gray-200 overflow-y-auto rounded-md border-2 border-gray-500 p-2',
-									'max-h-44'
+									"scrollbar-thin scrollbar-thumb-gray-200 overflow-y-auto rounded-md border-2 border-gray-500 p-2",
+									"max-h-44"
 								)}
 							>
 								<h3 class="text-md mb-2 text-center font-semibold text-white">Instructions</h3>
@@ -552,9 +552,9 @@
 {:else if createMode && !editMode}
 	<div
 		class={cn(
-			'group relative flex items-start gap-4 rounded-lg border p-3 text-left text-sm',
-			'bg-muted transition-all duration-300 ease-in-out',
-			'border-gray-500 bg-gray-800'
+			"group relative flex items-start gap-4 rounded-lg border p-3 text-left text-sm",
+			"bg-muted transition-all duration-300 ease-in-out",
+			"border-gray-500 bg-gray-800"
 		)}
 	>
 		<form method="POST" action="?/createExercise" use:createEnhance class="flex w-full gap-6">
@@ -606,7 +606,7 @@
 											role="combobox"
 											aria-expanded={openMovement}
 										>
-											{selectedMovementTypeCreate || 'Select a Movement Type'}
+											{selectedMovementTypeCreate || "Select a Movement Type"}
 											<ChevronsUpDown class="opacity-50" />
 										</Button>
 									{/snippet}
@@ -627,7 +627,7 @@
 													>
 														<Check
 															class={cn(
-																$createFormData.movement_type !== movementType && 'text-transparent'
+																$createFormData.movement_type !== movementType && "text-transparent"
 															)}
 														/>
 														{movementType}
@@ -679,7 +679,7 @@
 											role="combobox"
 											aria-expanded={openMuscle}
 										>
-											{selectedMuscleGroup || 'Select a Muscle Group...'}
+											{selectedMuscleGroup || "Select a Muscle Group..."}
 											<ChevronsUpDown class="align-right opacity-50" />
 										</Button>
 									{/snippet}
@@ -701,7 +701,7 @@
 														<Check
 															class={cn(
 																!$createFormData.muscle_groups.includes(muscleGroup) &&
-																	'text-transparent'
+																	"text-transparent"
 															)}
 														/>
 														{muscleGroup}
@@ -725,8 +725,8 @@
 							<Input type="hidden" name="instructions" bind:value={$createFormData.instructions} />
 							<div
 								class={cn(
-									'scrollbar-thin scrollbar-thumb-gray-200 overflow-y-auto rounded-md border-2 border-gray-500 p-2',
-									'max-h-44'
+									"scrollbar-thin scrollbar-thumb-gray-200 overflow-y-auto rounded-md border-2 border-gray-500 p-2",
+									"max-h-44"
 								)}
 							>
 								<h3 class="text-md mb-2 text-center font-semibold text-white">Instructions</h3>

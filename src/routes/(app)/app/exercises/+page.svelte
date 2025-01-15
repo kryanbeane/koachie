@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { type PageData } from './$types';
-	import { routeStore } from '@/stores/route.store';
-	import * as Resizable from '$lib/components/ui/resizable/index.js';
-	import Separator from '@/components/ui/separator/separator.svelte';
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import Search from 'lucide-svelte/icons/search';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import ExerciseList from './(components)/exercise-list.svelte';
-	import ExerciseCard from './(components)/exercise-card.svelte';
-	import { onMount } from 'svelte';
-	import { getAllExerciseState } from '@/stores/all_exercise_state.svelte';
+	import { type PageData } from "./$types";
+	import { routeStore } from "@/stores/route.store";
+	import * as Resizable from "$lib/components/ui/resizable/index.js";
+	import Separator from "@/components/ui/separator/separator.svelte";
+	import * as Tabs from "$lib/components/ui/tabs/index.js";
+	import Search from "lucide-svelte/icons/search";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import ExerciseList from "./(components)/exercise-list.svelte";
+	import ExerciseCard from "./(components)/exercise-card.svelte";
+	import { onMount } from "svelte";
+	import type { Exercise } from "@/schemas/exercises";
+	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
 
 	let searchQuery = $state('');
 
@@ -20,7 +21,7 @@
 	}: { data: PageData; defaultLayout: number[]; defaultCollapsed: boolean } = $props();
 	let createMode = $state(false);
 
-	routeStore.set('Exercises');
+	routeStore.set("Exercises");
 
 	let exercisesState = getAllExerciseState();
 	exercisesState.set(data.exercises);
@@ -37,6 +38,19 @@
 
 	let isCollapsed = defaultCollapsed;
 
+	let exercise: Exercise = {
+		id: "1",
+		created_at: "2021-09-01T00:00:00.000Z",
+		updated_at: "2021-09-01T00:00:00.000Z",
+		name: "Push-up",
+		note: "Hello",
+		instructions: ["Step 1", "Step 2", "Step 3"],
+		muscle_groups: ["Chest", "Triceps"],
+		movement_type: "Strength",
+		video: "",
+		coach_id: "1"
+	};
+
 	function checkScreenSize() {
 		isCollapsed = window.innerWidth < 640; // Adjust breakpoint as needed
 	}
@@ -44,8 +58,8 @@
 	// Attach event listener for dynamic resizing
 	onMount(() => {
 		checkScreenSize();
-		window.addEventListener('resize', checkScreenSize);
-		return () => window.removeEventListener('resize', checkScreenSize);
+		window.addEventListener("resize", checkScreenSize);
+		return () => window.removeEventListener("resize", checkScreenSize);
 	});
 
 	function onLayoutChange(sizes: number[]) {
@@ -64,7 +78,7 @@
 
 	function toggleExerciseCard() {
 		createMode = !createMode; // Toggle visibility
-		console.log('Toggle Exercise Card', createMode);
+		console.log("Toggle Exercise Card", createMode);
 	}
 </script>
 
@@ -86,7 +100,7 @@
 								? 'bg-gray-600'
 								: 'bg-accent'} 
 						text-white"
-							on:click={toggleExerciseCard}
+							onclick={toggleExerciseCard}
 						>
 							{#if createMode}
 								<svg
@@ -145,12 +159,12 @@
 								{exercisesState}
 								ex={data.ex}
 								exercise={{
-									name: '',
-									note: '',
-									movement_type: '',
+									name: "",
+									note: "",
+									movement_type: "",
 									muscle_groups: [],
 									instructions: [],
-									video: ''
+									video: ""
 								}}
 								editMode={false}
 								bind:createMode

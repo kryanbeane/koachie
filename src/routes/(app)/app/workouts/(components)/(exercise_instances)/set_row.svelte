@@ -1,44 +1,30 @@
 <script lang="ts">
-	import * as Table from '$lib/components/ui/table/index.js';
-	import TimeWidget from './time_widget.svelte';
+	import * as Table from "$lib/components/ui/table";
+	import type { SetPerformance } from "@/schemas/exercises";
+	import { InputWithVariant } from "$lib/components/ui/input";
+	import TimeWidget from "./time_widget.svelte";
+
+	let { setPerformance }: { setPerformance: SetPerformance[] } = $props();
 </script>
 
-<Table.Row>
-	<Table.Cell class="flex-1">1</Table.Cell>
+{#snippet field(field: number | null, placeholder: string)}
 	<Table.Cell class="flex-1">
-		<input
-			type="text"
-			id="counter-input"
-			data-input-counter
-			class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-			placeholder=""
-			value="12"
-			required
-		/>
+		{#if field === null}
+			<InputWithVariant variant="set" sizing="sm" type="text" {placeholder} />
+		{:else}
+			<InputWithVariant variant="set" type="text" {placeholder} value={field} />
+		{/if}
 	</Table.Cell>
-	<Table.Cell class="flex-1">
-		<input
-			type="text"
-			id="counter-input"
-			data-input-counter
-			class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-			placeholder=""
-			value="5-8"
-			required
-		/>
-	</Table.Cell>
-	<Table.Cell class="flex-1">
-		<input
-			type="text"
-			id="counter-input"
-			data-input-counter
-			class="max-w-[1.75rem] flex-shrink-0 border-0 bg-transparent text-center text-sm font-normal text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
-			placeholder=""
-			value="1"
-			required
-		/>
-	</Table.Cell>
-	<Table.Cell class="flex-1">
-		<TimeWidget />
-	</Table.Cell>
-</Table.Row>
+{/snippet}
+
+{#each setPerformance as set}
+	<Table.Row>
+		<Table.Cell class="flex-1">{set.order + 1}</Table.Cell>
+		{@render field(set.weight, "50 kg")}
+		{@render field(set.reps, "6-10")}
+
+		<Table.Cell class="flex-1">
+			<TimeWidget />
+		</Table.Cell>
+	</Table.Row>
+{/each}

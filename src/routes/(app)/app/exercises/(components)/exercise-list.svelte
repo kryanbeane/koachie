@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
-	import ExerciseCard from './exercise-card.svelte';
-	import type { Exercise, UpdateExercise } from '@/schemas/exercises';
-	import type { SuperValidated } from 'sveltekit-superforms';
-	import type { AllExerciseState } from '@/stores/all_exercise_state.svelte';
+	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+	import ExerciseCard from "./exercise-card.svelte";
+	import type { Exercise, UpdateExercise } from "@/schemas/exercises";
+	import type { SuperValidated } from "sveltekit-superforms";
+	import type { AllExerciseState } from "@/stores/all_exercise_state.svelte";
 
 	export let exercisesState: AllExerciseState;
 	export let filteredExercises: Exercise[];

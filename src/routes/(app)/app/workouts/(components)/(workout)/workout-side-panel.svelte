@@ -1,32 +1,60 @@
-<script lang="ts">
-	import * as DropdownMenu from '@/components/ui/dropdown-menu';
-	import { Separator } from '@/components/ui/separator';
-	import * as Tooltip from '@/components/ui/tooltip/index';
+<script lang="ts" module>
+	import * as DropdownMenu from "@/components/ui/dropdown-menu";
+	import { Separator } from "@/components/ui/separator";
+	import * as Tooltip from "@/components/ui/tooltip/index";
 	import {
 		createWorkoutFormSchema,
 		type CreateWorkoutFormSchema,
 		type Workout
-	} from '@/schemas/workouts';
-	import { EllipsisVertical, Trash2 } from 'lucide-svelte';
-	import * as Form from '$lib/components/ui/form/index.js';
+	} from "@/schemas/workouts";
+	import { EllipsisVertical, GitBranchPlus, Trash2 } from "lucide-svelte";
+	import * as Form from "$lib/components/ui/form/index.js";
 	import {
 		type SuperValidated,
 		type Infer,
 		superForm,
 		type FormResult
-	} from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import NameInput from '@/components/ui/input/name-input.svelte';
-	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import ScrollArea from '@/components/ui/scroll-area/scroll-area.svelte';
-	import { toast } from 'svelte-sonner';
-	import { AllWorkoutState } from '@/stores/all_workout_state.svelte';
-	import Button from '@/components/ui/button/button.svelte';
-	import type { ActionData } from '../../$types';
+	} from "sveltekit-superforms";
+	import { zodClient } from "sveltekit-superforms/adapters";
+	import NameInput from "@/components/ui/input/name-input.svelte";
+	import { Textarea } from "$lib/components/ui/textarea/index.js";
+	import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
+	import { toast } from "svelte-sonner";
+	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
+	import { Button } from "@/components/ui/button";
+	import type { ActionData } from "../../$types";
+	import { buttonVariants } from "@/components/ui/button";
+	import { cn } from "@/utils";
+	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
+	import ExerciseInstanceCard from "../(exercise_instances)/exercise_instance_card.svelte";
+	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
+	import { onMount } from "svelte";
+</script>
 
-	export let workout: Workout | null = null;
-	export let data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
-	export let workoutsState: AllWorkoutState;
+<script lang="ts">
+	let {
+		workout,
+		data
+	}: {
+		workout: Workout | null;
+		data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
+	} = $props();
+
+	let workoutsState = getAllWorkoutState();
+
+	let exercises: Exercise[] = $state([]);
+	onMount(async () => {
+		let resp = await fetch("/api/exercises", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json"
+			}
+		});
+
+		exercises = JSON.parse(await resp.text());
+
+		console.log("Aaaaaaaa", resp);
+	});
 
 	const form = superForm(data, {
 		validators: zodClient(createWorkoutFormSchema),
@@ -43,9 +71,9 @@
 	async function handleDeleteWorkout() {
 		if (workout) {
 			const response = await fetch(`/api/workouts`, {
-				method: 'DELETE',
+				method: "DELETE",
 				headers: {
-					'Content-Type': 'application/json'
+					"Content-Type": "application/json"
 				},
 				body: JSON.stringify({ id: workout.id })
 			});
@@ -57,7 +85,34 @@
 		}
 	}
 
+	let exercise_instances: CreateExerciseInstance[] = $state([
+		{
+			performance: [
+				{
+					order: 0,
+					reps: null,
+					weight: null,
+					restTime: "02:30"
+				}
+			]
+		}
+	]);
+
 	const { form: formData, enhance } = form;
+
+	function newExerciseInstance() {
+		exercise_instances.push({
+			performance: [
+				{
+					order: 0,
+					reps: null,
+					weight: null,
+					restTime: "00:00"
+				}
+			]
+		});
+		console.log(exercise_instances);
+	}
 </script>
 
 <div class="flex h-full min-w-[26rem] flex-col">
@@ -90,20 +145,13 @@
 		<div class="m-4">
 			<NameInput placeholder={workout.name} value={workout.name} />
 			<Textarea placeholder="Workout description..." value={workout.description} class="mt-2" />
-
-			<ScrollArea orientation="vertical">
-				<!-- {#each exerciseInstances as exercise_instance}
-					<ExerciseInstanceCard {exercise_instance} />
-				{/each} -->
-			</ScrollArea>
 		</div>
 	{:else}
-		<!-- <div class="p-8 text-center text-muted-foreground">No workout selected</div> -->
-		<form method="POST" use:enhance class="m-4 h-full">
+		<form method="POST" use:enhance class="m-4 flex h-full flex-col">
 			<Form.Field {form} name="name">
 				<Form.Control>
 					{#snippet children({ props })}
-						<NameInput placeholder="Workout Name..." {...props} bind:value={$formData.name} />
+						<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />
@@ -112,7 +160,7 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Textarea
-							placeholder="Workout description..."
+							placeholder="The workout that will win you the Mr. Olympia..."
 							{...props}
 							bind:value={$formData.description}
 						/>
@@ -120,12 +168,27 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
-			<Form.Button>Submit</Form.Button>
-		</form>
 
-		<!-- <Button variant="secondary" size="sm" class="mx-2">
-			<PlusSquareIcon size="24" />
-			Create
-		</Button> -->
+			<ScrollArea orientation="vertical">
+				{#each exercise_instances as instance}
+					<ExerciseInstanceCard {instance} {exercises} />
+				{/each}
+			</ScrollArea>
+
+			<button
+				class={cn(buttonVariants({ variant: "outline", size: "sm" }), "mx-4")}
+				type="button"
+				onclick={newExerciseInstance}
+			>
+				<GitBranchPlus />
+				Add Exercise
+			</button>
+
+			<div class="flex-grow"></div>
+
+			<div class="mt-4">
+				<Form.Button>Submit</Form.Button>
+			</div>
+		</form>
 	{/if}
 </div>
