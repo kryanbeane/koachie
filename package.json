@@ -17,7 +17,7 @@
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
-		"@snaplet/copycat": "^5.1.0",
+		"@snaplet/copycat": "^6.0.0",
 		"@snaplet/seed": "^0.98.0",
 		"@sveltejs/adapter-auto": "^4.0.0",
 		"@sveltejs/adapter-node": "^5.2.10",
