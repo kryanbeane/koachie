@@ -2,45 +2,35 @@
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
 	import { Separator } from "@/components/ui/separator";
 	import * as Tooltip from "@/components/ui/tooltip/index";
-	import {
-		createWorkoutFormSchema,
-		type CreateWorkoutFormSchema,
-		type Workout
-	} from "@/schemas/workouts";
+	import { workoutSchema, type Workout } from "@/schemas/workouts";
 	import { EllipsisVertical, GitBranchPlus, Trash2 } from "lucide-svelte";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import {
-		type SuperValidated,
-		type Infer,
-		superForm,
-		type FormResult
-	} from "sveltekit-superforms";
+	import { type SuperValidated, superForm, type FormResult } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
 	import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
 	import { toast } from "svelte-sonner";
-	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
+	import { AllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { Button } from "@/components/ui/button";
 	import type { ActionData } from "../../$types";
 	import { buttonVariants } from "@/components/ui/button";
 	import { cn } from "@/utils";
 	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
 	import ExerciseInstanceCard from "../(exercise_instances)/exercise_instance_card.svelte";
-	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
 	import { onMount } from "svelte";
 </script>
 
 <script lang="ts">
 	let {
+		workoutsState,
 		workout,
 		data
 	}: {
 		workout: Workout | null;
-		data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
+		data: SuperValidated<Workout>;
+		workoutsState: AllWorkoutState;
 	} = $props();
-
-	let workoutsState = getAllWorkoutState();
 
 	let exercises: Exercise[] = $state([]);
 	onMount(async () => {
@@ -57,7 +47,7 @@
 	});
 
 	const form = superForm(data, {
-		validators: zodClient(createWorkoutFormSchema),
+		validators: zodClient(workoutSchema),
 
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
@@ -115,7 +105,7 @@
 	}
 </script>
 
-<div class="flex h-full min-w-[26rem] flex-col">
+<div class="mt-6 flex h-full min-w-[26rem] flex-col">
 	<div class="mb-1 flex items-center p-2">
 		<div class="ml-auto flex items-center gap-2">
 			<Tooltip.Root>

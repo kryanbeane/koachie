@@ -3,7 +3,7 @@ import type { RequestHandler } from "@sveltejs/kit";
 import { addExercise, editExercise, getExercises, removeExercise } from "@/services/exercises";
 
 export const GET: RequestHandler = async (event) => {
-	const exercises = await getExercises(event.locals.supabase);
+	const exercises = await getExercises(event.locals.supabase, event.params.coachId);
 	return new Response(JSON.stringify(exercises));
 };
 

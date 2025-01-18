@@ -16,10 +16,3 @@ export const workoutAssignment = baseSchema.extend({
 });
 
 export type WorkoutAssignment = z.infer<typeof workoutAssignment>;
-
-export const createWorkoutFormSchema = baseSchema.extend({
-	name: z.string().min(2).max(50),
-	description: z.string().max(500)
-});
-
-export type CreateWorkoutFormSchema = typeof createWorkoutFormSchema;

@@ -2,7 +2,7 @@ import { fail } from "assert";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
-import { createWorkoutFormSchema } from "@/schemas/workouts.js";
+import { workoutSchema } from "@/schemas/workouts.js";
 import { addWorkout, getWorkouts } from "@/services/workouts.js";
 
 import type { Actions, PageServerLoad } from "./$types.js";
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 	if (collapsedCookie) collapsed = JSON.parse(collapsedCookie);
 
-	const form = await superValidate(zod(createWorkoutFormSchema));
+	const form = await superValidate(zod(workoutSchema));
 	const workouts = await getWorkouts(supabase);
 
 	return {
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 export const actions: Actions = {
 	default: async (event) => {
-		const form = await superValidate(event, zod(createWorkoutFormSchema));
+		const form = await superValidate(event, zod(workoutSchema));
 		if (!form.valid) {
 			return fail(400, {
 				form
