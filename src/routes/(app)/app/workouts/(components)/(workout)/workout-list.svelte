@@ -51,7 +51,7 @@
 					></div>
 				</div>
 			</div>
-			<div class="text-ring">{workout.description}</div>
+			<div class="max-w-full truncate text-ring">{workout.description}</div>
 		</button>
 	{/each}
 </div>

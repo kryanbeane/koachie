@@ -9,8 +9,17 @@
 	import WorkoutList from "./(components)/(workout)/workout-list.svelte";
 	import WorkoutSidePanel from "./(components)/(workout)/workout-side-panel.svelte";
 	import type { PageData } from "./$types";
-	import { ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Filter } from "lucide-svelte";
-	import Button from "@/components/ui/button/button.svelte";
+	import {
+		ChevronFirst,
+		ChevronLast,
+		ChevronLeft,
+		ChevronRight,
+		Filter,
+		User
+	} from "lucide-svelte";
+	import { Button, buttonVariants } from "@/components/ui/button";
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import * as Pagination from "$lib/components/ui/pagination";
 
 	let { data }: { data: PageData } = $props();
 
@@ -28,15 +37,21 @@
 		)
 	);
 
-	let defaultLayout = [265, 440, 60];
-
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
 	}
+
+	let isWorkoutSelected = $derived(!!selectedWorkoutState.workout);
+	let collapsed = false;
 </script>
 
 <Resizable.PaneGroup direction="horizontal" {onLayoutChange} class="h-full overflow-hidden">
-	<Resizable.Pane defaultSize={24} minSize={24} maxSize={24} class="flex flex-col">
+	<Resizable.Pane
+		defaultSize={isWorkoutSelected ? 32 : 1000}
+		minSize={isWorkoutSelected ? 24 : 1000}
+		maxSize={isWorkoutSelected ? 48 : 1000}
+		class="flex flex-col"
+	>
 		<div class="flex items-center px-4">
 			<div
 				class="flex w-full items-center bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
@@ -48,7 +63,25 @@
 						/>
 						<Input placeholder="Search" class="w-full pl-8" bind:value={searchQuery} />
 					</div>
-					<Button variant="secondary" size="icon" class="ml-2"><Filter /></Button>
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger
+							class={`${buttonVariants({ variant: "secondary", size: "icon" })} ml-2`}
+						>
+							<Filter />
+						</DropdownMenu.Trigger>
+
+						<DropdownMenu.Content class="w-56">
+							<DropdownMenu.Group>
+								<DropdownMenu.GroupHeading>Filter</DropdownMenu.GroupHeading>
+								<DropdownMenu.Separator />
+								<DropdownMenu.Item>
+									<User class="mr-2 size-4" />
+									<span>Profile</span>
+									<DropdownMenu.Shortcut>⇧⌘P</DropdownMenu.Shortcut>
+								</DropdownMenu.Item>
+							</DropdownMenu.Group>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
 				</form>
 			</div>
 		</div>
@@ -61,24 +94,50 @@
 
 		<Separator class="my-2" />
 
-		<div class="flex w-full items-center justify-between px-4 py-2">
-			<Button variant="outline" size="icon"><ChevronFirst /></Button>
-			<Button variant="outline" size="icon"><ChevronLeft /></Button>
-			<span>1 of 1</span>
-			<Button variant="outline" size="icon"><ChevronRight /></Button>
-			<Button variant="outline" size="icon"><ChevronLast /></Button>
-		</div>
+		<Pagination.Root count={30} perPage={10} class="mb-2">
+			{#snippet children({ pages, currentPage })}
+				<Pagination.Content>
+					<Pagination.Item>
+						<Pagination.PrevButton />
+					</Pagination.Item>
+					{#each pages as page (page.key)}
+						{#if page.type === "ellipsis"}
+							<Pagination.Item>
+								<Pagination.Ellipsis />
+							</Pagination.Item>
+						{:else}
+							<Pagination.Item>
+								<Pagination.Link {page} isActive={currentPage === page.value}>
+									{page.value}
+								</Pagination.Link>
+							</Pagination.Item>
+						{/if}
+					{/each}
+					<Pagination.Item>
+						<Pagination.NextButton />
+					</Pagination.Item>
+				</Pagination.Content>
+			{/snippet}
+		</Pagination.Root>
 	</Resizable.Pane>
-	<Separator orientation="vertical" />
-	<Resizable.Pane defaultSize={defaultLayout[1]} minSize={200} class="flex flex-col">
-		{#if workoutsState.workouts?.find((item) => item.id === selectedWorkoutState.workout?.id)!!}
-			<WorkoutSidePanel
-				{workoutsState}
-				data={data.form}
-				workout={workoutsState.workouts?.find(
-					(item) => item.id === selectedWorkoutState.workout?.id
-				)!!}
-			/>
-		{/if}
-	</Resizable.Pane>
+
+	{#if isWorkoutSelected}
+		<Resizable.Handle />
+		<Resizable.Pane
+			onCollapse={() => selectedWorkoutState.clear()}
+			defaultSize={200}
+			minSize={200}
+			class="inset-y-0 right-0 z-50 h-full border-l transition ease-in-out data-[state=isCollapsed]:duration-300 data-[state=isExpanded]:duration-500 data-[state=isExpanded]:animate-in data-[state=isCollapsed]:animate-out data-[state=isCollapsed]:slide-out-to-right data-[state=isExpanded]:slide-in-from-right sm:max-w-sm"
+		>
+			{#if workoutsState.workouts?.find((item) => item.id === selectedWorkoutState.workout?.id)!!}
+				<WorkoutSidePanel
+					{workoutsState}
+					data={data.form}
+					workout={workoutsState.workouts?.find(
+						(item) => item.id === selectedWorkoutState.workout?.id
+					)!!}
+				/>
+			{/if}
+		</Resizable.Pane>
+	{/if}
 </Resizable.PaneGroup>
