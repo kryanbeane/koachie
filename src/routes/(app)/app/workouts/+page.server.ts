@@ -30,6 +30,7 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 export const actions: Actions = {
 	default: async (event) => {
+		console.log("default action", event);
 		const form = await superValidate(event, zod(workoutSchema));
 		if (!form.valid) {
 			return fail(400, {

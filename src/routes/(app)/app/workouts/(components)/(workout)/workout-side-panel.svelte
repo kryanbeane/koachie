@@ -5,7 +5,11 @@
 	import { workoutSchema, type Workout } from "@/schemas/workouts";
 	import { EllipsisVertical, GitBranchPlus, Trash2 } from "lucide-svelte";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import { type SuperValidated, superForm, type FormResult } from "sveltekit-superforms";
+	import SuperDebug, {
+		type SuperValidated,
+		superForm,
+		type FormResult
+	} from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
@@ -19,6 +23,7 @@
 	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
 	import ExerciseInstanceCard from "../(exercise_instances)/exercise_instance_card.svelte";
 	import { onMount } from "svelte";
+	import { browser } from "$app/environment";
 </script>
 
 <script lang="ts">
@@ -42,8 +47,6 @@
 		});
 
 		exercises = JSON.parse(await resp.text());
-
-		console.log("Aaaaaaaa", resp);
 	});
 
 	const form = superForm(data, {
@@ -88,7 +91,7 @@
 		}
 	]);
 
-	const { form: formData, enhance } = form;
+	const { form: formData, delayed, enhance } = form;
 
 	function newExerciseInstance() {
 		exercise_instances.push({
@@ -138,6 +141,8 @@
 		</div>
 	{:else}
 		<form method="POST" use:enhance class="m-4 flex h-full flex-col">
+			<input type="hidden" name="id" bind:value={$formData.id} />
+
 			<Form.Field {form} name="name">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -159,7 +164,7 @@
 				<Form.FieldErrors />
 			</Form.Field>
 
-			<ScrollArea orientation="vertical">
+			<!-- <ScrollArea orientation="vertical">
 				{#each exercise_instances as instance}
 					<ExerciseInstanceCard {instance} {exercises} />
 				{/each}
@@ -172,13 +177,15 @@
 			>
 				<GitBranchPlus />
 				Add Exercise
-			</button>
+			</button> -->
 
-			<div class="flex-grow"></div>
-
-			<div class="mt-4">
+			<div class="mb-4">
 				<Form.Button>Submit</Form.Button>
+				{#if $delayed}Creating ...{/if}
 			</div>
+			{#if browser}
+				<SuperDebug data={$formData} />
+			{/if}
 		</form>
 	{/if}
 </div>
