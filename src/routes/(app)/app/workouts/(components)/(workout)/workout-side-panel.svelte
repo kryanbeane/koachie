@@ -2,47 +2,40 @@
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
 	import { Separator } from "@/components/ui/separator";
 	import * as Tooltip from "@/components/ui/tooltip/index";
-	import {
-		createWorkoutFormSchema,
-		type CreateWorkoutFormSchema,
-		type Workout
-	} from "@/schemas/workouts";
-	import { EllipsisVertical, GitBranchPlus, Trash2 } from "lucide-svelte";
+	import { workoutSchema, type Workout } from "@/schemas/workouts";
+	import { EllipsisVertical, Trash2 } from "lucide-svelte";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import {
+	import SuperDebug, {
 		type SuperValidated,
-		type Infer,
 		superForm,
 		type FormResult
 	} from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
-	import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
 	import { toast } from "svelte-sonner";
-	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
+	import { AllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { Button } from "@/components/ui/button";
 	import type { ActionData } from "../../$types";
-	import { buttonVariants } from "@/components/ui/button";
-	import { cn } from "@/utils";
 	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
-	import ExerciseInstanceCard from "../(exercise_instances)/exercise_instance_card.svelte";
-	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
 	import { onMount } from "svelte";
+	import { browser } from "$app/environment";
+	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 </script>
 
 <script lang="ts">
 	let {
+		workoutsState,
 		workout,
 		data
 	}: {
 		workout: Workout | null;
-		data: SuperValidated<Infer<CreateWorkoutFormSchema>>;
+		data: SuperValidated<Workout>;
+		workoutsState: AllWorkoutState;
 	} = $props();
 
-	let workoutsState = getAllWorkoutState();
-
 	let exercises: Exercise[] = $state([]);
+
 	onMount(async () => {
 		let resp = await fetch("/api/exercises", {
 			method: "GET",
@@ -52,12 +45,10 @@
 		});
 
 		exercises = JSON.parse(await resp.text());
-
-		console.log("Aaaaaaaa", resp);
 	});
 
 	const form = superForm(data, {
-		validators: zodClient(createWorkoutFormSchema),
+		validators: zodClient(workoutSchema),
 
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
@@ -98,7 +89,7 @@
 		}
 	]);
 
-	const { form: formData, enhance } = form;
+	const { form: formData, delayed, enhance } = form;
 
 	function newExerciseInstance() {
 		exercise_instances.push({
@@ -113,9 +104,21 @@
 		});
 		console.log(exercise_instances);
 	}
+
+	$effect(() => {
+		let workout = getSelectedWorkoutState().workout;
+		if (workout) {
+			$formData = workout;
+		} else {
+			$formData = {
+				name: "",
+				description: ""
+			};
+		}
+	});
 </script>
 
-<div class="flex h-full min-w-[26rem] flex-col">
+<div class="mt-6 flex h-full flex-grow flex-col">
 	<div class="mb-1 flex items-center p-2">
 		<div class="ml-auto flex items-center gap-2">
 			<Tooltip.Root>
@@ -143,11 +146,6 @@
 
 	{#if workout}
 		<div class="m-4">
-			<NameInput placeholder={workout.name} value={workout.name} />
-			<Textarea placeholder="Workout description..." value={workout.description} class="mt-2" />
-		</div>
-	{:else}
-		<form method="POST" use:enhance class="m-4 flex h-full flex-col">
 			<Form.Field {form} name="name">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -169,7 +167,40 @@
 				<Form.FieldErrors />
 			</Form.Field>
 
-			<ScrollArea orientation="vertical">
+			<div class="mb-4">
+				<Form.Button>Submit</Form.Button>
+				{#if $delayed}Creating ...{/if}
+			</div>
+			{#if browser}
+				<SuperDebug data={$formData} />
+			{/if}
+		</div>
+	{:else}
+		<form method="POST" action="?/create_workout" use:enhance class="m-4 flex h-full flex-col">
+			<input type="hidden" name="id" bind:value={$formData.id} />
+
+			<Form.Field {form} name="name">
+				<Form.Control>
+					{#snippet children({ props })}
+						<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="description">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Textarea
+							placeholder="The workout that will win you the Mr. Olympia..."
+							{...props}
+							bind:value={$formData.description}
+						/>
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+
+			<!-- <ScrollArea orientation="vertical">
 				{#each exercise_instances as instance}
 					<ExerciseInstanceCard {instance} {exercises} />
 				{/each}
@@ -182,13 +213,15 @@
 			>
 				<GitBranchPlus />
 				Add Exercise
-			</button>
+			</button> -->
 
-			<div class="flex-grow"></div>
-
-			<div class="mt-4">
+			<div class="mb-4">
 				<Form.Button>Submit</Form.Button>
+				{#if $delayed}Creating ...{/if}
 			</div>
+			{#if browser}
+				<SuperDebug data={$formData} />
+			{/if}
 		</form>
 	{/if}
 </div>

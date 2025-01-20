@@ -1,12 +1,27 @@
 import type { Exercise } from "@/schemas/exercises";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export async function fetchExercises(client: SupabaseClient): Promise<Exercise[]> {
-	const { data: exercises, error } = await client.from("exercises").select("*");
-	if (!error) {
-		return exercises;
+export async function fetchExercises(
+	client: SupabaseClient,
+	coachId: string | undefined
+): Promise<Exercise[]> {
+	if (!coachId) {
+		const { data: exercises, error } = await client.from("exercises").select("*");
+		if (!error) {
+			return exercises;
+		} else {
+			throw error;
+		}
 	} else {
-		throw error;
+		const { data: exercises, error } = await client
+			.from("exercises")
+			.select("*")
+			.eq("coach_id", coachId);
+		if (!error) {
+			return exercises;
+		} else {
+			throw error;
+		}
 	}
 }
 

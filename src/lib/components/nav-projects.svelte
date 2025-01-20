@@ -1,11 +1,11 @@
 <script lang="ts">
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import { useSidebar } from '$lib/components/ui/sidebar/context.svelte.js';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import Ellipsis from 'lucide-svelte/icons/ellipsis';
-	import Folder from 'lucide-svelte/icons/folder';
-	import Forward from 'lucide-svelte/icons/forward';
-	import Trash2 from 'lucide-svelte/icons/trash-2';
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import { useSidebar } from "$lib/components/ui/sidebar/context.svelte.js";
+	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import Ellipsis from "lucide-svelte/icons/ellipsis";
+	import Folder from "lucide-svelte/icons/folder";
+	import Forward from "lucide-svelte/icons/forward";
+	import Trash2 from "lucide-svelte/icons/trash-2";
 
 	let {
 		projects
@@ -13,9 +13,7 @@
 		projects: {
 			name: string;
 			url: string;
-			// This should be `Component` after lucide-svelte updates types
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			icon: any;
+			icon: ConstructorOfATypedSvelteComponent;
 		}[];
 	} = $props();
 
@@ -46,8 +44,8 @@
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content
 						class="w-48 rounded-lg"
-						side={sidebar.isMobile ? 'bottom' : 'right'}
-						align={sidebar.isMobile ? 'end' : 'start'}
+						side={sidebar.isMobile ? "bottom" : "right"}
+						align={sidebar.isMobile ? "end" : "start"}
 					>
 						<DropdownMenu.Item>
 							<Folder class="text-muted-foreground" />
