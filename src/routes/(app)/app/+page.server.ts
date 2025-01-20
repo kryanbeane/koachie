@@ -1,15 +1,15 @@
-import { fetchExercises } from "@/repositories/exercises";
+import { fetchNumExercises } from "@/repositories/exercises";
 
-import { fetchWorkouts } from "@/repositories/workouts";
+import { fetchNumWorkouts } from "@/repositories/workouts";
 
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {
-	const exercisesData = await fetchExercises(supabase);
-	const workoutData = await fetchWorkouts(supabase);
+	const exercisesCount = await fetchNumExercises(supabase);
+	const workoutCount = await fetchNumWorkouts(supabase);
 
 	return {
-		numExercises: exercisesData.length,
-		numWorkouts: workoutData.length
+		numExercises: exercisesCount,
+		numWorkouts: workoutCount
 	};
 };
