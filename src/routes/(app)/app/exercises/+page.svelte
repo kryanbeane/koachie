@@ -12,13 +12,18 @@
 	import type { Exercise } from "@/schemas/exercises";
 	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
 
-	let searchQuery = $state('');
+	let searchQuery = $state("");
 
 	let {
 		data,
 		defaultLayout = [60, 40],
 		defaultCollapsed
-	}: { data: PageData; defaultLayout: number[]; defaultCollapsed: boolean } = $props();
+	}: {
+		data: PageData;
+		defaultLayout: number[];
+		defaultCollapsed: boolean;
+	} = $props();
+
 	let createMode = $state(false);
 
 	routeStore.set("Exercises");
@@ -33,7 +38,7 @@
 	);
 
 	$effect(() => {
-		console.log('===', searchQuery);
+		console.log("===", searchQuery);
 	});
 
 	let isCollapsed = defaultCollapsed;

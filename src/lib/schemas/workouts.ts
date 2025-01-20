@@ -3,7 +3,7 @@ import { baseSchema } from "./index";
 
 export const workoutSchema = baseSchema.extend({
 	coach_id: z.string().uuid().nullable().optional(),
-	name: z.string().max(100),
+	name: z.string().max(100).min(3, "Workout name must be over 5 characters!"),
 	description: z.string().max(500)
 });
 

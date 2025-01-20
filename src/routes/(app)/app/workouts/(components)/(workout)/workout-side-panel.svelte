@@ -14,7 +14,7 @@
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
 	import { toast } from "svelte-sonner";
-	import { AllWorkoutState } from "@/stores/all_workout_state.svelte";
+	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { Button } from "@/components/ui/button";
 	import type { ActionData } from "../../$types";
 	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
@@ -25,14 +25,15 @@
 
 <script lang="ts">
 	let {
-		workoutsState,
-		workout,
-		data
+		data,
+		create_mode = $bindable()
 	}: {
-		workout: Workout | null;
 		data: SuperValidated<Workout>;
-		workoutsState: AllWorkoutState;
+		create_mode: boolean;
 	} = $props();
+
+	let allWorkoutState = getAllWorkoutState();
+	let selectedWorkoutState = getSelectedWorkoutState();
 
 	let exercises: Exercise[] = $state([]);
 
@@ -53,25 +54,28 @@
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
 			if (form.valid && action.workout) {
-				workoutsState.add(action.workout[0]);
+				allWorkoutState.add(action.workout[0]);
 				toast.success(`Workout ${action.workout[0].name} Updated!`);
 			}
 		}
 	});
 
 	async function handleDeleteWorkout() {
-		if (workout) {
+		if (selectedWorkoutState.workout) {
 			const response = await fetch(`/api/workouts`, {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify({ id: workout.id })
+				body: JSON.stringify({ id: selectedWorkoutState.workout.id })
 			});
 
 			if (response.ok) {
-				workoutsState.remove(workout);
-				toast.success(`Workout ${workout.name} Deleted!`);
+				allWorkoutState.remove(selectedWorkoutState.workout);
+				selectedWorkoutState.clear();
+				create_mode = false;
+
+				toast.success(`Workout ${selectedWorkoutState.workout.name} Deleted!`);
 			}
 		}
 	}
@@ -120,31 +124,36 @@
 
 <div class="mt-6 flex h-full flex-grow flex-col">
 	<div class="mb-1 flex items-center p-2">
-		<div class="ml-auto flex items-center gap-2">
-			<Tooltip.Root>
-				<Tooltip.Trigger id="move_to_trash_tooltip" disabled={!workout}>
-					<Button size="sm" variant="ghost" onclick={handleDeleteWorkout}>
-						<Trash2 class="size-4" />
+		{#if create_mode}
+			<span class="text-lg font-semibold">Create Workout</span>
+		{/if}
+		{#if selectedWorkoutState.workout}
+			<div class="ml-auto flex items-center gap-2">
+				<Tooltip.Root>
+					<Tooltip.Trigger id="move_to_trash_tooltip" disabled={!selectedWorkoutState.workout}>
+						<Button size="sm" variant="ghost" onclick={handleDeleteWorkout}>
+							<Trash2 class="size-4" />
+						</Button>
+					</Tooltip.Trigger>
+					<Tooltip.Content>Delete Workout</Tooltip.Content>
+				</Tooltip.Root>
+			</div>
+			<Separator orientation="vertical" class="mx-2 h-6" />
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger id="more_options_dropdown" disabled={!selectedWorkoutState.workout}>
+					<Button size="sm" variant="ghost">
+						<EllipsisVertical class="size-4" />
 					</Button>
-				</Tooltip.Trigger>
-				<Tooltip.Content>Delete Workout</Tooltip.Content>
-			</Tooltip.Root>
-		</div>
-		<Separator orientation="vertical" class="mx-2 h-6" />
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger id="more_options_dropdown" disabled={!workout}>
-				<Button size="sm" variant="ghost">
-					<EllipsisVertical class="size-4" />
-				</Button>
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Content align="end">
-				<DropdownMenu.Item>Mark as unread</DropdownMenu.Item>
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content align="end">
+					<DropdownMenu.Item>Mark as unread</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+		{/if}
 	</div>
 	<Separator />
 
-	{#if workout}
+	{#if selectedWorkoutState.workout}
 		<div class="m-4">
 			<Form.Field {form} name="name">
 				<Form.Control>
@@ -171,11 +180,11 @@
 				<Form.Button>Submit</Form.Button>
 				{#if $delayed}Creating ...{/if}
 			</div>
-			{#if browser}
+			<!-- {#if browser}
 				<SuperDebug data={$formData} />
-			{/if}
+			{/if} -->
 		</div>
-	{:else}
+	{:else if create_mode}
 		<form method="POST" action="?/create_workout" use:enhance class="m-4 flex h-full flex-col">
 			<input type="hidden" name="id" bind:value={$formData.id} />
 
@@ -219,9 +228,13 @@
 				<Form.Button>Submit</Form.Button>
 				{#if $delayed}Creating ...{/if}
 			</div>
-			{#if browser}
+			<!-- {#if browser}
 				<SuperDebug data={$formData} />
-			{/if}
+			{/if} -->
 		</form>
+	{:else}
+		<div class="flex h-full items-center justify-center p-6">
+			<span class="font-semibold">No Workouts Selected</span>
+		</div>
 	{/if}
 </div>

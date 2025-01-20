@@ -26,36 +26,24 @@
 		)
 	);
 
-	$inspect("filteredWorkouts", filteredWorkouts);
-
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
 	}
 
-	let create_workout_mode = $state(false);
-	let edit_workout_mode = $state(false);
-
-	$effect(() => {
-		if (create_workout_mode) {
-			edit_workout_mode = false;
-		}
-		if (edit_workout_mode) {
-			create_workout_mode = false;
-		}
-	});
+	let create_mode = $state(false);
 </script>
 
 <Resizable.PaneGroup direction="horizontal">
 	<Resizable.Pane defaultSize={20} minSize={20}>
 		<SearchFilterWorkouts bind:searchQuery />
-		<WorkoutList workouts={filteredWorkouts} />
+		<WorkoutList workouts={filteredWorkouts} bind:create_mode />
 		<div class="justify-left flex px-4">
 			<Button
 				variant="default"
 				size="xs"
 				onclick={() => {
-					create_workout_mode = true;
-					selectedWorkoutState.set({ id: "", name: "", description: "" });
+					create_mode = true;
+					selectedWorkoutState.clear();
 				}}
 			>
 				<Dumbbell class="h-4 w-4" />
@@ -65,21 +53,9 @@
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane defaultSize={100} class="flex-grow">
-		{#if selectedWorkoutState.workout}
-			<div class="flex h-full items-center justify-center p-6">
-				<WorkoutSidePanel
-					{workoutsState}
-					data={data.form}
-					workout={workoutsState.workouts?.find(
-						(item) => item.id === selectedWorkoutState.workout?.id
-					)!!}
-				/>
-			</div>
-		{:else}
-			<div class="flex h-full items-center justify-center p-6">
-				<span class="font-semibold">No Workouts Selected</span>
-			</div>
-		{/if}
+		<div class="flex h-full items-center justify-center p-6">
+			<WorkoutSidePanel bind:create_mode data={data.form} />
+		</div>
 	</Resizable.Pane>
 </Resizable.PaneGroup>
 
