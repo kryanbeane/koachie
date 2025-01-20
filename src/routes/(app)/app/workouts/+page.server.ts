@@ -29,34 +29,36 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 };
 
 export const actions: Actions = {
-	default: async (event) => {
+	create_workout: async (event) => {
+		console.log("server workout create");
 		const form = await superValidate(event, zod(workoutSchema));
 		if (!form.valid) return fail(400, { form });
 
-		if (!form.data.id) {
-			// CREATE
-			const workout = await addWorkout(event.locals.supabase, {
-				name: form.data.name,
-				description: form.data.description
-			});
+		const workout = await addWorkout(event.locals.supabase, {
+			name: form.data.name,
+			description: form.data.description
+		});
 
-			return {
-				form,
-				workout
-			};
-		} else {
-			// UPDATE user
-			const workout = await editWorkout(event.locals.supabase, {
-				id: form.data.id,
-				name: form.data.name,
-				description: form.data.description,
-				updated_at: new Date().toISOString()
-			});
+		return {
+			form,
+			workout
+		};
+	},
+	update_workout: async (event) => {
+		console.log("server workout edit ");
+		const form = await superValidate(event, zod(workoutSchema));
+		if (!form.valid) return fail(400, { form });
 
-			return {
-				form,
-				workout
-			};
-		}
+		const workout = await editWorkout(event.locals.supabase, {
+			id: form.data.id,
+			name: form.data.name,
+			description: form.data.description,
+			updated_at: new Date().toISOString()
+		});
+
+		return {
+			form,
+			workout
+		};
 	}
 };

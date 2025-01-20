@@ -6,8 +6,7 @@
 	import { Separator } from "@/components/ui/separator";
 
 	let selectedWorkoutState = getSelectedWorkoutState();
-
-	export let workouts: Workout[];
+	let { workouts }: { workouts: Workout[] } = $props();
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === "Escape") {
@@ -23,12 +22,12 @@
 	});
 </script>
 
-<div class="flex flex-col gap-2 p-4">
+<div class="flex w-full flex-col gap-2 p-4">
 	{#if selectedWorkoutState.workout}
 		<div class="text-xs font-semibold lowercase text-muted-foreground">selected workouts</div>
 
 		<button
-			class="relative flex flex-col items-start gap-2 rounded-lg border bg-muted p-3 text-left text-sm transition-all hover:bg-accent"
+			class="relative flex flex-col items-start rounded-lg border bg-muted p-3 text-left text-sm transition-all hover:bg-accent"
 			onclick={() => selectedWorkoutState.clear()}
 		>
 			<div class="flex w-full flex-col gap-1">
@@ -40,6 +39,7 @@
 					</div>
 				</div>
 			</div>
+			<div class="max-w-full truncate text-ring">{selectedWorkoutState.workout.description}</div>
 		</button>
 		<Separator class="my-2" />
 	{/if}

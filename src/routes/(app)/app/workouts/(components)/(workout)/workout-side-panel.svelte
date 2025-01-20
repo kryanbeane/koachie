@@ -3,7 +3,7 @@
 	import { Separator } from "@/components/ui/separator";
 	import * as Tooltip from "@/components/ui/tooltip/index";
 	import { workoutSchema, type Workout } from "@/schemas/workouts";
-	import { EllipsisVertical, GitBranchPlus, Trash2 } from "lucide-svelte";
+	import { EllipsisVertical, Trash2 } from "lucide-svelte";
 	import * as Form from "$lib/components/ui/form/index.js";
 	import SuperDebug, {
 		type SuperValidated,
@@ -13,17 +13,14 @@
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
-	import ScrollArea from "@/components/ui/scroll-area/scroll-area.svelte";
 	import { toast } from "svelte-sonner";
 	import { AllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { Button } from "@/components/ui/button";
 	import type { ActionData } from "../../$types";
-	import { buttonVariants } from "@/components/ui/button";
-	import { cn } from "@/utils";
 	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
-	import ExerciseInstanceCard from "../(exercise_instances)/exercise_instance_card.svelte";
 	import { onMount } from "svelte";
 	import { browser } from "$app/environment";
+	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 </script>
 
 <script lang="ts">
@@ -38,6 +35,7 @@
 	} = $props();
 
 	let exercises: Exercise[] = $state([]);
+
 	onMount(async () => {
 		let resp = await fetch("/api/exercises", {
 			method: "GET",
@@ -106,9 +104,21 @@
 		});
 		console.log(exercise_instances);
 	}
+
+	$effect(() => {
+		let workout = getSelectedWorkoutState().workout;
+		if (workout) {
+			$formData = workout;
+		} else {
+			$formData = {
+				name: "",
+				description: ""
+			};
+		}
+	});
 </script>
 
-<div class="mt-6 flex h-full min-w-[26rem] flex-col">
+<div class="mt-6 flex h-full flex-grow flex-col">
 	<div class="mb-1 flex items-center p-2">
 		<div class="ml-auto flex items-center gap-2">
 			<Tooltip.Root>
@@ -136,11 +146,37 @@
 
 	{#if workout}
 		<div class="m-4">
-			<NameInput placeholder={workout.name} value={workout.name} />
-			<Textarea placeholder="Workout description..." value={workout.description} class="mt-2" />
+			<Form.Field {form} name="name">
+				<Form.Control>
+					{#snippet children({ props })}
+						<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="description">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Textarea
+							placeholder="The workout that will win you the Mr. Olympia..."
+							{...props}
+							bind:value={$formData.description}
+						/>
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+
+			<div class="mb-4">
+				<Form.Button>Submit</Form.Button>
+				{#if $delayed}Creating ...{/if}
+			</div>
+			{#if browser}
+				<SuperDebug data={$formData} />
+			{/if}
 		</div>
 	{:else}
-		<form method="POST" use:enhance class="m-4 flex h-full flex-col">
+		<form method="POST" action="?/create_workout" use:enhance class="m-4 flex h-full flex-col">
 			<input type="hidden" name="id" bind:value={$formData.id} />
 
 			<Form.Field {form} name="name">

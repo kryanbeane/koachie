@@ -8,6 +8,7 @@
 	import { Button } from "@/components/ui/button";
 	import SearchFilterWorkouts from "./(components)/(workout-list)/search-filter-workouts.svelte";
 	import WorkoutSidePanel from "./(components)/(workout)/workout-side-panel.svelte";
+	import { Dumbbell } from "lucide-svelte";
 
 	let { data }: { data: PageData } = $props();
 
@@ -25,40 +26,56 @@
 		)
 	);
 
+	$inspect("filteredWorkouts", filteredWorkouts);
+
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
 	}
 
 	let create_workout_mode = $state(false);
-	let new_workout = $state({ name: "", description: "" });
+	let edit_workout_mode = $state(false);
+
+	$effect(() => {
+		if (create_workout_mode) {
+			edit_workout_mode = false;
+		}
+		if (edit_workout_mode) {
+			create_workout_mode = false;
+		}
+	});
 </script>
 
 <Resizable.PaneGroup direction="horizontal">
-	<Resizable.Pane defaultSize={32} minSize={32}>
+	<Resizable.Pane defaultSize={20} minSize={20}>
 		<SearchFilterWorkouts bind:searchQuery />
 		<WorkoutList workouts={filteredWorkouts} />
 		<div class="justify-left flex px-4">
 			<Button
-				variant="secondary"
+				variant="default"
 				size="xs"
 				onclick={() => {
 					create_workout_mode = true;
+					selectedWorkoutState.set({ id: "", name: "", description: "" });
 				}}
 			>
+				<Dumbbell class="h-4 w-4" />
 				Add Workout
 			</Button>
 		</div>
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
-	<Resizable.Pane defaultSize={75} class="flex-grow">
-		{#if create_workout_mode}
-			<WorkoutSidePanel
-				{workoutsState}
-				data={data.form}
-				workout={workoutsState.workouts?.find(
-					(item) => item.id === selectedWorkoutState.workout?.id
-				)!!}
-			/>{:else}
+	<Resizable.Pane defaultSize={100} class="flex-grow">
+		{#if selectedWorkoutState.workout}
+			<div class="flex h-full items-center justify-center p-6">
+				<WorkoutSidePanel
+					{workoutsState}
+					data={data.form}
+					workout={workoutsState.workouts?.find(
+						(item) => item.id === selectedWorkoutState.workout?.id
+					)!!}
+				/>
+			</div>
+		{:else}
 			<div class="flex h-full items-center justify-center p-6">
 				<span class="font-semibold">No Workouts Selected</span>
 			</div>
