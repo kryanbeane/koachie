@@ -54,8 +54,7 @@ export const actions: Actions = {
 		const workout = await editWorkout(event.locals.supabase, {
 			id: form.data.id,
 			name: form.data.name,
-			description: form.data.description,
-			updated_at: new Date().toISOString()
+			description: form.data.description
 		});
 
 		return {

@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { workoutSchema } from "@/schemas/workouts";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import { superForm, type FormResult } from "sveltekit-superforms";
+	import SuperDebug, { superForm, type FormResult } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
@@ -9,6 +9,7 @@
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import type { ActionData } from "../../routes/(app)/app/workouts/$types";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
+	import { PUBLIC_ENV } from "$env/static/public";
 </script>
 
 <script lang="ts">
@@ -69,5 +70,10 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Button>Submit</Form.Button>
+	<Form.Button variant="secondary" size="xs" class="w-36">Create Workout</Form.Button>
+	{#if PUBLIC_ENV === "dev"}
+		<div class="m-4">
+			<SuperDebug data={formData} stringTruncate={1000} />
+		</div>
+	{/if}
 </form>

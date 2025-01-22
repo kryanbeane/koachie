@@ -9,49 +9,55 @@
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import type { ActionData } from "../../routes/(app)/app/workouts/$types";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
+	import { PUBLIC_ENV } from "$env/static/public";
+	import SuperDebug from "sveltekit-superforms";
+	import { z } from "zod";
 </script>
 
 <script lang="ts">
-	let { updateForm }: { updateForm: SuperValidated<Workout> } = $props();
+	let { data } = $props();
 
 	let allWorkoutState = getAllWorkoutState();
 	let selectedWorkoutState = getSelectedWorkoutState();
 
-	const form = superForm(updateForm, {
-		id: "update-workout-form",
+	const form = superForm(data.updateForm, {
+		id: selectedWorkoutState.workout?.id,
 		validators: zodClient(workoutSchema),
+		resetForm: true,
 
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
 			if (form.valid && action.workout) {
-				allWorkoutState.add(action.workout[0]);
+				// update workout in the left hand list
+				allWorkoutState.update(action.workout[0]);
+				// update so selected workout updates too
+				selectedWorkoutState.set(action.workout[0]);
+
 				toast.success(`Workout ${action.workout[0].name} Updated!`);
+			}
+			if (result.type === "failure") {
+				console.error("onUpdate", result.data.form.errors);
+				toast.error("Error updating workout :(");
 			}
 		}
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: updateFormData, enhance: updateEnhance } = form;
 
 	$effect(() => {
-		let workout = getSelectedWorkoutState().workout;
+		const workout = selectedWorkoutState.workout;
 		if (workout) {
-			$formData = workout;
-		} else {
-			$formData = {
-				name: "",
-				description: ""
-			};
+			$updateFormData = workout;
 		}
 	});
 </script>
 
-<form method="POST" action="?/update_workout" use:enhance class="m-4 flex h-full flex-col">
-	<input type="hidden" name="id" bind:value={$formData.id} />
-
+<form method="POST" action="?/update_workout" use:updateEnhance class="m-4 flex h-full flex-col">
+	<input type="hidden" name="id" bind:value={$updateFormData.id} />
 	<Form.Field {form} name="name">
 		<Form.Control>
 			{#snippet children({ props })}
-				<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
+				<NameInput placeholder="New workout name..." {...props} bind:value={$updateFormData.name} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
@@ -62,7 +68,7 @@
 				<Textarea
 					placeholder="The workout that will win you the Mr. Olympia..."
 					{...props}
-					bind:value={$formData.description}
+					bind:value={$updateFormData.description}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -70,4 +76,10 @@
 	</Form.Field>
 
 	<Form.Button variant="secondary" size="xs" class="w-36">Update Workout</Form.Button>
+
+	{#if PUBLIC_ENV === "dev"}
+		<div class="m-4">
+			<SuperDebug data={updateFormData} stringTruncate={1000} />
+		</div>
+	{/if}
 </form>

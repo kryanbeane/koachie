@@ -1,5 +1,5 @@
-import type { Workout } from '@/schemas/workouts';
-import { getContext, setContext } from 'svelte';
+import type { Workout } from "@/schemas/workouts";
+import { getContext, setContext } from "svelte";
 
 export class AllWorkoutState {
 	workouts = $state<Workout[]>([]);
@@ -15,12 +15,19 @@ export class AllWorkoutState {
 		this.workouts = workouts;
 	}
 
+	update(workout: Workout) {
+		const index = this.workouts.findIndex((w) => w.id === workout.id);
+		if (index !== -1) {
+			this.workouts[index] = workout;
+		}
+	}
+
 	remove(workout: Workout) {
 		this.workouts = this.workouts.filter((w) => w.id !== workout.id);
 	}
 }
 
-const KEY = 'workouts';
+const KEY = "workouts";
 
 export function setAllWorkoutState(): AllWorkoutState {
 	return setContext(KEY, new AllWorkoutState());

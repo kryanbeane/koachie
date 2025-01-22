@@ -84,7 +84,7 @@
 				<div class="flex w-full flex-col gap-1">
 					<div class="flex items-center">
 						<div class="flex items-center gap-2">
-							<div class="truncate font-semibold">
+							<div class="truncate text-xs font-semibold">
 								{workout.name}
 							</div>
 							<span class="truncate text-xs text-slate-400"> 0 Exercises </span>
@@ -99,7 +99,7 @@
 						></div>
 					</div>
 				</div>
-				<div class="max-w-full truncate text-ring">{workout.description}</div>
+				<div class="max-w-full truncate text-xs text-ring">{workout.description}</div>
 				<div class="absolute right-2 top-2">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger id={workout.id}>

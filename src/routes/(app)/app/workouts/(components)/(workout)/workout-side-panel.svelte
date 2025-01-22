@@ -86,7 +86,7 @@
 	{#if create_mode}
 		<CreateWorkoutForm {data} />
 	{:else if selectedWorkoutState.workout}
-		<UpdateWorkoutForm updateForm={data.updateForm} />
+		<UpdateWorkoutForm {data} />
 	{:else}
 		<div class="flex h-full items-center justify-center p-6">
 			<span class="font-semibold">No Workouts Selected</span>
