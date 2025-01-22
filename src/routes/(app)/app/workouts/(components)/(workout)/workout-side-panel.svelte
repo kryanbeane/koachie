@@ -47,7 +47,7 @@
 				selectedWorkoutState.clear();
 				create_mode = false;
 
-				toast.success(`Workout ${selectedWorkoutState.workout.name} Deleted!`);
+				toast.success(`Workout Deleted!`);
 			}
 		}
 	}
@@ -84,7 +84,7 @@
 	</div>
 	<Separator />
 	{#if create_mode}
-		<CreateWorkoutForm {data} />
+		<CreateWorkoutForm {data} bind:create_mode />
 	{:else if selectedWorkoutState.workout}
 		<UpdateWorkoutForm {data} />
 	{:else}

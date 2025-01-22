@@ -13,7 +13,7 @@
 </script>
 
 <script lang="ts">
-	let { data } = $props();
+	let { data, create_mode = $bindable() } = $props();
 
 	const form = superForm(data.createForm, {
 		id: "create-workout-form",
@@ -24,6 +24,8 @@
 			const action = result.data as FormResult<ActionData>;
 			if (form.valid && action.workout) {
 				allWorkoutState.add(action.workout[0]);
+				selectedWorkoutState.set(action.workout[0]);
+				create_mode = false;
 				toast.success(`Workout ${action.workout[0].name} Created!`);
 			}
 		}

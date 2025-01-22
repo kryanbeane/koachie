@@ -23,7 +23,6 @@
 	const form = superForm(data.updateForm, {
 		id: selectedWorkoutState.workout?.id,
 		validators: zodClient(workoutSchema),
-		resetForm: true,
 
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
