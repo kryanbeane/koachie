@@ -2,35 +2,22 @@
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
 	import { Separator } from "@/components/ui/separator";
 	import * as Tooltip from "@/components/ui/tooltip/index";
-	import { workoutSchema, type Workout } from "@/schemas/workouts";
 	import { EllipsisVertical, Trash2 } from "lucide-svelte";
-	import * as Form from "$lib/components/ui/form/index.js";
-	import { type SuperValidated, superForm, type FormResult } from "sveltekit-superforms";
-	import { zodClient } from "sveltekit-superforms/adapters";
-	import NameInput from "@/components/ui/input/name-input.svelte";
-	import { Textarea } from "$lib/components/ui/textarea/index.js";
 	import { toast } from "svelte-sonner";
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { Button } from "@/components/ui/button";
-	import type { ActionData } from "../../$types";
-	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
+	import type { Exercise } from "@/schemas/exercises";
 	import { onMount } from "svelte";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
+	import CreateWorkoutForm from "../../../../../../lib/forms/create_workout_form.svelte";
+	import UpdateWorkoutForm from "@/forms/update_workout_form.svelte";
 </script>
 
 <script lang="ts">
-	import CreateWorkoutForm from "../../../../../../lib/forms/create_workout_form.svelte";
-
-	let {
-		data,
-		create_mode = $bindable()
-	}: {
-		data: SuperValidated<Workout>;
-		create_mode: boolean;
-	} = $props();
-
 	let allWorkoutState = getAllWorkoutState();
 	let selectedWorkoutState = getSelectedWorkoutState();
+
+	let { data, create_mode = $bindable() } = $props();
 
 	let exercises: Exercise[] = $state([]);
 
@@ -43,18 +30,6 @@
 		});
 
 		exercises = JSON.parse(await resp.text());
-	});
-
-	const form = superForm(data, {
-		validators: zodClient(workoutSchema),
-
-		onUpdate({ form, result }) {
-			const action = result.data as FormResult<ActionData>;
-			if (form.valid && action.workout) {
-				allWorkoutState.add(action.workout[0]);
-				toast.success(`Workout ${action.workout[0].name} Updated!`);
-			}
-		}
 	});
 
 	async function handleDeleteWorkout() {
@@ -76,47 +51,6 @@
 			}
 		}
 	}
-
-	let exercise_instances: CreateExerciseInstance[] = $state([
-		{
-			performance: [
-				{
-					order: 0,
-					reps: null,
-					weight: null,
-					restTime: "02:30"
-				}
-			]
-		}
-	]);
-
-	const { form: formData, delayed, enhance } = form;
-
-	function newExerciseInstance() {
-		exercise_instances.push({
-			performance: [
-				{
-					order: 0,
-					reps: null,
-					weight: null,
-					restTime: "00:00"
-				}
-			]
-		});
-		console.log(exercise_instances);
-	}
-
-	$effect(() => {
-		let workout = getSelectedWorkoutState().workout;
-		if (workout) {
-			$formData = workout;
-		} else {
-			$formData = {
-				name: "",
-				description: ""
-			};
-		}
-	});
 </script>
 
 <div class="mt-6 flex h-full flex-grow flex-col">
@@ -149,37 +83,10 @@
 		{/if}
 	</div>
 	<Separator />
-
-	{#if selectedWorkoutState.workout}
-		<div class="m-4">
-			<Form.Field {form} name="name">
-				<Form.Control>
-					{#snippet children({ props })}
-						<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="description">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Textarea
-							placeholder="The workout that will win you the Mr. Olympia..."
-							{...props}
-							bind:value={$formData.description}
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-
-			<div class="mb-4">
-				<Form.Button>Submit</Form.Button>
-				{#if $delayed}Creating ...{/if}
-			</div>
-		</div>
-	{:else if create_mode}
+	{#if create_mode}
 		<CreateWorkoutForm {data} />
+	{:else if selectedWorkoutState.workout}
+		<UpdateWorkoutForm updateForm={data.updateForm} />
 	{:else}
 		<div class="flex h-full items-center justify-center p-6">
 			<span class="font-semibold">No Workouts Selected</span>

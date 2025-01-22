@@ -17,14 +17,16 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 	if (collapsedCookie) collapsed = JSON.parse(collapsedCookie);
 
-	const form = await superValidate(zod(workoutSchema));
+	const createForm = await superValidate(zod(workoutSchema));
+	const updateForm = await superValidate(zod(workoutSchema));
 	const workouts = await getWorkouts(supabase);
 
 	return {
 		layout,
 		collapsed,
 		workouts,
-		form
+		createForm,
+		updateForm
 	};
 };
 

@@ -50,6 +50,6 @@
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane defaultSize={100} class="flex h-full flex-grow items-center justify-center p-6">
-		<WorkoutSidePanel bind:create_mode data={data.form} />
+		<WorkoutSidePanel bind:create_mode {data} />
 	</Resizable.Pane>
 </Resizable.PaneGroup>

@@ -1,7 +1,7 @@
 <script lang="ts" module>
-	import { workoutSchema } from "@/schemas/workouts";
+	import { workoutSchema, type Workout } from "@/schemas/workouts";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import { superForm, type FormResult } from "sveltekit-superforms";
+	import { type SuperValidated, superForm, type FormResult } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
@@ -12,29 +12,28 @@
 </script>
 
 <script lang="ts">
-	let { data } = $props();
+	let { updateForm }: { updateForm: SuperValidated<Workout> } = $props();
 
-	const form = superForm(data.createForm, {
-		id: "create-workout-form",
+	let allWorkoutState = getAllWorkoutState();
+	let selectedWorkoutState = getSelectedWorkoutState();
+
+	const form = superForm(updateForm, {
+		id: "update-workout-form",
 		validators: zodClient(workoutSchema),
-		resetForm: true,
 
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
 			if (form.valid && action.workout) {
 				allWorkoutState.add(action.workout[0]);
-				toast.success(`Workout ${action.workout[0].name} Created!`);
+				toast.success(`Workout ${action.workout[0].name} Updated!`);
 			}
 		}
 	});
 
-	const { form: formData, enhance: createEnhance } = form;
-
-	let allWorkoutState = getAllWorkoutState();
-	let selectedWorkoutState = getSelectedWorkoutState();
+	const { form: formData, enhance } = form;
 
 	$effect(() => {
-		let workout = selectedWorkoutState.workout;
+		let workout = getSelectedWorkoutState().workout;
 		if (workout) {
 			$formData = workout;
 		} else {
@@ -46,8 +45,9 @@
 	});
 </script>
 
-<form method="POST" action="?/create_workout" use:createEnhance class="m-4 flex h-full flex-col">
+<form method="POST" action="?/update_workout" use:enhance class="m-4 flex h-full flex-col">
 	<input type="hidden" name="id" bind:value={$formData.id} />
+
 	<Form.Field {form} name="name">
 		<Form.Control>
 			{#snippet children({ props })}
@@ -69,5 +69,5 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Button>Submit</Form.Button>
+	<Form.Button variant="secondary" size="xs" class="w-36">Update Workout</Form.Button>
 </form>
