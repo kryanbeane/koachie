@@ -11,6 +11,7 @@
 	import { onMount } from "svelte";
 	import type { Exercise } from "@/schemas/exercises";
 	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
+	import * as DropdownMenu from "@/components/ui/dropdown-menu";
 
 	let searchQuery = $state("");
 
@@ -36,10 +37,6 @@
 			exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
 		)
 	);
-
-	$effect(() => {
-		console.log("===", searchQuery);
-	});
 
 	let isCollapsed = defaultCollapsed;
 
@@ -69,16 +66,6 @@
 
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
-	}
-
-	function onCollapse() {
-		isCollapsed = true;
-		document.cookie = `PaneForge:collapsed=${true}`;
-	}
-
-	function onExpand() {
-		isCollapsed = false;
-		document.cookie = `PaneForge:collapsed=${false}`;
 	}
 
 	function toggleExerciseCard() {
@@ -147,15 +134,33 @@
 								</div>
 							</form>
 						</div>
-						<Tabs.List class="ml-auto">
-							<Tabs.Trigger value="all" class="text-zinc-600 dark:text-zinc-200">All</Tabs.Trigger>
-							<Tabs.Trigger value="added" class="text-zinc-600 dark:text-zinc-200">
-								Date added
-							</Tabs.Trigger>
-							<Tabs.Trigger value="modified" class="text-zinc-600 dark:text-zinc-200">
-								Date modified
-							</Tabs.Trigger>
-						</Tabs.List>
+						<DropdownMenu.Root>
+							<DropdownMenu.Trigger>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="lucide lucide-filter"
+									><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg
+								>
+							</DropdownMenu.Trigger>
+							<DropdownMenu.Content>
+								<DropdownMenu.Group>
+									<DropdownMenu.GroupHeading>My Account</DropdownMenu.GroupHeading>
+									<DropdownMenu.Separator />
+									<DropdownMenu.Item>Profile</DropdownMenu.Item>
+									<DropdownMenu.Item>Billing</DropdownMenu.Item>
+									<DropdownMenu.Item>Team</DropdownMenu.Item>
+									<DropdownMenu.Item>Subscription</DropdownMenu.Item>
+								</DropdownMenu.Group>
+							</DropdownMenu.Content>
+						</DropdownMenu.Root>
 					</div>
 
 					{#if createMode}

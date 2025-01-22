@@ -1,9 +1,6 @@
 <script lang="ts" module>
-	import Bot from "lucide-svelte/icons/bot";
-	import ChartPie from "lucide-svelte/icons/chart-pie";
 	import Frame from "lucide-svelte/icons/frame";
 	import GalleryVerticalEnd from "lucide-svelte/icons/gallery-vertical-end";
-	import Map from "lucide-svelte/icons/map";
 	import SquareTerminal from "lucide-svelte/icons/square-terminal";
 
 	export let data: PageData;
@@ -56,14 +53,16 @@
 	import NavUser from "$lib/components/nav-user.svelte";
 	import TeamSwitcher from "$lib/components/team-switcher.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import type { ComponentProps } from "svelte";
 	import type { PageData } from "../../routes/(landing)/$types";
+
+	type CollapsibleType = "none" | "icon" | "offcanvas" | undefined;
 
 	let {
 		ref = $bindable(null),
-		collapsible = "icon",
+		collapsible = "icon" as CollapsibleType,
+		data,
 		...restProps
-	}: ComponentProps<typeof Sidebar.Root> = $props();
+	} = $props();
 </script>
 
 <Sidebar.Root bind:ref {collapsible} {...restProps}>
@@ -75,7 +74,7 @@
 		<NavProjects projects={sample_data.projects} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser />
+		<NavUser user={data.user} />
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>

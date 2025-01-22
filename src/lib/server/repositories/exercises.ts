@@ -25,6 +25,18 @@ export async function fetchExercises(
 	}
 }
 
+export async function fetchNumExercises(client: SupabaseClient): Promise<number> {
+	const { count, error } = await client
+		.from("exercises")
+		.select("*", { count: "exact", head: true });
+
+	if (!error) {
+		return count ?? 0;
+	} else {
+		throw error;
+	}
+}
+
 export async function createExercise(
 	client: SupabaseClient,
 	exercise: Exercise

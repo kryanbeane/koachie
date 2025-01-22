@@ -10,6 +10,18 @@ export async function fetchWorkouts(client: SupabaseClient): Promise<Workout[]> 
 	}
 }
 
+export async function fetchNumWorkouts(client: SupabaseClient): Promise<number> {
+	const { count, error } = await client
+		.from("workouts")
+		.select("*", { count: "exact", head: true });
+
+	if (!error) {
+		return count ?? 0;
+	} else {
+		throw error;
+	}
+}
+
 export async function createWorkout(client: SupabaseClient, workout: Workout): Promise<Workout[]> {
 	const { data, error } = await client.from("workouts").insert([workout]).select("*");
 	if (data && !error) {

@@ -12,7 +12,7 @@
 	import { toast } from "svelte-sonner";
 
 	let { data }: { data: PageData } = $props();
-	routeStore.set("Dashboard");
+	routeStore.set("Account");
 
 	let targetNumber = 20;
 	let displayNumber = $state(0);

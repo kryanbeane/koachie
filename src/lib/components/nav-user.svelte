@@ -10,6 +10,8 @@
 	import Sparkles from "lucide-svelte/icons/sparkles";
 
 	const sidebar = useSidebar();
+
+	let { user } = $props();
 </script>
 
 <Sidebar.Menu>
@@ -23,12 +25,15 @@
 						{...props}
 					>
 						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<!-- <Avatar.Image src={user.avatar} alt={user.name} /> -->
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+							<Avatar.Image
+								src={user.user_metadata.avatar_url}
+								alt={user.user_metadata.full_name}
+							/>
+							<!-- <Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback> -->
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold">First Name</span>
-							<span class="truncate text-xs">you@example.com</span>
+							<span class="truncate font-semibold">{user.user_metadata.full_name}</span>
+							<span class="truncate text-xs">{user.email}</span>
 						</div>
 						<ChevronsUpDown class="ml-auto size-4" />
 					</Sidebar.MenuButton>
@@ -43,12 +48,15 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<!-- <Avatar.Image src={user.avatar} alt={user.name} /> -->
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+							<Avatar.Image
+								src={user.user_metadata.avatar_url}
+								alt={user.user_metadata.full_name}
+							/>
+							<!-- <Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback> -->
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold">Full Name</span>
-							<span class="truncate text-xs">you@exampke.com</span>
+							<span class="truncate font-semibold">{user.user_metadata.full_name}</span>
+							<span class="truncate text-xs">{user.email}</span>
 						</div>
 					</div>
 				</DropdownMenu.Label>
@@ -63,7 +71,7 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Item>
 						<BadgeCheck />
-						Account
+						<a href="/app/account"> Account </a>
 					</DropdownMenu.Item>
 					<DropdownMenu.Item>
 						<CreditCard />
