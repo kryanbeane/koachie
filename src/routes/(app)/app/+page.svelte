@@ -72,14 +72,6 @@
 				</Button>
 			</div>
 		</div>
-		<!-- <Tabs.Root class="space-y-4"> -->
-
-		<!-- <Tabs.List>
-				<Tabs.Trigger value="exercises" disabled >Exercises: {data.numExercises}</Tabs.Trigger>
-				<Tabs.Trigger value="analytics" >Analytics</Tabs.Trigger>
-				<Tabs.Trigger value="reports" >Reports</Tabs.Trigger>
-				<Tabs.Trigger value="notifications" >Notifications</Tabs.Trigger>
-			</Tabs.List> -->
 
 		<div class="space-y-4">
 			<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

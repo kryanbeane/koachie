@@ -12,6 +12,10 @@
 	import type { Exercise } from "@/schemas/exercises";
 	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
+	import { buttonVariants } from "$lib/components/ui/button/index.js";
+	import { Move } from "lucide-svelte";
+	import MovementTypeSelect from "@/components/movement-type-select.svelte";
+	import { filteredMovementTypes } from "@/stores/filtered_movement_types.svelte";
 
 	let searchQuery = $state("");
 
@@ -78,7 +82,7 @@
 		<Resizable.Pane defaultSize={defaultLayout[0]} minSize={10} class="h-full overflow-hidden">
 			<Tabs.Root value="all" class="flex h-full flex-col">
 				<!-- Static Header: Search bar and filter buttons -->
-				<div class="flex-shrink-0">
+				<div class="relative flex-shrink-0">
 					<div class="flex items-center px-6 py-2">
 						<!-- svelte-ignore a11y_consider_explicit_label -->
 						<button
@@ -118,44 +122,51 @@
 							{/if}
 						</button>
 						<div
-							class="w-full bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+							class="w-1/3 bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 						>
 							<form>
 								<div class="relative">
 									<Search
-										class="absolute left-2 top-[50%] h-4 w-4 translate-y-[-50%] text-muted-foreground"
+										class="absolute left-2 top-[50%] h-4 translate-y-[-50%] text-muted-foreground"
 									/>
 									<Input placeholder="Search" class="pl-8" bind:value={searchQuery} />
 								</div>
 							</form>
 						</div>
-						<DropdownMenu.Root>
-							<DropdownMenu.Trigger>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="24"
-									height="24"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									class="lucide lucide-filter"
-									><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg
-								>
-							</DropdownMenu.Trigger>
-							<DropdownMenu.Content>
-								<DropdownMenu.Group>
-									<DropdownMenu.GroupHeading>My Account</DropdownMenu.GroupHeading>
-									<DropdownMenu.Separator />
-									<DropdownMenu.Item>Profile</DropdownMenu.Item>
-									<DropdownMenu.Item>Billing</DropdownMenu.Item>
-									<DropdownMenu.Item>Team</DropdownMenu.Item>
-									<DropdownMenu.Item>Subscription</DropdownMenu.Item>
-								</DropdownMenu.Group>
-							</DropdownMenu.Content>
-						</DropdownMenu.Root>
+
+						<div class="relative ml-auto text-right">
+							<DropdownMenu.Root>
+								<DropdownMenu.Trigger class={buttonVariants({ variant: "outline" })}>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="24"
+										height="24"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										class="lucide lucide-filter"
+										><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg
+									>
+								</DropdownMenu.Trigger>
+								<DropdownMenu.Content class=" absolute right-0 mr-4 w-[200px]">
+									<DropdownMenu.Group>
+										<DropdownMenu.GroupHeading>Filters</DropdownMenu.GroupHeading>
+										<DropdownMenu.Separator />
+										<DropdownMenu.Item>Sort By</DropdownMenu.Item>
+
+										<MovementTypeSelect
+											data={filteredMovementTypes}
+											props={null}
+										></MovementTypeSelect>
+
+										<DropdownMenu.Item>Muscle Groups</DropdownMenu.Item>
+									</DropdownMenu.Group>
+								</DropdownMenu.Content>
+							</DropdownMenu.Root>
+						</div>
 					</div>
 
 					{#if createMode}
