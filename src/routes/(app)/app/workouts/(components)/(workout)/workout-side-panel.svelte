@@ -5,11 +5,7 @@
 	import { workoutSchema, type Workout } from "@/schemas/workouts";
 	import { EllipsisVertical, Trash2 } from "lucide-svelte";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import SuperDebug, {
-		type SuperValidated,
-		superForm,
-		type FormResult
-	} from "sveltekit-superforms";
+	import { type SuperValidated, superForm, type FormResult } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
@@ -19,11 +15,12 @@
 	import type { ActionData } from "../../$types";
 	import type { CreateExerciseInstance, Exercise } from "@/schemas/exercises";
 	import { onMount } from "svelte";
-	import { browser } from "$app/environment";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 </script>
 
 <script lang="ts">
+	import CreateWorkoutForm from "../../../../../../lib/forms/create_workout_form.svelte";
+
 	let {
 		data,
 		create_mode = $bindable()
@@ -180,58 +177,9 @@
 				<Form.Button>Submit</Form.Button>
 				{#if $delayed}Creating ...{/if}
 			</div>
-			<!-- {#if browser}
-				<SuperDebug data={$formData} />
-			{/if} -->
 		</div>
 	{:else if create_mode}
-		<form method="POST" action="?/create_workout" use:enhance class="m-4 flex h-full flex-col">
-			<input type="hidden" name="id" bind:value={$formData.id} />
-
-			<Form.Field {form} name="name">
-				<Form.Control>
-					{#snippet children({ props })}
-						<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="description">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Textarea
-							placeholder="The workout that will win you the Mr. Olympia..."
-							{...props}
-							bind:value={$formData.description}
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-
-			<!-- <ScrollArea orientation="vertical">
-				{#each exercise_instances as instance}
-					<ExerciseInstanceCard {instance} {exercises} />
-				{/each}
-			</ScrollArea>
-
-			<button
-				class={cn(buttonVariants({ variant: "outline", size: "sm" }), "mx-4")}
-				type="button"
-				onclick={newExerciseInstance}
-			>
-				<GitBranchPlus />
-				Add Exercise
-			</button> -->
-
-			<div class="mb-4">
-				<Form.Button>Submit</Form.Button>
-				{#if $delayed}Creating ...{/if}
-			</div>
-			<!-- {#if browser}
-				<SuperDebug data={$formData} />
-			{/if} -->
-		</form>
+		<CreateWorkoutForm {data} />
 	{:else}
 		<div class="flex h-full items-center justify-center p-6">
 			<span class="font-semibold">No Workouts Selected</span>

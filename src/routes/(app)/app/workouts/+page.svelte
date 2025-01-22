@@ -26,13 +26,10 @@
 		)
 	);
 
-	function onLayoutChange(sizes: number[]) {
-		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
-	}
-
 	let create_mode = $state(false);
 </script>
 
+<!-- TODO: Add caching to pane sizes -->
 <Resizable.PaneGroup direction="horizontal">
 	<Resizable.Pane defaultSize={20} minSize={20}>
 		<SearchFilterWorkouts bind:searchQuery />
@@ -52,26 +49,7 @@
 		</div>
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
-	<Resizable.Pane defaultSize={100} class="flex-grow">
-		<div class="flex h-full items-center justify-center p-6">
-			<WorkoutSidePanel bind:create_mode data={data.form} />
-		</div>
+	<Resizable.Pane defaultSize={100} class="flex h-full flex-grow items-center justify-center p-6">
+		<WorkoutSidePanel bind:create_mode data={data.form} />
 	</Resizable.Pane>
 </Resizable.PaneGroup>
-
-<!-- 
-<Resizable.PaneGroup direction="horizontal" {onLayoutChange} class="h-full overflow-hidden">
-
-	<Resizable.Handle />
-	<Resizable.Pane
-		class="inset-y-0 right-0 z-50 h-full border-l transition ease-in-out data-[state=isCollapsed]:duration-300 data-[state=isExpanded]:duration-500 data-[state=isExpanded]:animate-in data-[state=isCollapsed]:animate-out data-[state=isCollapsed]:slide-out-to-right data-[state=isExpanded]:slide-in-from-right sm:max-w-sm"
-	>
-		<WorkoutSidePanel
-			{workoutsState}
-			data={data.form}
-			workout={workoutsState.workouts?.find(
-				(item) => item.id === selectedWorkoutState.workout?.id
-			)!!}
-		/>
-	</Resizable.Pane>
-</Resizable.PaneGroup> -->

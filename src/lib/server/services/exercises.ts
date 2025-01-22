@@ -6,7 +6,7 @@ import {
 	deleteExercise,
 	fetchExercises,
 	updateExercise
-} from "@/repositories/exercises";
+} from "@/server/repositories/exercises";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function getExercises(

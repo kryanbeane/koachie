@@ -3,7 +3,7 @@ import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
 import { workoutSchema } from "@/schemas/workouts.js";
-import { addWorkout, editWorkout, getWorkouts } from "@/services/workouts.js";
+import { addWorkout, editWorkout, getWorkouts } from "@/server/services/workouts.js";
 
 import type { Actions, PageServerLoad } from "./$types.js";
 export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) => {
