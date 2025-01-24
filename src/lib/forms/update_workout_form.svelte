@@ -9,9 +9,8 @@
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import type { ActionData } from "../../routes/(app)/app/workouts/$types";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
-	import { PUBLIC_ENV } from "$env/static/public";
 	import SuperDebug from "sveltekit-superforms";
-	import { z } from "zod";
+	import { getDebugState } from "@/stores/debug_state.svelte";
 </script>
 
 <script lang="ts">
@@ -49,6 +48,7 @@
 			$updateFormData = workout;
 		}
 	});
+	let debugState = getDebugState();
 </script>
 
 <form method="POST" action="?/update_workout" use:updateEnhance class="m-4 flex h-full flex-col">
@@ -76,7 +76,7 @@
 
 	<Form.Button variant="secondary" size="xs" class="w-36">Update Workout</Form.Button>
 
-	{#if PUBLIC_ENV === "dev"}
+	{#if debugState.debug}
 		<div class="m-4">
 			<SuperDebug data={updateFormData} stringTruncate={1000} />
 		</div>

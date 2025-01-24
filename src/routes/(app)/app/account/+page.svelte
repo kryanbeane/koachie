@@ -135,7 +135,7 @@
 				</Card.Root>
 				<Card.Root class="col-span-3">
 					<Card.Header>
-						<Card.Title>Recent Clinets</Card.Title>
+						<Card.Title>Recent Clients</Card.Title>
 						<Card.Description>20 extra clients signed up last week.</Card.Description>
 					</Card.Header>
 					<Card.Content>

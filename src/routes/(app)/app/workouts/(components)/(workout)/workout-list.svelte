@@ -5,7 +5,7 @@
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 	import { Separator } from "@/components/ui/separator";
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
-	import { Ellipsis } from "lucide-svelte";
+	import { Copy, Ellipsis, Trash2 } from "lucide-svelte";
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { toast } from "svelte-sonner";
 
@@ -43,6 +43,25 @@
 			create_mode = false;
 
 			toast.success(`Workout ${workout.name} Deleted!`);
+		}
+	}
+
+	async function handleDuplicateWorkout(workout: Workout) {
+		const response = await fetch(`/api/workouts`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ name: `${workout.name} Copy`, description: workout.description })
+		});
+
+		if (response.ok) {
+			let newWorkout: Workout = JSON.parse(await response.text());
+			allWorkoutState.add(newWorkout);
+			console.log(allWorkoutState.workouts);
+			// selectedWorkoutState.set(newWorkout);
+
+			toast.success(`Workout ${workout.name} Duplicated!`);
 		}
 	}
 </script>
@@ -113,11 +132,20 @@
 						<DropdownMenu.Content align="end">
 							<DropdownMenu.Item
 								onclick={() => {
-									console.log("Delete");
 									handleDeleteWorkout(workout);
-								}}>Delete</DropdownMenu.Item
+								}}
 							>
-							<DropdownMenu.Item>🚧 Duplicate</DropdownMenu.Item>
+								<Trash2 />
+								Delete</DropdownMenu.Item
+							>
+							<DropdownMenu.Item
+								onclick={() => {
+									handleDuplicateWorkout(workout);
+								}}
+							>
+								<Copy />
+								Duplicate</DropdownMenu.Item
+							>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
 				</div>

@@ -9,7 +9,7 @@
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import type { ActionData } from "../../routes/(app)/app/workouts/$types";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
-	import { PUBLIC_ENV } from "$env/static/public";
+	import { getDebugState } from "@/stores/debug_state.svelte";
 </script>
 
 <script lang="ts">
@@ -47,6 +47,7 @@
 			};
 		}
 	});
+	let debugState = getDebugState();
 </script>
 
 <form method="POST" action="?/create_workout" use:createEnhance class="m-4 flex h-full flex-col">
@@ -73,7 +74,7 @@
 	</Form.Field>
 
 	<Form.Button variant="secondary" size="xs" class="w-36">Create Workout</Form.Button>
-	{#if PUBLIC_ENV === "dev"}
+	{#if debugState.debug}
 		<div class="m-4">
 			<SuperDebug data={formData} stringTruncate={1000} />
 		</div>

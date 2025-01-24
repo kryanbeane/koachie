@@ -4,7 +4,6 @@
 	import type { PageData } from "./$types";
 	import { Button } from "@/components/ui/button";
 	import { Activity, Copy, CreditCard, DollarSign, Users } from "lucide-svelte";
-	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import * as Card from "@/components/ui/card";
 	import Badge from "@/components/ui/badge/badge.svelte";
 	import { onMount } from "svelte";
@@ -135,12 +134,9 @@
 				</Card.Root>
 				<Card.Root class="col-span-3">
 					<Card.Header>
-						<Card.Title>Recent Clinets</Card.Title>
+						<Card.Title>Recent Clients</Card.Title>
 						<Card.Description>20 extra clients signed up last week.</Card.Description>
 					</Card.Header>
-					<Card.Content>
-						<!-- <RecentSales /> -->
-					</Card.Content>
 				</Card.Root>
 			</div>
 		</div>

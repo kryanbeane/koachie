@@ -31,7 +31,7 @@
 
 <!-- TODO: Add caching to pane sizes -->
 <Resizable.PaneGroup direction="horizontal">
-	<Resizable.Pane defaultSize={20} minSize={20}>
+	<Resizable.Pane defaultSize={24} minSize={24}>
 		<SearchFilterWorkouts bind:searchQuery />
 		<WorkoutList workouts={filteredWorkouts} bind:create_mode />
 		<div class="justify-left flex px-4">
@@ -49,7 +49,11 @@
 		</div>
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
-	<Resizable.Pane defaultSize={100} class="flex h-full flex-grow items-center justify-center p-6">
+	<Resizable.Pane
+		minSize={24}
+		defaultSize={100}
+		class="flex h-full flex-grow items-center justify-center p-6"
+	>
 		<WorkoutSidePanel bind:create_mode {data} />
 	</Resizable.Pane>
 </Resizable.PaneGroup>
