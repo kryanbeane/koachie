@@ -8,6 +8,7 @@
 	import { Copy, Ellipsis, Trash2 } from "lucide-svelte";
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { toast } from "svelte-sonner";
+	import { Button } from "@/components/ui/button";
 
 	let selectedWorkoutState = getSelectedWorkoutState();
 	let allWorkoutState = getAllWorkoutState();
@@ -47,19 +48,26 @@
 	}
 
 	async function handleDuplicateWorkout(workout: Workout) {
+		let newWorkout: Workout = { ...workout, name: `${workout.name.trimEnd()} Copy`, id: undefined };
+
 		const response = await fetch(`/api/workouts`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
 			},
-			body: JSON.stringify({ name: `${workout.name} Copy`, description: workout.description })
+			body: JSON.stringify(newWorkout)
 		});
 
 		if (response.ok) {
-			let newWorkout: Workout = JSON.parse(await response.text());
+			const responseData = JSON.parse(await response.text());
+			newWorkout = responseData[0];
+
 			allWorkoutState.add(newWorkout);
-			console.log(allWorkoutState.workouts);
-			// selectedWorkoutState.set(newWorkout);
+
+			let selected = allWorkoutState.findById(newWorkout.id!!);
+			if (selected) {
+				selectedWorkoutState.set(selected);
+			}
 
 			toast.success(`Workout ${workout.name} Duplicated!`);
 		}
@@ -89,8 +97,10 @@
 	{/if}
 
 	{#each workouts as workout (workout.id)}
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		{#if selectedWorkoutState.workout?.id !== workout.id}
-			<button
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<div
 				class={cn(
 					"relative flex flex-col items-start gap-2 rounded-lg border bg-muted/25 p-3 text-left text-sm transition-all hover:scale-105 hover:bg-accent",
 					selectedWorkoutState.workout?.id === workout.id && "bg-muted"
@@ -106,7 +116,6 @@
 							<div class="truncate text-xs font-semibold">
 								{workout.name}
 							</div>
-							<span class="truncate text-xs text-slate-400"> 0 Exercises </span>
 						</div>
 						<div
 							class={cn(
@@ -122,12 +131,13 @@
 				<div class="absolute right-2 top-2">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger id={workout.id}>
-							<button
-								class={cn("bg-transparent hover:scale-150")}
+							<Button
+								class="!bg-transparent hover:scale-105"
+								size="xs"
 								onclick={(e) => e.stopPropagation()}
 							>
 								<Ellipsis size="20" />
-							</button>
+							</Button>
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content align="end">
 							<DropdownMenu.Item
@@ -149,7 +159,7 @@
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
 				</div>
-			</button>
+			</div>
 		{/if}
 	{/each}
 </div>
