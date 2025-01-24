@@ -1,17 +1,23 @@
 <script lang="ts">
 	import { cn } from "$lib/utils.js";
 	import type { Workout } from "@/schemas/workouts.js";
-	import { ScrollArea } from "@/components/ui/scroll-area/index.js";
 	import { onMount } from "svelte";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
+	import { Separator } from "@/components/ui/separator";
+	import * as DropdownMenu from "@/components/ui/dropdown-menu";
+	import { Copy, Ellipsis, Trash2 } from "lucide-svelte";
+	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
+	import { toast } from "svelte-sonner";
 
 	let selectedWorkoutState = getSelectedWorkoutState();
-
-	export let workouts: Workout[];
+	let allWorkoutState = getAllWorkoutState();
+	let { workouts, create_mode = $bindable() }: { workouts: Workout[]; create_mode: boolean } =
+		$props();
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === "Escape") {
 			selectedWorkoutState.clear();
+			create_mode = false;
 		}
 	}
 
@@ -21,26 +27,86 @@
 			window.removeEventListener("keydown", handleKeydown);
 		};
 	});
+
+	async function handleDeleteWorkout(workout: Workout) {
+		const response = await fetch(`/api/workouts`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ id: workout.id })
+		});
+
+		if (response.ok) {
+			allWorkoutState.remove(workout);
+			selectedWorkoutState.clear();
+			create_mode = false;
+
+			toast.success(`Workout ${workout.name} Deleted!`);
+		}
+	}
+
+	async function handleDuplicateWorkout(workout: Workout) {
+		const response = await fetch(`/api/workouts`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ name: `${workout.name} Copy`, description: workout.description })
+		});
+
+		if (response.ok) {
+			let newWorkout: Workout = JSON.parse(await response.text());
+			allWorkoutState.add(newWorkout);
+			console.log(allWorkoutState.workouts);
+			// selectedWorkoutState.set(newWorkout);
+
+			toast.success(`Workout ${workout.name} Duplicated!`);
+		}
+	}
 </script>
 
-<ScrollArea class="h-screen">
-	<div class="flex flex-col gap-2 p-4 pt-2">
-		{#each workouts as workout}
+<div class="flex w-full flex-col gap-2 p-4">
+	{#if selectedWorkoutState.workout}
+		<div class="text-xs font-semibold lowercase text-muted-foreground">selected workouts</div>
+
+		<button
+			class="relative flex flex-col items-start rounded-lg border bg-muted p-3 text-left text-sm transition-all hover:bg-accent"
+			onclick={() => selectedWorkoutState.clear()}
+		>
+			<div class="flex w-full flex-col gap-1">
+				<div class="flex items-center">
+					<div class="flex items-center gap-2">
+						<span class="font-semibold">
+							{selectedWorkoutState.workout.name}
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="max-w-full truncate text-ring">{selectedWorkoutState.workout.description}</div>
+		</button>
+		<Separator class="my-2" />
+	{/if}
+
+	{#each workouts as workout (workout.id)}
+		{#if selectedWorkoutState.workout?.id !== workout.id}
 			<button
 				class={cn(
-					"flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
+					"relative flex flex-col items-start gap-2 rounded-lg border bg-muted/25 p-3 text-left text-sm transition-all hover:scale-105 hover:bg-accent",
 					selectedWorkoutState.workout?.id === workout.id && "bg-muted"
 				)}
 				onclick={() => {
 					selectedWorkoutState.set(workout);
+					create_mode = false;
 				}}
 			>
 				<div class="flex w-full flex-col gap-1">
 					<div class="flex items-center">
 						<div class="flex items-center gap-2">
-							<div class="font-semibold">
+							<div class="truncate text-xs font-semibold">
 								{workout.name}
 							</div>
+							<span class="truncate text-xs text-slate-400"> 0 Exercises </span>
 						</div>
 						<div
 							class={cn(
@@ -52,8 +118,38 @@
 						></div>
 					</div>
 				</div>
-				<div class="text-ring">{workout.description}</div>
+				<div class="max-w-full truncate text-xs text-ring">{workout.description}</div>
+				<div class="absolute right-2 top-2">
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger id={workout.id}>
+							<button
+								class={cn("bg-transparent hover:scale-150")}
+								onclick={(e) => e.stopPropagation()}
+							>
+								<Ellipsis size="20" />
+							</button>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content align="end">
+							<DropdownMenu.Item
+								onclick={() => {
+									handleDeleteWorkout(workout);
+								}}
+							>
+								<Trash2 />
+								Delete</DropdownMenu.Item
+							>
+							<DropdownMenu.Item
+								onclick={() => {
+									handleDuplicateWorkout(workout);
+								}}
+							>
+								<Copy />
+								Duplicate</DropdownMenu.Item
+							>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+				</div>
 			</button>
-		{/each}
-	</div>
-</ScrollArea>
+		{/if}
+	{/each}
+</div>

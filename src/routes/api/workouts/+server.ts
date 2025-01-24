@@ -1,6 +1,6 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from "@sveltejs/kit";
 
-import { addWorkout, editWorkout, getWorkouts, removeWorkout } from '@/services/workouts';
+import { addWorkout, editWorkout, getWorkouts, removeWorkout } from "@/server/services/workouts";
 
 export const GET: RequestHandler = async (event) => {
 	const workouts = await getWorkouts(event.locals.supabase);

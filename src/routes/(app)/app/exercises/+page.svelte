@@ -19,7 +19,12 @@
 		data,
 		defaultLayout = [60, 40],
 		defaultCollapsed
-	}: { data: PageData; defaultLayout: number[]; defaultCollapsed: boolean } = $props();
+	}: {
+		data: PageData;
+		defaultLayout: number[];
+		defaultCollapsed: boolean;
+	} = $props();
+
 	let createMode = $state(false);
 
 	routeStore.set("Exercises");

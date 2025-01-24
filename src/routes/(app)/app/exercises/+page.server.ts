@@ -1,9 +1,9 @@
-import { fetchExercises } from "@/repositories/exercises";
+import { fetchExercises } from "@/server/repositories/exercises";
 import type { Actions, PageServerLoad } from "./$types";
 import { fail, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { createExerciseSchema, exerciseSchema, updateExerciseSchema } from "@/schemas/exercises";
-import { addExercise, removeExercise, editExercise } from "@/services/exercises";
+import { addExercise, removeExercise, editExercise } from "@/server/services/exercises";
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {
 	const exercisesData = await fetchExercises(supabase);
