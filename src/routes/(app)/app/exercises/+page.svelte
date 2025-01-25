@@ -16,8 +16,26 @@
 	import { Move } from "lucide-svelte";
 	import MovementTypeSelect from "@/components/movement-type-select.svelte";
 	import { filteredMovementTypes } from "@/stores/filtered_movement_types.svelte";
+	import { filteredMuscleGroups } from "@/stores/filtered_muscle_groups.svelte";
+	import MuscleGroupSelect from "@/components/muscle-group-select.svelte";
+	import Badge from "@/components/ui/badge/badge.svelte";
+	import { filteredSortMethods } from "@/stores/filtered_sort_methods.svelte";
+	import SortBySelect from "@/components/sort-by-select.svelte";
+	import Button from "@/components/ui/button/button.svelte";
 
 	let searchQuery = $state("");
+
+	filteredMuscleGroups.set({
+		muscle_groups: []
+	});
+
+	filteredMovementTypes.set({
+		movement_type: ""
+	});
+
+	filteredSortMethods.set({
+		sort_by: ""
+	});
 
 	let {
 		data,
@@ -32,9 +50,35 @@
 	exercisesState.set(data.exercises);
 
 	let filteredExercises = $derived(
-		exercisesState.exercises.filter((exercise) =>
-			exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
-		)
+		exercisesState.exercises
+			.filter((exercise) => exercise.name.toLowerCase().includes(searchQuery.toLowerCase()))
+			.filter((exercise) => {
+				if ($filteredMovementTypes.movement_type !== "") {
+					return (
+						exercise.movement_type.toLowerCase() ===
+						$filteredMovementTypes.movement_type.toLowerCase()
+					);
+				}
+				return true;
+			})
+			.filter((exercise) => {
+				if ($filteredMuscleGroups.muscle_groups.length > 0) {
+					return $filteredMuscleGroups.muscle_groups.some((group) =>
+						exercise.muscle_groups.includes(group)
+					);
+				}
+				return true;
+			})
+			.sort((a, b) => {
+				if ($filteredSortMethods.sort_by === "name") {
+					return a.name.localeCompare(b.name);
+				} else if ($filteredSortMethods.sort_by === "created_at") {
+					return new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime();
+				} else if ($filteredSortMethods.sort_by === "updated_at") {
+					return new Date(a.updated_at ?? 0).getTime() - new Date(b.updated_at ?? 0).getTime();
+				}
+				return 0;
+			})
 	);
 
 	let isCollapsed = defaultCollapsed;
@@ -70,6 +114,17 @@
 	function toggleExerciseCard() {
 		createMode = !createMode; // Toggle visibility
 		console.log("Toggle Exercise Card", createMode);
+	}
+	function clearFilters() {
+		filteredMovementTypes.set({
+			movement_type: ""
+		});
+		filteredMuscleGroups.set({
+			muscle_groups: []
+		});
+		filteredSortMethods.set({
+			sort_by: ""
+		});
 	}
 </script>
 
@@ -134,7 +189,25 @@
 							</form>
 						</div>
 
-						<div class="relative ml-auto text-right">
+						<div class=" relative ml-auto flex items-center gap-4">
+							<div
+								class=" scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex max-w-[300px] gap-2 overflow-x-auto py-2"
+							>
+								{#if $filteredMovementTypes.movement_type}
+									<span class=" whitespace-nowrap">
+										<Badge class="bg-green-600">{$filteredMovementTypes.movement_type}</Badge>
+									</span>
+								{/if}
+
+								{#each $filteredMuscleGroups.muscle_groups as group}
+									<span class=" whitespace-nowrap">
+										<Badge>{group}</Badge>
+									</span>
+								{/each}
+							</div>
+						</div>
+
+						<div class="relative ml-2 text-right">
 							<DropdownMenu.Root>
 								<DropdownMenu.Trigger class={buttonVariants({ variant: "outline" })}>
 									<svg
@@ -151,18 +224,21 @@
 										><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg
 									>
 								</DropdownMenu.Trigger>
-								<DropdownMenu.Content class=" absolute right-0 mr-4 w-[200px]">
+								<DropdownMenu.Content class=" absolute right-0 mr-4 w-[250px]">
 									<DropdownMenu.Group>
-										<DropdownMenu.GroupHeading>Filters</DropdownMenu.GroupHeading>
-										<DropdownMenu.Separator />
-										<DropdownMenu.Item>Sort By</DropdownMenu.Item>
-
-										<MovementTypeSelect
-											data={filteredMovementTypes}
-											props={null}
-										></MovementTypeSelect>
-
-										<DropdownMenu.Item>Muscle Groups</DropdownMenu.Item>
+										<div class="mt-2">
+											<SortBySelect data={filteredSortMethods} props={null} />
+										</div>
+										<div class="mt-2">
+											<MovementTypeSelect data={filteredMovementTypes} props={null} />
+										</div>
+										<div class="mt-2">
+											<MuscleGroupSelect data={filteredMuscleGroups} props={null} />
+										</div>
+										<div class="mt-2">
+											<Button class="sm w-full" onclick={() => clearFilters()}>Clear Filters</Button
+											>
+										</div>
 									</DropdownMenu.Group>
 								</DropdownMenu.Content>
 							</DropdownMenu.Root>

@@ -7,9 +7,14 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { Badge } from "$lib/components/ui/badge/index.js";
-	import { movementTypeEnum, muscleGroupEnum } from "$lib/data/enums.js";
+	import { muscleGroupEnum } from "$lib/data/enums.js";
+	import { filteredMuscleGroups } from "@/stores/filtered_muscle_groups.svelte";
 
 	let { data, props } = $props();
+
+	console.log("data", $data);
+
+	console.log("filteredMuscleGroups", filteredMuscleGroups);
 
 	function addMuscleGroup(group: string) {
 		console.log("Before adding group:", $data.muscle_groups);
@@ -59,7 +64,7 @@
 	</Popover.Trigger>
 	<Popover.Content class="w-full p-0">
 		<Command.Root>
-			<Command.Input placeholder="Search Muscle groups..." />
+			<Command.Input placeholder="Search Muscle groups" />
 			<Command.List>
 				<Command.Empty>No muscle groups found.</Command.Empty>
 				<Command.Group>
@@ -71,7 +76,11 @@
 								addMuscleGroup(muscleValue);
 							}}
 						>
-							<Check class={cn(!$data.muscle_groups.includes(muscleGroup) && "text-transparent")} />
+							{#if $data.muscle_groups}
+								<Check
+									class={cn(!$data.muscle_groups.includes(muscleGroup) && "text-transparent")}
+								/>
+							{/if}
 							{muscleGroup}
 						</Command.Item>
 					{/each}

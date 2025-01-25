@@ -13,19 +13,18 @@
 	let allMovementTypes = Object.values(movementTypeEnum.Values);
 
 	let openMovement = $state(false);
-	// let movementValue = $state("");
 	let triggerRefMovement = $state<HTMLButtonElement>(null!);
-
-	function closeAndFocusTriggerMovement() {
-		openMovement = false;
-		tick().then(() => {
-			triggerRefMovement.focus();
-		});
-	}
 
 	const selectedMovementType = $derived(
 		allMovementTypes.find((f: string) => f === $data.movement_type)
 	);
+	function closeAndFocusTriggerMovement(movement_type: string) {
+		if (movement_type === $data.movement_type) {
+			$data.movement_type = "";
+		} else {
+			$data.movement_type = movement_type;
+		}
+	}
 </script>
 
 <Popover.Root bind:open={openMovement} {...props}>
@@ -54,8 +53,7 @@
 						<Command.Item
 							value={movementType}
 							onSelect={() => {
-								$data.movement_type = movementType;
-								closeAndFocusTriggerMovement();
+								closeAndFocusTriggerMovement(movementType);
 							}}
 						>
 							<Check class={cn($data.movement_type !== movementType && "text-transparent")} />
