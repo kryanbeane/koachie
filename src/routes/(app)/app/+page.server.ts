@@ -1,7 +1,5 @@
-import { fetchNumExercises } from "@/repositories/exercises";
-
-import { fetchNumWorkouts } from "@/repositories/workouts";
-
+import { fetchNumExercises } from "@/server/repositories/exercises";
+import { fetchNumWorkouts } from "@/server/repositories/workouts";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals: { supabase } }) => {

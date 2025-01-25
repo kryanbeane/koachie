@@ -1,10 +1,9 @@
 <script lang="ts" module>
-	import Bot from "lucide-svelte/icons/bot";
-	import ChartPie from "lucide-svelte/icons/chart-pie";
 	import Frame from "lucide-svelte/icons/frame";
 	import GalleryVerticalEnd from "lucide-svelte/icons/gallery-vertical-end";
-	import Map from "lucide-svelte/icons/map";
 	import SquareTerminal from "lucide-svelte/icons/square-terminal";
+
+	export let data: PageData;
 
 	// This is sample data.
 	const sample_data = {
@@ -28,35 +27,12 @@
 				isActive: true,
 				items: [
 					{
-						title: "Programs",
-						url: "/app/programs"
-					},
-					{
 						title: "Workouts",
 						url: "/app/workouts"
 					},
 					{
 						title: "Exercises",
 						url: "/app/exercises"
-					}
-				]
-			},
-			{
-				title: "Models",
-				url: "#",
-				icon: Bot,
-				items: [
-					{
-						title: "Genesis",
-						url: "#"
-					},
-					{
-						title: "Explorer",
-						url: "#"
-					},
-					{
-						title: "Quantum",
-						url: "#"
 					}
 				]
 			}
@@ -66,16 +42,6 @@
 				name: "Design Engineering",
 				url: "#",
 				icon: Frame
-			},
-			{
-				name: "Sales & Marketing",
-				url: "#",
-				icon: ChartPie
-			},
-			{
-				name: "Travel",
-				url: "#",
-				icon: Map
 			}
 		]
 	};
@@ -87,11 +53,7 @@
 	import NavUser from "$lib/components/nav-user.svelte";
 	import TeamSwitcher from "$lib/components/team-switcher.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import type { ComponentProps } from "svelte";
 	import type { PageData } from "../../routes/(landing)/$types";
-	import Page from "../../routes/(landing)/+page.svelte";
-	import Layout from "../../routes/+layout.svelte";
-	import type { LayoutData } from "../../routes/$types";
 
 	type CollapsibleType = "none" | "icon" | "offcanvas" | undefined;
 

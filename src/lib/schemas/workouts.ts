@@ -3,7 +3,7 @@ import { baseSchema } from "./index";
 
 export const workoutSchema = baseSchema.extend({
 	coach_id: z.string().uuid().nullable().optional(),
-	name: z.string().max(100),
+	name: z.string().max(100).min(3, "Workout name must be over 5 characters!"),
 	description: z.string().max(500)
 });
 
@@ -16,10 +16,3 @@ export const workoutAssignment = baseSchema.extend({
 });
 
 export type WorkoutAssignment = z.infer<typeof workoutAssignment>;
-
-export const createWorkoutFormSchema = baseSchema.extend({
-	name: z.string().min(2).max(50),
-	description: z.string().max(500)
-});
-
-export type CreateWorkoutFormSchema = typeof createWorkoutFormSchema;

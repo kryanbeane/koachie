@@ -8,6 +8,9 @@
 	import { routeStore } from "@/stores/route.store";
 	import { ThemeToggle } from "@/components/theme-controller";
 	import Badge from "@/components/ui/badge/badge.svelte";
+	import { Button } from "@/components/ui/button";
+	import { Bug } from "lucide-svelte";
+	import { getDebugState } from "@/stores/debug_state.svelte";
 
 	interface Props {
 		data: LayoutData;
@@ -39,6 +42,8 @@
 	};
 
 	setInterval(updateTime, 60000);
+
+	let debugState = getDebugState();
 </script>
 
 <div class="flex h-screen w-screen flex-col overflow-hidden">
@@ -54,10 +59,19 @@
 					<Separator orientation="vertical" class="mr-2 h-4" />
 					{$routeStore}
 				</div>
-				<div class="mx-4 ml-auto items-end">
-					<Badge class="ml-2">
+				<div class="mx-4 ml-auto">
+					<Badge class="mr-2">
 						{currentTime.toLocaleString()}
 					</Badge>
+					<Button
+						variant="ghost"
+						size="sm"
+						onclick={() => {
+							debugState.toggle();
+						}}
+					>
+						<Bug class="h-4 w-4" />
+					</Button>
 					<ThemeToggle />
 				</div>
 			</header>

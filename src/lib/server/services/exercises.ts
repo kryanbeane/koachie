@@ -6,11 +6,14 @@ import {
 	deleteExercise,
 	fetchExercises,
 	updateExercise
-} from "@/repositories/exercises";
+} from "@/server/repositories/exercises";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export async function getExercises(supabase: SupabaseClient): Promise<Exercise[]> {
-	return await fetchExercises(supabase);
+export async function getExercises(
+	supabase: SupabaseClient,
+	coachId: string | undefined
+): Promise<Exercise[]> {
+	return await fetchExercises(supabase, coachId);
 }
 
 export async function addExercise(supabase: SupabaseClient, exercise: Exercise) {
