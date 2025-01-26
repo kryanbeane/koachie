@@ -1,17 +1,10 @@
 <script lang="ts">
 	import { cn } from "$lib/utils.js";
 
-	import * as Command from "$lib/components/ui/command/index.js";
-	import * as Popover from "$lib/components/ui/popover/index.js";
-	import { tick } from "svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
-	import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
-	import Check from "lucide-svelte/icons/check";
 	import * as Form from "$lib/components/ui/form/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { Badge } from "$lib/components/ui/badge/index.js";
-	import { muscleGroupEnum, movementTypeEnum } from "$lib/data/enums.js";
-	import { toast } from "svelte-sonner";
 	import MuscleGroupSelect from "@/components/muscle-group-select.svelte";
 	import MovementTypeSelect from "@/components/movement-type-select.svelte";
 
@@ -72,7 +65,7 @@
 				<Form.Field {form} name="movement_type" class="w-1/2">
 					<Form.Control>
 						{#snippet children({ props })}
-							<MovementTypeSelect data={formData} {props}></MovementTypeSelect>
+							<MovementTypeSelect data={formData} {props} />
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
@@ -81,7 +74,7 @@
 				<Form.Field {form} name="muscle_groups" class="w-1/2">
 					<Form.Control>
 						{#snippet children({ props })}
-							<MuscleGroupSelect data={formData} {props}></MuscleGroupSelect>
+							<MuscleGroupSelect data={formData} {props} />
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />

@@ -3,21 +3,13 @@
 	import { Check, ChevronsUpDown } from "lucide-svelte";
 	import * as Command from "$lib/components/ui/command/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
-	import { tick } from "svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
-	import { Badge } from "$lib/components/ui/badge/index.js";
 	import { muscleGroupEnum } from "$lib/data/enums.js";
-	import { filteredMuscleGroups } from "@/stores/filtered_muscle_groups.svelte";
 
 	let { data, props } = $props();
 
-	console.log("data", $data);
-
-	console.log("filteredMuscleGroups", filteredMuscleGroups);
-
 	function addMuscleGroup(group: string) {
-		console.log("Before adding group:", $data.muscle_groups);
 		const muscleGroups = $data.muscle_groups || [];
 		if (!muscleGroups.includes(group)) {
 			$data = {
@@ -25,7 +17,6 @@
 				muscle_groups: [...muscleGroups, group]
 			};
 		} else if (muscleGroups.includes(group)) {
-			console.log("Muscle group already exists");
 			removeMuscleGroup(group);
 		}
 	}

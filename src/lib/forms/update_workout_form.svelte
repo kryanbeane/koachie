@@ -1,7 +1,7 @@
 <script lang="ts" module>
-	import { workoutSchema, type Workout } from "@/schemas/workouts";
+	import { workoutSchema } from "@/schemas/workouts";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import { type SuperValidated, superForm, type FormResult } from "sveltekit-superforms";
+	import { superForm, type FormResult } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
@@ -11,6 +11,8 @@
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 	import SuperDebug from "sveltekit-superforms";
 	import { getDebugState } from "@/stores/debug_state.svelte";
+	import ComboBox from "@/components/ui/combo-box/combo-box.svelte";
+	import { ModalityValues, ExperienceLevelValues } from "@/data/enums";
 </script>
 
 <script lang="ts">
@@ -22,6 +24,7 @@
 	const form = superForm(data.updateForm, {
 		id: selectedWorkoutState.workout?.id,
 		validators: zodClient(workoutSchema),
+		resetForm: false,
 
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
@@ -43,24 +46,61 @@
 	const { form: updateFormData, enhance: updateEnhance } = form;
 
 	$effect(() => {
-		const workout = selectedWorkoutState.workout;
-		if (workout) {
-			$updateFormData = workout;
+		if (selectedWorkoutState.workout) {
+			$updateFormData = selectedWorkoutState.workout;
 		}
 	});
+
 	let debugState = getDebugState();
 </script>
 
 <form method="POST" action="?/update_workout" use:updateEnhance class="m-4 flex h-full flex-col">
 	<input type="hidden" name="id" bind:value={$updateFormData.id} />
-	<Form.Field {form} name="name">
-		<Form.Control>
-			{#snippet children({ props })}
-				<NameInput placeholder="New workout name..." {...props} bind:value={$updateFormData.name} />
-			{/snippet}
-		</Form.Control>
-		<Form.FieldErrors />
-	</Form.Field>
+	<div class="flex gap-2">
+		<Form.Field {form} name="name" class="w-full">
+			<Form.Control>
+				{#snippet children({ props })}
+					<NameInput
+						placeholder="New workout name..."
+						{...props}
+						bind:value={$updateFormData.name}
+					/>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<input type="hidden" name="modality" bind:value={$updateFormData.modality} />
+		<Form.Field {form} name="modality">
+			<Form.Control>
+				{#snippet children({ props })}
+					<ComboBox
+						{...props}
+						bind:value={$updateFormData.modality}
+						options={ModalityValues}
+						field={"Modality"}
+					/>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<input type="hidden" name="experience_level" bind:value={$updateFormData.experience_level} />
+		<Form.Field {form} name="experience_level">
+			<Form.Control>
+				{#snippet children({ props })}
+					<ComboBox
+						{...props}
+						bind:value={$updateFormData.experience_level}
+						options={ExperienceLevelValues}
+						field={"Experience Level"}
+					/>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+	</div>
+
 	<Form.Field {form} name="description">
 		<Form.Control>
 			{#snippet children({ props })}

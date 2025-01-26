@@ -32,13 +32,16 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 export const actions: Actions = {
 	create_workout: async (event) => {
-		console.log("server workout create");
 		const form = await superValidate(event, zod(workoutSchema));
 		if (!form.valid) return fail(400, { form });
 
+		console.log("ACTIONS CREATE WORKOUT", form.data);
+
 		const workout = await addWorkout(event.locals.supabase, {
 			name: form.data.name,
-			description: form.data.description
+			description: form.data.description,
+			modality: form.data.modality,
+			experience_level: form.data.experience_level
 		});
 
 		return {
@@ -47,14 +50,17 @@ export const actions: Actions = {
 		};
 	},
 	update_workout: async (event) => {
-		console.log("server workout edit ");
 		const form = await superValidate(event, zod(workoutSchema));
 		if (!form.valid) return fail(400, { form });
+
+		console.log("ACTIONS UPDATE WORKOUT", form.data);
 
 		const workout = await editWorkout(event.locals.supabase, {
 			id: form.data.id,
 			name: form.data.name,
-			description: form.data.description
+			description: form.data.description,
+			modality: form.data.modality,
+			experience_level: form.data.experience_level
 		});
 
 		return {

@@ -2,8 +2,14 @@ import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from "$env/static/publi
 import { type MetaTagsProps } from "svelte-meta-tags";
 
 import { createBrowserClient, createServerClient, isBrowser } from "@supabase/ssr";
+import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
+import { injectAnalytics } from "@vercel/analytics/sveltekit";
 
 import type { LayoutLoad } from "./$types";
+import { dev } from "$app/environment";
+
+injectSpeedInsights();
+injectAnalytics({ mode: dev ? "development" : "production" });
 
 export const load: LayoutLoad = async ({ data, url, depends, fetch }) => {
 	/**

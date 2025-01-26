@@ -41,7 +41,7 @@
 	});
 	const { form: createFormData, enhance: createEnhance } = createForm;
 
-	const updateForm = superForm(exercise!!, {
+	const updateForm = superForm(exercise!, {
 		id: "update-exercise-form",
 		validators: zodClient(updateExerciseSchema),
 		onUpdate({ form, result }) {
@@ -56,11 +56,11 @@
 
 	const { form: updateFormData, enhance: updateEnhance } = updateForm;
 
-	const deleteForm = superForm(exercise!!, {
+	const deleteForm = superForm(exercise!, {
 		id: "delete-exercise-form",
 		validators: zodClient(updateExerciseSchema),
 		onUpdate({ form, result }) {
-			$deleteFormData = { ...exercise!! };
+			$deleteFormData = { ...exercise! };
 			const action = result.data as FormResult<ActionData>;
 			if (form.valid && action.id) {
 				exercisesState.remove(action.id);
@@ -105,17 +105,17 @@
 		<div class="flex w-full items-start">
 			<div class="flex w-[55%] flex-col gap-1">
 				<div class="flex items-center">
-					<div class="font-semibold">{exercise!!.name}</div>
+					<div class="font-semibold">{exercise!.name}</div>
 				</div>
 				<div class="mt-1 line-clamp-2 text-xs text-muted-foreground">
-					{exercise!!.note.substring(0, 300)}
+					{exercise!.note.substring(0, 300)}
 				</div>
-				<div class="text-xs font-medium">{exercise!!.movement_type}</div>
+				<div class="text-xs font-medium">{exercise!.movement_type}</div>
 
 				<div
 					class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex gap-2 overflow-x-auto py-2"
 				>
-					{#each exercise!!.muscle_groups as group (group)}
+					{#each exercise!.muscle_groups as group (group)}
 						<span class=" whitespace-nowrap">
 							<Badge>{group}</Badge>
 						</span>
@@ -124,7 +124,7 @@
 			</div>
 
 			<!-- Instructions Section -->
-			{#if exercise!!.instructions.length > 0}
+			{#if exercise!.instructions.length > 0}
 				<div
 					class={cn(
 						"ml-10 w-[40%] transform transition-all duration-300 ease-in-out",
@@ -139,7 +139,7 @@
 						<!-- <h3 class="text-md mb-1 text-center font-semibold text-white">Instructions</h3> -->
 
 						<ul class="space-y-2">
-							{#each exercise!!.instructions as instruction}
+							{#each exercise!.instructions as instruction}
 								<li class="rounded-md border border-white p-1 text-left text-sm text-white">
 									{instruction}
 								</li>
@@ -156,7 +156,7 @@
 			<Button
 				class="mr-2 rounded-md bg-gray-200 p-3 transition-all hover:bg-gray-300"
 				aria-label="Edit"
-				onclick={(e) => handleEdit(e, exercise!!)}
+				onclick={(e) => handleEdit(e, exercise!)}
 			>
 				<svg
 					class="h-4 w-4 text-gray-800"
@@ -212,7 +212,7 @@
 		formData={updateFormData}
 		{handleCancel}
 		enhance={updateEnhance}
-		exercise={exercise!!}
+		exercise={exercise!}
 	/>
 {:else if createMode && !editMode}
 	<ExerciseForm
@@ -221,6 +221,6 @@
 		formData={createFormData}
 		handleCancel={handleCancelCreate}
 		enhance={createEnhance}
-		exercise={exercise!!}
+		exercise={exercise!}
 	/>
 {/if}

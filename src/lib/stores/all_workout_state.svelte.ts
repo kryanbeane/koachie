@@ -22,6 +22,10 @@ export class AllWorkoutState {
 		}
 	}
 
+	findById(id: string): Workout | undefined {
+		return this.workouts.find((w) => w.id === id);
+	}
+
 	remove(workout: Workout) {
 		this.workouts = this.workouts.filter((w) => w.id !== workout.id);
 	}
