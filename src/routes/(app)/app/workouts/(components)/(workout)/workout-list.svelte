@@ -64,7 +64,7 @@
 
 			allWorkoutState.add(newWorkout);
 
-			let selected = allWorkoutState.findById(newWorkout.id!!);
+			let selected = allWorkoutState.findById(newWorkout.id!);
 			if (selected) {
 				selectedWorkoutState.set(selected);
 			}

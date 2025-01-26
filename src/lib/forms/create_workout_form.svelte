@@ -10,6 +10,8 @@
 	import type { ActionData } from "../../routes/(app)/app/workouts/$types";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 	import { getDebugState } from "@/stores/debug_state.svelte";
+	import ComboBox from "@/components/ui/combo-box/combo-box.svelte";
+	import { ExperienceLevelValues, ModalityValues } from "@/data/enums";
 </script>
 
 <script lang="ts">
@@ -43,7 +45,9 @@
 		} else {
 			$formData = {
 				name: "",
-				description: ""
+				description: "",
+				modality: "",
+				experience_level: ""
 			};
 		}
 	});
@@ -52,15 +56,48 @@
 
 <form method="POST" action="?/create_workout" use:createEnhance class="m-4 flex h-full flex-col">
 	<input type="hidden" name="id" bind:value={$formData.id} />
-	<Form.Field {form} name="name">
-		<Form.Control>
-			{#snippet children({ props })}
-				<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
-			{/snippet}
-		</Form.Control>
-		<Form.FieldErrors />
-	</Form.Field>
-	<Form.Field {form} name="description">
+	<div class="flex gap-2">
+		<Form.Field {form} name="name" class="w-full">
+			<Form.Control>
+				{#snippet children({ props })}
+					<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<input type="hidden" name="modality" bind:value={$formData.modality} />
+		<Form.Field {form} name="modality">
+			<Form.Control>
+				{#snippet children({ props })}
+					<ComboBox
+						{...props}
+						bind:value={$formData.modality}
+						options={ModalityValues}
+						field={"Modality"}
+					/>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<input type="hidden" name="experience_level" bind:value={$formData.experience_level} />
+		<Form.Field {form} name="experience_level">
+			<Form.Control>
+				{#snippet children({ props })}
+					<ComboBox
+						{...props}
+						bind:value={$formData.experience_level}
+						options={ExperienceLevelValues}
+						field={"Experience Level"}
+					/>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+	</div>
+
+	<Form.Field {form} name="description" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Textarea

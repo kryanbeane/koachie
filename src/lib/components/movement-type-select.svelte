@@ -3,10 +3,8 @@
 	import { Check, ChevronsUpDown } from "lucide-svelte";
 	import * as Command from "$lib/components/ui/command/index.js";
 	import * as Popover from "$lib/components/ui/popover/index.js";
-	import { tick } from "svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
-	import { Badge } from "$lib/components/ui/badge/index.js";
 	import { movementTypeEnum } from "$lib/data/enums.js";
 
 	let { data, props } = $props();
