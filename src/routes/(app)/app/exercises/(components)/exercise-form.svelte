@@ -12,28 +12,10 @@
 	import { Badge } from "$lib/components/ui/badge/index.js";
 	import { muscleGroupEnum, movementTypeEnum } from "$lib/data/enums.js";
 	import { toast } from "svelte-sonner";
+	import MuscleGroupSelect from "@/components/muscle-group-select.svelte";
+	import MovementTypeSelect from "@/components/movement-type-select.svelte";
 
 	let { enhance, form, formData, handleCancel, exercise, formAction } = $props();
-
-	console.log("FORM DATA", $formData);
-
-	function addMuscleGroup(group: string) {
-		console.log("Before adding group:", $formData.muscle_groups);
-		const muscleGroups = $formData.muscle_groups || [];
-		if (!muscleGroups.includes(group)) {
-			$formData = {
-				...$formData,
-				muscle_groups: [...muscleGroups, group]
-			};
-		}
-	}
-
-	function removeMuscleGroup(group: string) {
-		$formData = {
-			...$formData,
-			muscle_groups: $formData.muscle_groups.filter((g: string) => g !== group)
-		};
-	}
 
 	function addInstruction() {
 		$formData = { ...$formData, instructions: [...$formData.instructions, ""] };
@@ -45,34 +27,6 @@
 			instructions: $formData.instructions.filter((_: any, i: number) => i !== index)
 		};
 	}
-
-	let allMuscleGroups = Object.values(muscleGroupEnum.Values);
-	let allMovementTypes = Object.values(movementTypeEnum.Values);
-
-	let openMovement = $state(false);
-	let movementValue = $state("");
-	let triggerRefMovement = $state<HTMLButtonElement>(null!);
-
-	let openMuscle = $state(false);
-	let muscleValue = $state("");
-	let triggerRefMuscle = $state<HTMLButtonElement>(null!);
-
-	function closeAndFocusTriggerMovement() {
-		openMovement = false;
-		tick().then(() => {
-			triggerRefMovement.focus();
-		});
-	}
-
-	const selectedMovementType = $derived(
-		allMovementTypes.find((f: string) => f === $formData.movement_type)
-	);
-
-	const selectedMovementTypeCreate = $derived(
-		allMovementTypes.find((f: string) => f === $formData.movement_type)
-	);
-
-	const selectedMuscleGroup = $derived(allMuscleGroups.find((f: string) => f === muscleValue));
 </script>
 
 <div
@@ -118,53 +72,7 @@
 				<Form.Field {form} name="movement_type" class="w-1/2">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Popover.Root bind:open={openMovement} {...props}>
-								<Popover.Trigger bind:ref={triggerRefMovement}>
-									{#snippet child({ props })}
-										<Input
-											type="hidden"
-											name="movement_type"
-											bind:value={$formData.movement_type}
-										/>
-										<Button
-											variant="outline"
-											class="flex w-full justify-between"
-											{...props}
-											role="combobox"
-											aria-expanded={openMovement}
-										>
-											{selectedMovementType || "Select a Movement Type"}
-											<ChevronsUpDown class="opacity-50" />
-										</Button>
-									{/snippet}
-								</Popover.Trigger>
-								<Popover.Content class="w-full p-0">
-									<Command.Root>
-										<Command.Input placeholder="Search Movement types..." />
-										<Command.List>
-											<Command.Empty>No Movement types found.</Command.Empty>
-											<Command.Group>
-												{#each allMovementTypes as movementType}
-													<Command.Item
-														value={movementType}
-														onSelect={() => {
-															$formData.movement_type = movementType;
-															closeAndFocusTriggerMovement();
-														}}
-													>
-														<Check
-															class={cn(
-																$formData.movement_type !== movementType && "text-transparent"
-															)}
-														/>
-														{movementType}
-													</Command.Item>
-												{/each}
-											</Command.Group>
-										</Command.List>
-									</Command.Root>
-								</Popover.Content>
-							</Popover.Root>
+							<MovementTypeSelect data={formData} {props}></MovementTypeSelect>
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
@@ -173,53 +81,7 @@
 				<Form.Field {form} name="muscle_groups" class="w-1/2">
 					<Form.Control>
 						{#snippet children({ props })}
-							<Popover.Root bind:open={openMuscle} {...props}>
-								<Popover.Trigger bind:ref={triggerRefMuscle}>
-									{#snippet child({ props })}
-										<Input
-											type="hidden"
-											name="muscle_groups"
-											bind:value={$formData.muscle_groups}
-										/>
-										<Button
-											variant="outline"
-											class="w-full justify-between"
-											{...props}
-											role="combobox"
-											aria-expanded={openMuscle}
-										>
-											{selectedMuscleGroup || "Select a Muscle Group..."}
-											<ChevronsUpDown class="align-right opacity-50" />
-										</Button>
-									{/snippet}
-								</Popover.Trigger>
-								<Popover.Content class="w-full p-0">
-									<Command.Root>
-										<Command.Input placeholder="Search Muscle groups..." />
-										<Command.List>
-											<Command.Empty>No muscle groups found.</Command.Empty>
-											<Command.Group>
-												{#each allMuscleGroups as muscleGroup}
-													<Command.Item
-														value={muscleGroup}
-														onSelect={() => {
-															muscleValue = muscleGroup;
-															addMuscleGroup(muscleValue);
-														}}
-													>
-														<Check
-															class={cn(
-																!$formData.muscle_groups.includes(muscleGroup) && "text-transparent"
-															)}
-														/>
-														{muscleGroup}
-													</Command.Item>
-												{/each}
-											</Command.Group>
-										</Command.List>
-									</Command.Root>
-								</Popover.Content>
-							</Popover.Root>
+							<MuscleGroupSelect data={formData} {props}></MuscleGroupSelect>
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
@@ -235,13 +97,6 @@
 					{#each $formData.muscle_groups as group}
 						<Badge class="min-w-[80px] flex-shrink-0">
 							{group}
-							<Button
-								type="button"
-								onclick={() => removeMuscleGroup(group)}
-								class="size-4 bg-transparent text-red-500 hover:bg-transparent"
-							>
-								&times;
-							</Button>
 						</Badge>
 					{/each}
 				</div>

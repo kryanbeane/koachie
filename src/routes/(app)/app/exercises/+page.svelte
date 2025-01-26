@@ -12,8 +12,30 @@
 	import type { Exercise } from "@/schemas/exercises";
 	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
+	import { buttonVariants } from "$lib/components/ui/button/index.js";
+	import { Move } from "lucide-svelte";
+	import MovementTypeSelect from "@/components/movement-type-select.svelte";
+	import { filteredMovementTypes } from "@/stores/filtered_movement_types.svelte";
+	import { filteredMuscleGroups } from "@/stores/filtered_muscle_groups.svelte";
+	import MuscleGroupSelect from "@/components/muscle-group-select.svelte";
+	import Badge from "@/components/ui/badge/badge.svelte";
+	import { filteredSortMethods } from "@/stores/filtered_sort_methods.svelte";
+	import SortBySelect from "@/components/sort-by-select.svelte";
+	import Button from "@/components/ui/button/button.svelte";
 
 	let searchQuery = $state("");
+
+	filteredMuscleGroups.set({
+		muscle_groups: []
+	});
+
+	filteredMovementTypes.set({
+		movement_type: ""
+	});
+
+	filteredSortMethods.set({
+		sort_by: ""
+	});
 
 	let {
 		data,
@@ -33,9 +55,35 @@
 	exercisesState.set(data.exercises);
 
 	let filteredExercises = $derived(
-		exercisesState.exercises.filter((exercise) =>
-			exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
-		)
+		exercisesState.exercises
+			.filter((exercise) => exercise.name.toLowerCase().includes(searchQuery.toLowerCase()))
+			.filter((exercise) => {
+				if ($filteredMovementTypes.movement_type !== "") {
+					return (
+						exercise.movement_type.toLowerCase() ===
+						$filteredMovementTypes.movement_type.toLowerCase()
+					);
+				}
+				return true;
+			})
+			.filter((exercise) => {
+				if ($filteredMuscleGroups.muscle_groups.length > 0) {
+					return $filteredMuscleGroups.muscle_groups.some((group) =>
+						exercise.muscle_groups.includes(group)
+					);
+				}
+				return true;
+			})
+			.sort((a, b) => {
+				if ($filteredSortMethods.sort_by === "name") {
+					return a.name.localeCompare(b.name);
+				} else if ($filteredSortMethods.sort_by === "created_at") {
+					return new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime();
+				} else if ($filteredSortMethods.sort_by === "updated_at") {
+					return new Date(a.updated_at ?? 0).getTime() - new Date(b.updated_at ?? 0).getTime();
+				}
+				return 0;
+			})
 	);
 
 	let isCollapsed = defaultCollapsed;
@@ -72,6 +120,17 @@
 		createMode = !createMode; // Toggle visibility
 		console.log("Toggle Exercise Card", createMode);
 	}
+	function clearFilters() {
+		filteredMovementTypes.set({
+			movement_type: ""
+		});
+		filteredMuscleGroups.set({
+			muscle_groups: []
+		});
+		filteredSortMethods.set({
+			sort_by: ""
+		});
+	}
 </script>
 
 <div class="h-full w-full flex-1 overflow-hidden">
@@ -83,7 +142,7 @@
 		<Resizable.Pane defaultSize={defaultLayout[0]} minSize={10} class="h-full overflow-hidden">
 			<Tabs.Root value="all" class="flex h-full flex-col">
 				<!-- Static Header: Search bar and filter buttons -->
-				<div class="flex-shrink-0">
+				<div class="relative flex-shrink-0">
 					<div class="flex items-center px-6 py-2">
 						<!-- svelte-ignore a11y_consider_explicit_label -->
 						<button
@@ -123,44 +182,72 @@
 							{/if}
 						</button>
 						<div
-							class="w-full bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+							class="w-1/3 bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60"
 						>
 							<form>
 								<div class="relative">
 									<Search
-										class="absolute left-2 top-[50%] h-4 w-4 translate-y-[-50%] text-muted-foreground"
+										class="absolute left-2 top-[50%] h-4 translate-y-[-50%] text-muted-foreground"
 									/>
 									<Input placeholder="Search" class="pl-8" bind:value={searchQuery} />
 								</div>
 							</form>
 						</div>
-						<DropdownMenu.Root>
-							<DropdownMenu.Trigger>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="24"
-									height="24"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									class="lucide lucide-filter"
-									><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg
-								>
-							</DropdownMenu.Trigger>
-							<DropdownMenu.Content>
-								<DropdownMenu.Group>
-									<DropdownMenu.GroupHeading>My Account</DropdownMenu.GroupHeading>
-									<DropdownMenu.Separator />
-									<DropdownMenu.Item>Profile</DropdownMenu.Item>
-									<DropdownMenu.Item>Billing</DropdownMenu.Item>
-									<DropdownMenu.Item>Team</DropdownMenu.Item>
-									<DropdownMenu.Item>Subscription</DropdownMenu.Item>
-								</DropdownMenu.Group>
-							</DropdownMenu.Content>
-						</DropdownMenu.Root>
+
+						<div class=" relative ml-auto flex items-center gap-4">
+							<div
+								class=" scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex max-w-[300px] gap-2 overflow-x-auto py-2"
+							>
+								{#if $filteredMovementTypes.movement_type}
+									<span class=" whitespace-nowrap">
+										<Badge class="bg-green-600">{$filteredMovementTypes.movement_type}</Badge>
+									</span>
+								{/if}
+
+								{#each $filteredMuscleGroups.muscle_groups as group}
+									<span class=" whitespace-nowrap">
+										<Badge>{group}</Badge>
+									</span>
+								{/each}
+							</div>
+						</div>
+
+						<div class="relative ml-2 text-right">
+							<DropdownMenu.Root>
+								<DropdownMenu.Trigger class={buttonVariants({ variant: "outline" })}>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="24"
+										height="24"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										class="lucide lucide-filter"
+										><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg
+									>
+								</DropdownMenu.Trigger>
+								<DropdownMenu.Content class=" absolute right-0 mr-4 w-[250px]">
+									<DropdownMenu.Group>
+										<div class="mt-2">
+											<SortBySelect data={filteredSortMethods} props={null} />
+										</div>
+										<div class="mt-2">
+											<MovementTypeSelect data={filteredMovementTypes} props={null} />
+										</div>
+										<div class="mt-2">
+											<MuscleGroupSelect data={filteredMuscleGroups} props={null} />
+										</div>
+										<div class="mt-2">
+											<Button class="sm w-full" onclick={() => clearFilters()}>Clear Filters</Button
+											>
+										</div>
+									</DropdownMenu.Group>
+								</DropdownMenu.Content>
+							</DropdownMenu.Root>
+						</div>
 					</div>
 
 					{#if createMode}
