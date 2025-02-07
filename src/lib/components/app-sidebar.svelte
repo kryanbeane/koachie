@@ -2,6 +2,8 @@
 	import Frame from "lucide-svelte/icons/frame";
 	import GalleryVerticalEnd from "lucide-svelte/icons/gallery-vertical-end";
 	import SquareTerminal from "lucide-svelte/icons/square-terminal";
+	import TextSelect from "lucide-svelte/icons/text-select";
+	import NoteBookText from "lucide-svelte/icons/notebook-text";
 
 	export let data: PageData;
 
@@ -21,9 +23,25 @@
 		],
 		navMain: [
 			{
+				title: "Main Menu",
+				url: "#",
+				icon: NoteBookText,
+				isActive: true,
+				items: [
+					{
+						title: "Dashboard",
+						url: "/app"
+					},
+					{
+						title: "Clients",
+						url: "/app/clients"
+					}
+				]
+			},
+			{
 				title: "Library",
 				url: "#",
-				icon: SquareTerminal,
+				icon: TextSelect,
 				isActive: true,
 				items: [
 					{

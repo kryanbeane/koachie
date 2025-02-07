@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { routeStore } from "@/stores/route.store";
-
 	import type { PageData } from "./$types";
 	import { Button } from "@/components/ui/button";
 	import { Activity, Copy, CreditCard, DollarSign, Users } from "lucide-svelte";
@@ -9,15 +8,33 @@
 	import { onMount } from "svelte";
 	import * as Avatar from "@/components/ui/avatar";
 	import { toast } from "svelte-sonner";
+	import ClientCard from "@/components/client-card.svelte";
+	import { uploadImageFromUrl } from "@/storage/images";
 
 	let { data }: { data: PageData } = $props();
 	routeStore.set("Dashboard");
 
-	let targetNumber = 20;
+	async function uploadImage() {
+		let userProfilePic = data.user?.user_metadata.avatar_url;
+		try {
+			if (data.user?.user_metadata.avatar_url) {
+				const uploadData = await uploadImageFromUrl(data.supabase, userProfilePic, data.user?.id);
+				userProfilePic = uploadData.publicURL;
+				console.log("User profile pic:", userProfilePic);
+			}
+		} catch (error) {
+			console.error("Error caching profile picture:", error);
+		}
+
+		return userProfilePic;
+	}
+
+	let profileURL = $state("");
+	let targetNumber = data.numClients;
 	let displayNumber = $state(0);
 	let duration = 100;
 
-	onMount(() => {
+	onMount(async () => {
 		let startTime: number;
 		const step = (timestamp: number) => {
 			if (!startTime) startTime = timestamp;
@@ -32,6 +49,8 @@
 			}
 		};
 		requestAnimationFrame(step);
+
+		profileURL = await uploadImage();
 	});
 
 	function copyInviteLink() {
@@ -46,10 +65,7 @@
 			<!-- Left Section: Avatar and Greeting -->
 			<div class="flex items-center space-x-4">
 				<Avatar.Root class="h-20 w-20 rounded-lg">
-					<Avatar.Image
-						src={data.user?.user_metadata.avatar_url}
-						alt={data.user?.user_metadata.full_name}
-					/>
+					<Avatar.Image src={profileURL} alt={data.user?.user_metadata.full_name} />
 					<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 				</Avatar.Root>
 				<div class="">
@@ -128,6 +144,15 @@
 					<Card.Header>
 						<Card.Title>Recent Clients</Card.Title>
 						<Card.Description>20 extra clients signed up last week.</Card.Description>
+						<Card.Content>
+							<div
+								class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 max-h-[300px] overflow-y-auto"
+							>
+								{#each data.clients as client}
+									<ClientCard {...client} />
+								{/each}
+							</div>
+						</Card.Content>
 					</Card.Header>
 				</Card.Root>
 			</div>
