@@ -12,6 +12,8 @@
 	import { setSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 	import { setAllExerciseState } from "@/stores/all_exercise_state.svelte";
 	import { setDebugState } from "@/stores/debug_state.svelte";
+	import { setAllClientState } from "@/stores/all_clients_state.svelte";
+	import { setSelectedClientState } from "@/stores/selected_client_state.svelte";
 
 	interface Props {
 		data: LayoutData;
@@ -35,7 +37,9 @@
 
 	setAllWorkoutState();
 	setSelectedWorkoutState();
+	setSelectedClientState();
 	setAllExerciseState();
+	setAllClientState();
 	setDebugState();
 </script>
 

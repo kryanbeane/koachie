@@ -124,7 +124,7 @@
 			</div>
 
 			<!-- Instructions Section -->
-			{#if exercise!.instructions.length > 0}
+			{#if exercise!.instructions.length > 1}
 				<div
 					class={cn(
 						"ml-10 w-[40%] transform transition-all duration-300 ease-in-out",
