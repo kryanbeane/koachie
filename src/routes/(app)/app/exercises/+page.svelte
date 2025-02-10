@@ -9,7 +9,6 @@
 	import ExerciseList from "./(components)/exercise-list.svelte";
 	import ExerciseCard from "./(components)/exercise-card.svelte";
 	import { onMount } from "svelte";
-	import type { Exercise } from "@/schemas/exercises";
 	import { getAllExerciseState } from "@/stores/all_exercise_state.svelte";
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
 	import { buttonVariants } from "$lib/components/ui/button/index.js";

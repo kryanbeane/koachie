@@ -54,13 +54,6 @@
 					}
 				]
 			}
-		],
-		projects: [
-			{
-				name: "Design Engineering",
-				url: "#",
-				icon: Frame
-			}
 		]
 	};
 </script>
@@ -89,7 +82,6 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<NavMain items={sample_data.navMain} />
-		<NavProjects projects={sample_data.projects} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<NavUser user={data.user} />

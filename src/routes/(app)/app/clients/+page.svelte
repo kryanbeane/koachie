@@ -9,18 +9,13 @@
 	import ClientCard from "@/components/client-card.svelte";
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
 	import { Separator } from "@/components/ui/separator";
-	import * as Tooltip from "@/components/ui/tooltip/index";
 	import { getSelectedClientState } from "@/stores/selected_client_state.svelte";
-	import * as Avatar from "@/components/ui/avatar";
-	import { Badge } from "@/components/ui/badge";
 	import ClientPage from "./(components)/client-page.svelte";
+	import DeleteClientDialog from "./(components)/delete-client-dialog.svelte";
 
 	let { data }: { data: PageData } = $props();
-
 	let clientsState = getAllClientState();
 	let selectedClientState = getSelectedClientState();
-
-	console.log("client state", selectedClientState);
 
 	let searchQuery = $state("");
 
@@ -83,26 +78,27 @@
 			<div class="mb-1 flex items-center p-2">
 				{#if selectedClientState.Client}
 					<div class="ml-auto flex items-center gap-2">
-						<Tooltip.Root>
-							<Tooltip.Trigger id="move_to_trash_tooltip" disabled={!selectedClientState.Client}>
+						<Separator orientation="vertical" class="mx-2 h-6" />
+						<DropdownMenu.Root>
+							<DropdownMenu.Trigger
+								id="more_options_dropdown"
+								disabled={!selectedClientState.Client}
+							>
 								<Button size="sm" variant="ghost">
-									<Trash2 class="size-4" />
+									<EllipsisVertical class="size-4" />
 								</Button>
-							</Tooltip.Trigger>
-							<Tooltip.Content>Delete Client</Tooltip.Content>
-						</Tooltip.Root>
+							</DropdownMenu.Trigger>
+							<DropdownMenu.Content align="end">
+								<DropdownMenu.Item id="delete_client" onclick={(e) => e.preventDefault()}>
+									<DeleteClientDialog
+										client_id={selectedClientState.Client.id}
+										all_clients={clientsState}
+										{selectedClientState}
+									/>
+								</DropdownMenu.Item>
+							</DropdownMenu.Content>
+						</DropdownMenu.Root>
 					</div>
-					<Separator orientation="vertical" class="mx-2 h-6" />
-					<DropdownMenu.Root>
-						<DropdownMenu.Trigger id="more_options_dropdown" disabled={!selectedClientState.Client}>
-							<Button size="sm" variant="ghost">
-								<EllipsisVertical class="size-4" />
-							</Button>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.Content align="end">
-							<DropdownMenu.Item>Mark as unread</DropdownMenu.Item>
-						</DropdownMenu.Content>
-					</DropdownMenu.Root>
 				{/if}
 			</div>
 			<Separator />

@@ -47,3 +47,17 @@ export async function fetchMostRecentClients(client: SupabaseClient): Promise<Cl
 		throw error;
 	}
 }
+
+export async function removeCoachFromClient(client: SupabaseClient, client_id: string) {
+	const { data, error } = await client
+		.from("clients")
+		.update({ coach_id: null })
+		.eq("id", client_id)
+		.select("*");
+
+	if (data && !error) {
+		return data;
+	} else {
+		throw error;
+	}
+}

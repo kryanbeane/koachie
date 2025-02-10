@@ -16,6 +16,7 @@ export class AllClientState {
 	}
 
 	remove(clientId: string) {
+		console.log("remove client");
 		this.clients = this.clients.filter((w) => w.id !== clientId);
 	}
 

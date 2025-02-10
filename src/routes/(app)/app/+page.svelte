@@ -9,7 +9,7 @@
 	import * as Avatar from "@/components/ui/avatar";
 	import { toast } from "svelte-sonner";
 	import ClientCard from "@/components/client-card.svelte";
-	import { uploadImageFromUrl } from "@/storage/images";
+	import { fetchImage, uploadImageFromUrl } from "@/storage/images";
 
 	let { data }: { data: PageData } = $props();
 	routeStore.set("Dashboard");
@@ -19,7 +19,7 @@
 		try {
 			if (data.user?.user_metadata.avatar_url) {
 				const uploadData = await uploadImageFromUrl(data.supabase, userProfilePic, data.user?.id);
-				userProfilePic = uploadData.publicURL;
+				userProfilePic = uploadData;
 				console.log("User profile pic:", userProfilePic);
 			}
 		} catch (error) {
@@ -27,6 +27,18 @@
 		}
 
 		return userProfilePic;
+	}
+
+	async function getProfilePic() {
+		let signedUrl = "";
+		try {
+			if (data.user?.user_metadata.avatar_url) {
+				signedUrl = await fetchImage(data.supabase, data.user?.id);
+			}
+		} catch (error) {
+			console.error("Error caching profile picture:", error);
+		}
+		return signedUrl;
 	}
 
 	let profileURL = $state("");
@@ -41,7 +53,6 @@
 			const progress = Math.min((timestamp - startTime) / duration, 1);
 			const randomFluctuation = Math.random() * (1 - progress) * targetNumber * 0.2;
 			displayNumber = Math.floor(progress * targetNumber + randomFluctuation);
-			// displayNumber = Math.floor(progress * targetNumber);
 			if (progress < 1) {
 				requestAnimationFrame(step);
 			} else {
@@ -50,7 +61,7 @@
 		};
 		requestAnimationFrame(step);
 
-		profileURL = await uploadImage();
+		profileURL = await getProfilePic();
 	});
 
 	function copyInviteLink() {
@@ -143,7 +154,6 @@
 				<Card.Root class="col-span-3">
 					<Card.Header>
 						<Card.Title>Recent Clients</Card.Title>
-						<Card.Description>20 extra clients signed up last week.</Card.Description>
 						<Card.Content>
 							<div
 								class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 max-h-[300px] overflow-y-auto"

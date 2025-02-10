@@ -1,12 +1,9 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
 	import { Button } from "@/components/ui/button";
-	import { Activity, Copy, CreditCard, DollarSign, Users } from "lucide-svelte";
 	import * as Card from "@/components/ui/card";
 	import Badge from "@/components/ui/badge/badge.svelte";
 	import * as Avatar from "@/components/ui/avatar";
-	import { toast } from "svelte-sonner";
-	import * as Carousel from "@/components/ui/carousel";
 
 	let { data }: { data: PageData } = $props();
 
@@ -25,7 +22,7 @@
 		return age;
 	}
 
-	let age = $state(calculateAge(data.DOB));
+	let age = $derived(calculateAge(data.DOB));
 
 	console.log("age", age);
 </script>
@@ -40,47 +37,41 @@
 						src={data.user?.user_metadata.avatar_url}
 						alt={data.user?.user_metadata.full_name}
 					/> -->
-					<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+					<Avatar.Fallback class="rounded-lg">CL</Avatar.Fallback>
 				</Avatar.Root>
 				<div class="">
 					<h2 class="text-3xl font-bold tracking-tight">
 						{data.first_name}
+						{data.last_name}
 					</h2>
 					<Badge class="bg-green-600">Programs: 1</Badge>
 					<Badge>Age: {age}</Badge>
+					<Badge>Height: {data.height}</Badge>
+					<Badge>Gender: {data.gender}</Badge>
 				</div>
 			</div>
 
 			<!-- Right Section: Invite Link Button -->
 			<div>
-				<Button size="sm">Open Program</Button>
+				<Button size="sm">Open Calendar</Button>
 			</div>
 		</div>
 
 		<div class="space-y-4">
 			<div class="grid gap-4 md:grid-cols-1 lg:grid-cols-1">
-				<Carousel.Root class="w-full">
-					<Carousel.Content>
-						{#each Array(5) as _, i (i)}
-							<Carousel.Item>
-								<div class="p-1">
-									<Card.Root>
-										<Card.Content class="flex items-center justify-center p-6">
-											<span class="text-4xl font-semibold">{i + 1}</span>
-										</Card.Content>
-									</Card.Root>
-								</div>
-							</Carousel.Item>
-						{/each}
-					</Carousel.Content>
-					<Carousel.Previous />
-					<Carousel.Next />
-				</Carousel.Root>
+				<Card.Root>
+					<Card.Header>
+						<Card.Title>Calories</Card.Title>
+					</Card.Header>
+					<Card.Content>
+						<!-- <Overview /> -->
+					</Card.Content>
+				</Card.Root>
 			</div>
 			<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
 				<Card.Root class="col-span-4">
 					<Card.Header>
-						<Card.Title>Notifications</Card.Title>
+						<Card.Title>Steps</Card.Title>
 					</Card.Header>
 					<Card.Content>
 						<!-- <Overview /> -->
@@ -88,8 +79,7 @@
 				</Card.Root>
 				<Card.Root class="col-span-3">
 					<Card.Header>
-						<Card.Title>Recent Clients</Card.Title>
-						<Card.Description>20 extra clients signed up last week.</Card.Description>
+						<Card.Title>Weight</Card.Title>
 						<Card.Content>
 							<div
 								class="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 max-h-[300px] overflow-y-auto"

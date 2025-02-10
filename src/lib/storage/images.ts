@@ -16,10 +16,10 @@ export async function uploadImageFromUrl(
 	return data.fullPath;
 }
 
-// export async function fetchImage(supabase: SupabaseClient, user_id: string): Promise<string> {
-//     const { signedURL, error } = await supabase.storage.from("avatars").createSignedUrl(user_id, 60);
-//     if (error) {
-//         throw new Error(error.message);
-//     }
-//     return signedURL;
-// }
+export async function fetchImage(supabase: SupabaseClient, user_id: string): Promise<string> {
+	const { data, error } = await supabase.storage.from("avatars").createSignedUrl(user_id, 60);
+	if (error) {
+		throw new Error(error.message);
+	}
+	return data.signedUrl;
+}
