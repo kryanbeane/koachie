@@ -3,12 +3,13 @@
 	import * as Table from "$lib/components/ui/table/index.js";
 	import SetRow from "./set_row.svelte";
 	import NoOutlineInput from "../(other)/no_outline_input.svelte";
-	import { type CreateExerciseInstance, type Exercise } from "@/schemas/exercises";
-	import { Button } from "@/components/ui/button";
+	import Button from "@/components/ui/button/button.svelte";
+	import { ListPlus } from "lucide-svelte";
+	import type { Exercise } from "@/schemas/exercises";
 	import SelectExercise from "./select_exercise.svelte";
+	import type { ExerciseInstance } from "@/schemas/workouts";
 
-	let { instance, exercises }: { instance: CreateExerciseInstance; exercises: Exercise[] } =
-		$props();
+	let { instance, exercises }: { instance: ExerciseInstance; exercises: Exercise[] } = $props();
 
 	// function getExerciseById(exerciseId: string): Exercise | undefined {
 	// 	return exercises.find((exercise) => exercise.id === exerciseId);
@@ -21,7 +22,8 @@
 
 		<Table.Root>
 			<Table.Header>
-				<Table.Row>
+				<Table.Row
+					>x§x§§§x
 					<!-- TODO: Construct this as variables including custom ones -->
 					<Table.Head class="flex-1 text-center">Set</Table.Head>
 					<Table.Head class="flex-1 text-center">Weight (kg)</Table.Head>
@@ -30,28 +32,27 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				<SetRow setPerformance={instance.performance} />
+				{#each instance.performance as set}
+					<SetRow {set} />
+				{/each}
 			</Table.Body>
 		</Table.Root>
 
 		<Button
-			class="my-2"
-			size="xs"
+			class="ml-auto"
 			variant="secondary"
+			size="sm"
+			type="button"
 			onclick={() => {
-				const perf = [
-					...instance.performance,
-					{
-						order: instance.performance.length,
-						weight: null,
-						reps: null,
-						restTime: "03:00"
-					}
-				];
-
-				instance.performance = perf;
+				instance.performance.push({
+					order: instance.performance.length,
+					weight: null,
+					reps: null,
+					restTime: "03:00"
+				});
 			}}
-			>Add Set
+		>
+			<ListPlus />
 		</Button>
 
 		<NoOutlineInput type="text" placeholder="Enter notes here..." class="mt-2 w-full" />

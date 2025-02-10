@@ -2,10 +2,11 @@ import { fail } from "assert";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
-import { workoutSchema } from "@/schemas/workouts.js";
+import { workoutSchema, workoutWithPerformance } from "@/schemas/workouts.js";
 import { addWorkout, editWorkout, getWorkouts } from "@/server/services/workouts.js";
 
 import type { Actions, PageServerLoad } from "./$types.js";
+import ExerciseInstanceService from "@/server/services/exercise_instances.js";
 export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) => {
 	const layoutCookie = cookies.get("PaneForge:layout");
 	const collapsedCookie = cookies.get("PaneForge:collapsed");
@@ -17,7 +18,7 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 	if (collapsedCookie) collapsed = JSON.parse(collapsedCookie);
 
-	const createForm = await superValidate(zod(workoutSchema));
+	const createForm = await superValidate(zod(workoutWithPerformance));
 	const updateForm = await superValidate(zod(workoutSchema));
 	const workouts = await getWorkouts(supabase);
 
@@ -32,7 +33,8 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 export const actions: Actions = {
 	create_workout: async (event) => {
-		const form = await superValidate(event, zod(workoutSchema));
+		const exerciseInstanceService = new ExerciseInstanceService(event.locals.supabase);
+		const form = await superValidate(event, zod(workoutWithPerformance));
 		if (!form.valid) return fail(400, { form });
 
 		console.log("ACTIONS CREATE WORKOUT", form.data);
@@ -44,9 +46,17 @@ export const actions: Actions = {
 			experience_level: form.data.experience_level
 		});
 
+		const exerciseInstances = form.data.exerciseInstances.map(() => ({
+			performance: form.data.performance
+		}));
+
+		const exercise_instances =
+			await exerciseInstanceService.addExerciseInstances(exerciseInstances);
+
 		return {
 			form,
-			workout
+			workout,
+			exercise_instances
 		};
 	},
 	update_workout: async (event) => {

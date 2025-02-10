@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { workoutSchema } from "@/schemas/workouts";
+	import { createWorkoutSchema, workoutWithPerformance } from "@/schemas/workouts";
 	import * as Form from "$lib/components/ui/form/index.js";
 	import SuperDebug, { superForm, type FormResult } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
@@ -12,19 +12,34 @@
 	import { getDebugState } from "@/stores/debug_state.svelte";
 	import ComboBox from "@/components/ui/combo-box/combo-box.svelte";
 	import { ExperienceLevelValues, ModalityValues } from "@/data/enums";
+	import * as Card from "$lib/components/ui/card/index.js";
+	import * as Table from "$lib/components/ui/table/index.js";
+	import SetRow from "../../routes/(app)/app/workouts/(components)/(exercise_instances)/set_row.svelte";
+	import NoOutlineInput from "../../routes/(app)/app/workouts/(components)/(other)/no_outline_input.svelte";
+	import { Button } from "@/components/ui/button";
+	import SelectExercise from "../../routes/(app)/app/workouts/(components)/(exercise_instances)/select_exercise.svelte";
+	import { onMount } from "svelte";
 </script>
 
 <script lang="ts">
-	let { data, create_mode = $bindable() } = $props();
+	let { data, create_mode = $bindable(), exercises } = $props();
 
 	const form = superForm(data.createForm, {
 		id: "create-workout-form",
-		validators: zodClient(workoutSchema),
+		validators: zodClient(createWorkoutSchema),
 		resetForm: true,
+		dataType: "json",
 
 		onUpdate({ form, result }) {
+			if (!form.valid) {
+				toast.error("Form is invalid");
+				console.log("Create Workut Errors", result.data.form.errors);
+			}
 			const action = result.data as FormResult<ActionData>;
 			if (form.valid && action.workout) {
+				if (action.exercise_instances) {
+					console.log("action.exercise_instances", action.exercise_instances);
+				}
 				allWorkoutState.add(action.workout[0]);
 				selectedWorkoutState.set(action.workout[0]);
 				create_mode = false;
@@ -35,82 +50,141 @@
 
 	const { form: formData, enhance: createEnhance } = form;
 
+	onMount(() => {
+		$formData.performance = [
+			{
+				order: 0,
+				performance: [
+					{
+						order: 0,
+						weight: null,
+						reps: null,
+						restTime: ""
+					}
+				]
+			}
+		];
+	});
+
 	let allWorkoutState = getAllWorkoutState();
 	let selectedWorkoutState = getSelectedWorkoutState();
 
-	$effect(() => {
-		let workout = selectedWorkoutState.workout;
-		if (workout) {
-			$formData = workout;
-		} else {
-			$formData = {
-				name: "",
-				description: "",
-				modality: "",
-				experience_level: ""
-			};
-		}
-	});
 	let debugState = getDebugState();
 </script>
 
 <form method="POST" action="?/create_workout" use:createEnhance class="m-4 flex h-full flex-col">
 	<input type="hidden" name="id" bind:value={$formData.id} />
-	<div class="flex gap-2">
-		<Form.Field {form} name="name" class="w-full">
-			<Form.Control>
-				{#snippet children({ props })}
-					<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-
-		<input type="hidden" name="modality" bind:value={$formData.modality} />
-		<Form.Field {form} name="modality">
-			<Form.Control>
-				{#snippet children({ props })}
-					<ComboBox
-						{...props}
-						bind:value={$formData.modality}
-						options={ModalityValues}
-						field={"Modality"}
-					/>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-
-		<input type="hidden" name="experience_level" bind:value={$formData.experience_level} />
-		<Form.Field {form} name="experience_level">
-			<Form.Control>
-				{#snippet children({ props })}
-					<ComboBox
-						{...props}
-						bind:value={$formData.experience_level}
-						options={ExperienceLevelValues}
-						field={"Experience Level"}
-					/>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-	</div>
-
-	<Form.Field {form} name="description" class="w-full">
+	<Form.Field {form} name="name" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Textarea
-					placeholder="The workout that will win you the Mr. Olympia..."
-					{...props}
-					bind:value={$formData.description}
-				/>
+				<NameInput placeholder="New workout name..." {...props} bind:value={$formData.name} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
+	<div class="flex gap-2">
+		<Form.Field {form} name="description" class="w-full">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Textarea
+						placeholder="The workout that will win you the Mr. Olympia..."
+						{...props}
+						bind:value={$formData.description}
+					/>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
 
-	<Form.Button variant="secondary" size="xs" class="w-36">Create Workout</Form.Button>
+		<div class="flex-col">
+			<input type="hidden" name="modality" bind:value={$formData.modality} />
+			<Form.Field {form} name="modality">
+				<Form.Control>
+					{#snippet children({ props })}
+						<ComboBox
+							{...props}
+							bind:value={$formData.modality}
+							options={ModalityValues}
+							field={"Modality"}
+						/>
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+
+			<input type="hidden" name="experience_level" bind:value={$formData.experience_level} />
+			<Form.Field {form} name="experience_level" class="w-full">
+				<Form.Control>
+					{#snippet children({ props })}
+						<ComboBox
+							{...props}
+							bind:value={$formData.experience_level}
+							options={ExperienceLevelValues}
+							field={"Experience Level"}
+						/>
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+		</div>
+	</div>
+
+	<input type="hidden" name="performance" bind:value={$formData.performance} />
+	{#each $formData.performance as instance}
+		<Card.Root class="mb-4 mt-2 bg-muted/50 ">
+			<Card.Content class="!p-4">
+				<SelectExercise {exercises} />
+
+				<Table.Root class="my-2">
+					<Table.Header>
+						<Table.Row>
+							<Table.Head class="!h-8 text-center">Set</Table.Head>
+							<Table.Head class="!h-8 text-center">Weight</Table.Head>
+							<Table.Head class="!h-8 text-center">Reps</Table.Head>
+							<Table.Head class="!h-8 text-center">Rest</Table.Head>
+						</Table.Row>
+					</Table.Header>
+
+					<Table.Body>
+						{#each instance.performance as set}
+							<SetRow {set} />
+						{/each}
+					</Table.Body>
+				</Table.Root>
+				<div class="flex items-center gap-2">
+					<Button
+						class="mt-2"
+						size="sm"
+						variant="secondary"
+						onclick={() => {
+							const perf = [
+								...instance.performance,
+								{
+									order: instance.performance.length,
+									weight: null,
+									reps: null,
+									restTime: ""
+								}
+							];
+
+							instance.performance = perf;
+						}}
+					>
+						Add Set
+					</Button>
+
+					<NoOutlineInput type="text" placeholder="Enter notes here..." class="mt-2 flex-grow" />
+				</div>
+			</Card.Content>
+		</Card.Root>
+	{/each}
+
+	<div class="flex justify-between">
+		<Button variant="secondary" size="xs" class="w-36">Add Exercise</Button>
+
+		<Form.Button variant="default" size="xs" class="ml-auto w-36">Create Workout</Form.Button>
+	</div>
+
 	{#if debugState.debug}
 		<div class="m-4">
 			<SuperDebug data={formData} stringTruncate={1000} />

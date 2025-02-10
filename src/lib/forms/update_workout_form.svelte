@@ -43,7 +43,9 @@
 		}
 	});
 
-	const { form: updateFormData, enhance: updateEnhance } = form;
+	const { form: updateFormData, enhance: updateEnhance, isTainted } = form;
+
+	$inspect("update form taint", isTainted());
 
 	$effect(() => {
 		if (selectedWorkoutState.workout) {

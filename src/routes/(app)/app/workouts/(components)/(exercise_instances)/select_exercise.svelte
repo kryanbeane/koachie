@@ -40,7 +40,7 @@
 			</Button>
 		{/snippet}
 	</Popover.Trigger>
-	<Popover.Content class="p-0">
+	<Popover.Content class="w-[450px] p-0">
 		<Command.Root>
 			<Command.Input placeholder="Search exercises..." />
 			<Command.List>
