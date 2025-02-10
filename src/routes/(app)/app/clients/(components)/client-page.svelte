@@ -46,7 +46,7 @@
 					</h2>
 					<Badge class="bg-green-600">Programs: 1</Badge>
 					<Badge>Age: {age}</Badge>
-					<Badge>Height: {data.height}</Badge>
+					<Badge>Height: {data.height}cm</Badge>
 					<Badge>Gender: {data.gender}</Badge>
 				</div>
 			</div>
