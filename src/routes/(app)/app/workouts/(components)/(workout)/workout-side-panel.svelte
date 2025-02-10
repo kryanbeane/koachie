@@ -9,7 +9,7 @@
 	import type { Exercise } from "@/schemas/exercises";
 	import { onMount } from "svelte";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
-	import CreateWorkoutForm from "../../../../../../lib/forms/create_workout_form.svelte";
+	import CreateWorkoutForm from "@/forms/create_workout_form.svelte";
 	import UpdateWorkoutForm from "@/forms/update_workout_form.svelte";
 </script>
 
@@ -84,7 +84,7 @@
 	</div>
 	<Separator />
 	{#if create_mode}
-		<CreateWorkoutForm {data} bind:create_mode />
+		<CreateWorkoutForm {data} bind:create_mode {exercises} />
 	{:else if selectedWorkoutState.workout}
 		<UpdateWorkoutForm {data} />
 	{:else}

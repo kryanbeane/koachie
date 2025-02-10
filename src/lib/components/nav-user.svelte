@@ -25,15 +25,15 @@
 						{...props}
 					>
 						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<Avatar.Image
+							<!-- <Avatar.Image
 								src={user.user_metadata.avatar_url}
 								alt={user.user_metadata.full_name}
-							/>
-							<!-- <Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback> -->
+							/> -->
+							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold">{user.user_metadata.full_name}</span>
-							<span class="truncate text-xs">{user.email}</span>
+							<!-- <span class="truncate font-semibold">{user.user_metadata.full_name}</span> -->
+							<!-- <span class="truncate text-xs">{user.email}</span> -->
 						</div>
 						<ChevronsUpDown class="ml-auto size-4" />
 					</Sidebar.MenuButton>

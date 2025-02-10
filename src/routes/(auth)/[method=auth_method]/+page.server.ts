@@ -1,15 +1,15 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from "./$types";
 
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
 
-import { emailAuthSchema } from '@/schemas';
+import { emailPasswordAuthSchema } from "@/schemas";
 
-import type { MetaTagsProps } from 'svelte-meta-tags';
+import type { MetaTagsProps } from "svelte-meta-tags";
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { method } = params;
-	const methodString = method === 'login' ? 'Log in' : 'Sign up';
+	const methodString = method === "login" ? "Log in" : "Sign up";
 
 	const pageMetaTags: MetaTagsProps = {
 		title: methodString
@@ -18,6 +18,6 @@ export const load: PageServerLoad = async ({ params }) => {
 	return {
 		pageMetaTags,
 		method,
-		emailAuthForm: await superValidate(zod(emailAuthSchema))
+		form: await superValidate(zod(emailPasswordAuthSchema))
 	};
 };

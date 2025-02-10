@@ -6,4 +6,4 @@ export const baseSchema = z.object({
 	updated_at: z.string().datetime({ offset: true }).optional()
 });
 
-export { emailAuthSchema, type EmailAuthSchema } from "./email-auth";
+export { emailPasswordAuthSchema, type EmailPassswordAuthSchema } from "./email-auth";

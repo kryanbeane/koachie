@@ -1,7 +1,8 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-export const emailAuthSchema = z.object({
-	email: z.string().email().max(128)
+export const emailPasswordAuthSchema = z.object({
+	email: z.string().email().max(128),
+	password: z.string()
 });
 
-export type EmailAuthSchema = z.infer<typeof emailAuthSchema>;
+export type EmailPassswordAuthSchema = z.infer<typeof emailPasswordAuthSchema>;
