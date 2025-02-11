@@ -4,7 +4,7 @@
 	import TimeWidget from "./time_widget.svelte";
 	import { type SetPerformance } from "@/schemas/workouts";
 
-	let { set }: { set: SetPerformance } = $props();
+	let { set = $bindable() }: { set: SetPerformance } = $props();
 </script>
 
 {#snippet field(field: number | null, placeholder: string)}

@@ -1,7 +1,16 @@
 <script lang="ts" module>
-	import { createWorkoutSchema, workoutWithPerformance } from "@/schemas/workouts";
+	import {
+		createWorkoutSchema,
+		type CreateWorkoutSchema,
+		type ExerciseInstance,
+		type Workout
+	} from "@/schemas/workouts";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import SuperDebug, { superForm, type FormResult } from "sveltekit-superforms";
+	import SuperDebug, {
+		superForm,
+		type FormResult,
+		type SuperFormEvents
+	} from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
@@ -19,12 +28,15 @@
 	import { Button } from "@/components/ui/button";
 	import SelectExercise from "../../routes/(app)/app/workouts/(components)/(exercise_instances)/select_exercise.svelte";
 	import { onMount } from "svelte";
+	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
 </script>
 
 <script lang="ts">
-	let { data, create_mode = $bindable(), exercises } = $props();
+	let { data, exercises } = $props();
+	let { createForm }: { createForm: CreateWorkoutSchema } = data;
 
-	const form = superForm(data.createForm, {
+	const form = superForm(createForm, {
 		id: "create-workout-form",
 		validators: zodClient(createWorkoutSchema),
 		resetForm: true,
@@ -33,7 +45,7 @@
 		onUpdate({ form, result }) {
 			if (!form.valid) {
 				toast.error("Form is invalid");
-				console.log("Create Workut Errors", result.data.form.errors);
+				console.log("Create Workout Errors", result.data.form.errors);
 			}
 			const action = result.data as FormResult<ActionData>;
 			if (form.valid && action.workout) {
@@ -42,7 +54,8 @@
 				}
 				allWorkoutState.add(action.workout[0]);
 				selectedWorkoutState.set(action.workout[0]);
-				create_mode = false;
+				goto(`${page.url.pathname}?mode=none`);
+
 				toast.success(`Workout ${action.workout[0].name} Created!`);
 			}
 		}
@@ -51,10 +64,9 @@
 	const { form: formData, enhance: createEnhance } = form;
 
 	onMount(() => {
-		$formData.performance = [
+		$formData.exercise_instances = [
 			{
-				order: 0,
-				performance: [
+				sets: [
 					{
 						order: 0,
 						weight: null,
@@ -63,13 +75,15 @@
 					}
 				]
 			}
-		];
+		] as ExerciseInstance[];
 	});
 
 	let allWorkoutState = getAllWorkoutState();
 	let selectedWorkoutState = getSelectedWorkoutState();
 
 	let debugState = getDebugState();
+
+	$inspect("instances", $formData.exercise_instances);
 </script>
 
 <form method="POST" action="?/create_workout" use:createEnhance class="m-4 flex h-full flex-col">
@@ -129,8 +143,21 @@
 		</div>
 	</div>
 
-	<input type="hidden" name="performance" bind:value={$formData.performance} />
-	{#each $formData.performance as instance}
+	<!-- <Form.Fieldset {form} name="exercise_instances">
+		{#each $formData.exercise_instances as _, i}
+			<Form.ElementField {form} name={"exercise_instances[{i}].sets"} class="w-full">
+				<Form.Control>
+					{#snippet children({ props })}
+						<input type="url" bind:value={$formData.exercise_instances[i]} {...props} />
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.ElementField>
+		{/each}
+	</Form.Fieldset> -->
+
+	<input type="hidden" name="performance" bind:value={$formData.exercise_instances} />
+	{#each $formData.exercise_instances as instance, i}
 		<Card.Root class="mb-4 mt-2 bg-muted/50 ">
 			<Card.Content class="!p-4">
 				<SelectExercise {exercises} />
@@ -146,8 +173,8 @@
 					</Table.Header>
 
 					<Table.Body>
-						{#each instance.performance as set}
-							<SetRow {set} />
+						{#each instance.sets as set, j}
+							<SetRow bind:set={$formData.exercise_instances[i].sets[j]} />
 						{/each}
 					</Table.Body>
 				</Table.Root>
@@ -158,16 +185,16 @@
 						variant="secondary"
 						onclick={() => {
 							const perf = [
-								...instance.performance,
+								...instance.sets,
 								{
-									order: instance.performance.length,
+									order: instance.sets.length,
 									weight: null,
 									reps: null,
 									restTime: ""
 								}
 							];
 
-							instance.performance = perf;
+							instance.sets = perf;
 						}}
 					>
 						Add Set

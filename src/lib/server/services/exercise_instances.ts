@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import ExerciseInstanceRepository from "@/server/repositories/exercise_instances";
-import type { ExerciseInstance } from "@/schemas/exercises";
+import type { ExerciseInstance } from "@/schemas/workouts";
 
 class ExerciseInstanceService {
 	private repository: ExerciseInstanceRepository;

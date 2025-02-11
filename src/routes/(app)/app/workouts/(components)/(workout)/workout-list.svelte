@@ -9,16 +9,17 @@
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { toast } from "svelte-sonner";
 	import { Button } from "@/components/ui/button";
+	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
 
 	let selectedWorkoutState = getSelectedWorkoutState();
 	let allWorkoutState = getAllWorkoutState();
-	let { workouts, create_mode = $bindable() }: { workouts: Workout[]; create_mode: boolean } =
-		$props();
+	let { workouts }: { workouts: Workout[] } = $props();
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === "Escape") {
 			selectedWorkoutState.clear();
-			create_mode = false;
+			goto(`${page.url.pathname}?mode=none`);
 		}
 	}
 
@@ -41,7 +42,6 @@
 		if (response.ok) {
 			allWorkoutState.remove(workout);
 			selectedWorkoutState.clear();
-			create_mode = false;
 
 			toast.success(`Workout ${workout.name} Deleted!`);
 		}
@@ -107,7 +107,6 @@
 				)}
 				onclick={() => {
 					selectedWorkoutState.set(workout);
-					create_mode = false;
 				}}
 			>
 				<div class="flex w-full flex-col gap-1">
