@@ -11,13 +11,14 @@
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 	import CreateWorkoutForm from "@/forms/create_workout_form.svelte";
 	import UpdateWorkoutForm from "@/forms/update_workout_form.svelte";
+	import { page } from "$app/state";
 </script>
 
 <script lang="ts">
 	let allWorkoutState = getAllWorkoutState();
 	let selectedWorkoutState = getSelectedWorkoutState();
 
-	let { data, create_mode = $bindable() } = $props();
+	let { data } = $props();
 
 	let exercises: Exercise[] = $state([]);
 
@@ -45,7 +46,6 @@
 			if (response.ok) {
 				allWorkoutState.remove(selectedWorkoutState.workout);
 				selectedWorkoutState.clear();
-				create_mode = false;
 
 				toast.success(`Workout Deleted!`);
 			}
@@ -55,7 +55,7 @@
 
 <div class="mt-6 flex h-full flex-grow flex-col">
 	<div class="mb-1 flex items-center p-2">
-		{#if create_mode}
+		{#if page.url.searchParams.get("mode") === "create"}
 			<span class="text-lg font-semibold">Create Workout</span>
 		{/if}
 		{#if selectedWorkoutState.workout}
@@ -83,8 +83,8 @@
 		{/if}
 	</div>
 	<Separator />
-	{#if create_mode}
-		<CreateWorkoutForm {data} bind:create_mode {exercises} />
+	{#if page.url.searchParams.get("mode") === "create"}
+		<CreateWorkoutForm {data} {exercises} />
 	{:else if selectedWorkoutState.workout}
 		<UpdateWorkoutForm {data} />
 	{:else}

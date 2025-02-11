@@ -2,7 +2,7 @@ import { fail } from "assert";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
-import { workoutSchema, workoutWithPerformance } from "@/schemas/workouts.js";
+import { createWorkoutSchema, workoutSchema } from "@/schemas/workouts.js";
 import { addWorkout, editWorkout, getWorkouts } from "@/server/services/workouts.js";
 
 import type { Actions, PageServerLoad } from "./$types.js";
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 
 	if (collapsedCookie) collapsed = JSON.parse(collapsedCookie);
 
-	const createForm = await superValidate(zod(workoutWithPerformance));
+	const createForm = await superValidate(zod(createWorkoutSchema));
 	const updateForm = await superValidate(zod(workoutSchema));
 	const workouts = await getWorkouts(supabase);
 
@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 export const actions: Actions = {
 	create_workout: async (event) => {
 		const exerciseInstanceService = new ExerciseInstanceService(event.locals.supabase);
-		const form = await superValidate(event, zod(workoutWithPerformance));
+		const form = await superValidate(event, zod(createWorkoutSchema));
 		if (!form.valid) return fail(400, { form });
 
 		console.log("ACTIONS CREATE WORKOUT", form.data);
@@ -46,12 +46,9 @@ export const actions: Actions = {
 			experience_level: form.data.experience_level
 		});
 
-		const exerciseInstances = form.data.exerciseInstances.map(() => ({
-			performance: form.data.performance
-		}));
-
-		const exercise_instances =
-			await exerciseInstanceService.addExerciseInstances(exerciseInstances);
+		const exercise_instances = await exerciseInstanceService.addExerciseInstances(
+			form.data.exercise_instances
+		);
 
 		return {
 			form,

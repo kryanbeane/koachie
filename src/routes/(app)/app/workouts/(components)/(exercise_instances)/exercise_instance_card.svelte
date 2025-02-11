@@ -32,7 +32,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each instance.performance as set}
+				{#each instance.sets as set}
 					<SetRow {set} />
 				{/each}
 			</Table.Body>
@@ -44,8 +44,8 @@
 			size="sm"
 			type="button"
 			onclick={() => {
-				instance.performance.push({
-					order: instance.performance.length,
+				instance.sets.push({
+					order: instance.sets.length,
 					weight: null,
 					reps: null,
 					restTime: "03:00"

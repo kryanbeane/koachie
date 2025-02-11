@@ -18,18 +18,14 @@ export const workoutSchema = baseSchema.extend({
 });
 
 export const exerciseInstanceSchema = baseSchema.extend({
-	client_id: z.string().uuid().nullable().optional(),
+	client_id: z.string().uuid().optional(),
 	exercise_id: z.string().uuid().optional(),
 	workout_id: z.string().uuid().optional(),
-	performance: z.array(setPerformance)
-});
-
-export const workoutWithPerformance = workoutSchema.extend({
-	exerciseInstances: exerciseInstanceSchema.array()
+	sets: z.array(setPerformance)
 });
 
 export const createWorkoutSchema = workoutSchema.extend({
-	performance: setPerformance.array()
+	exercise_instances: exerciseInstanceSchema.array()
 });
 
 export const workoutAssignment = baseSchema.extend({
@@ -39,7 +35,7 @@ export const workoutAssignment = baseSchema.extend({
 });
 
 export type WorkoutAssignment = z.infer<typeof workoutAssignment>;
-export type WorkouWithPerformance = z.infer<typeof workoutWithPerformance>;
 export type ExerciseInstance = z.infer<typeof exerciseInstanceSchema>;
 export type Workout = z.infer<typeof workoutSchema>;
 export type SetPerformance = z.infer<typeof setPerformance>;
+export type CreateWorkoutSchema = z.infer<typeof createWorkoutSchema>;
