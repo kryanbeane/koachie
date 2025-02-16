@@ -2,15 +2,10 @@
 	import {
 		createWorkoutSchema,
 		type CreateWorkoutSchema,
-		type ExerciseInstance,
-		type Workout
+		type ExerciseInstance
 	} from "@/schemas/workouts";
 	import * as Form from "$lib/components/ui/form/index.js";
-	import SuperDebug, {
-		superForm,
-		type FormResult,
-		type SuperFormEvents
-	} from "sveltekit-superforms";
+	import SuperDebug, { superForm, type FormResult } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import NameInput from "@/components/ui/input/name-input.svelte";
 	import { Textarea } from "$lib/components/ui/textarea/index.js";
@@ -23,13 +18,14 @@
 	import { ExperienceLevelValues, ModalityValues } from "@/data/enums";
 	import * as Card from "$lib/components/ui/card/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
-	import SetRow from "../../routes/(app)/app/workouts/(components)/(exercise_instances)/set_row.svelte";
 	import NoOutlineInput from "../../routes/(app)/app/workouts/(components)/(other)/no_outline_input.svelte";
 	import { Button } from "@/components/ui/button";
 	import SelectExercise from "../../routes/(app)/app/workouts/(components)/(exercise_instances)/select_exercise.svelte";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { page } from "$app/state";
+	import TimeWidget from "../../routes/(app)/app/workouts/(components)/(exercise_instances)/time_widget.svelte";
+	import { InputWithVariant } from "@/components/ui/input";
 </script>
 
 <script lang="ts">
@@ -49,8 +45,8 @@
 			}
 			const action = result.data as FormResult<ActionData>;
 			if (form.valid && action.workout) {
-				if (action.exercise_instances) {
-					console.log("action.exercise_instances", action.exercise_instances);
+				if (action.created_instances) {
+					console.log("action.exercise_instances", action.created_instances);
 				}
 				allWorkoutState.add(action.workout[0]);
 				selectedWorkoutState.set(action.workout[0]);
@@ -66,12 +62,13 @@
 	onMount(() => {
 		$formData.exercise_instances = [
 			{
+				exercise_id: "",
 				sets: [
 					{
 						order: 0,
 						weight: null,
 						reps: null,
-						restTime: ""
+						restTime: "03:00"
 					}
 				]
 			}
@@ -82,8 +79,6 @@
 	let selectedWorkoutState = getSelectedWorkoutState();
 
 	let debugState = getDebugState();
-
-	$inspect("instances", $formData.exercise_instances);
 </script>
 
 <form method="POST" action="?/create_workout" use:createEnhance class="m-4 flex h-full flex-col">
@@ -143,24 +138,21 @@
 		</div>
 	</div>
 
-	<!-- <Form.Fieldset {form} name="exercise_instances">
-		{#each $formData.exercise_instances as _, i}
-			<Form.ElementField {form} name={"exercise_instances[{i}].sets"} class="w-full">
-				<Form.Control>
-					{#snippet children({ props })}
-						<input type="url" bind:value={$formData.exercise_instances[i]} {...props} />
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.ElementField>
-		{/each}
-	</Form.Fieldset> -->
-
-	<input type="hidden" name="performance" bind:value={$formData.exercise_instances} />
 	{#each $formData.exercise_instances as instance, i}
 		<Card.Root class="mb-4 mt-2 bg-muted/50 ">
 			<Card.Content class="!p-4">
-				<SelectExercise {exercises} />
+				<Form.ElementField {form} name="exercise_instances[{i}].exercise_id">
+					<Form.Control>
+						{#snippet children({ props })}
+							<SelectExercise
+								bind:exercise_id={$formData.exercise_instances[i].exercise_id}
+								{exercises}
+								{...props}
+							/>
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.ElementField>
 
 				<Table.Root class="my-2">
 					<Table.Header>
@@ -174,7 +166,37 @@
 
 					<Table.Body>
 						{#each instance.sets as set, j}
-							<SetRow bind:set={$formData.exercise_instances[i].sets[j]} />
+							<Table.Row>
+								<Table.Cell class="text-center">{set.order + 1}</Table.Cell>
+								<Table.Cell class="text-center">
+									<Form.ElementField {form} name="exercise_instances[{i}].sets[{j}].weight">
+										<Form.Control>
+											{#snippet children({ props })}
+												<InputWithVariant
+													variant="set"
+													type="number"
+													placeholder="50 kg"
+													bind:value={$formData.exercise_instances[i].sets[j].weight}
+													{...props}
+												/>
+											{/snippet}
+										</Form.Control>
+										<Form.FieldErrors />
+									</Form.ElementField>
+								</Table.Cell>
+								<Table.Cell class="text-center">
+									<InputWithVariant
+										variant="set"
+										type="number"
+										placeholder="6-10"
+										bind:value={$formData.exercise_instances[i].sets[j].reps}
+									/>
+								</Table.Cell>
+
+								<Table.Cell class="text-center">
+									<TimeWidget />
+								</Table.Cell>
+							</Table.Row>
 						{/each}
 					</Table.Body>
 				</Table.Root>

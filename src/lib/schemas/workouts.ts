@@ -3,10 +3,10 @@ import { baseSchema } from "./index";
 import { experienceLevelEnum, modalityEnum } from "@/data/enums";
 
 export const setPerformance = z.object({
-	order: z.number().int().min(1),
+	order: z.number().int().min(0),
 	reps: z.number().int().min(0).nullable(),
 	weight: z.number().int().min(0).nullable(),
-	restTime: z.string().time()
+	restTime: z.string()
 });
 
 export const workoutSchema = baseSchema.extend({

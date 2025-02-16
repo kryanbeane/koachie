@@ -6,7 +6,7 @@
 	import { cn } from "$lib/utils.js";
 	import { ChevronsUpDown, Check } from "lucide-svelte";
 
-	let { exercises } = $props();
+	let { exercises, exercise_id = $bindable("") } = $props();
 	let open = $state(false);
 	let value = $state("");
 	let triggerRef = $state<HTMLButtonElement>(null!);
@@ -51,6 +51,7 @@
 							value={exercise.name}
 							onSelect={() => {
 								value = exercise.name;
+								exercise_id = exercise.id;
 								closeAndFocusTrigger();
 							}}
 						>
