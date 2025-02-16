@@ -1,14 +1,14 @@
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
 
-import { emailAuthSchema } from '@/schemas';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { emailAuthSchema } from "@/schemas";
+import { error, fail, redirect } from "@sveltejs/kit";
 
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from "./$types";
 
-import type { Provider } from '@supabase/supabase-js';
+import type { Provider } from "@supabase/supabase-js";
 export const load: PageServerLoad = async () => {
-	throw redirect(303, '/login');
+	throw redirect(303, "/login");
 };
 
 export const actions: Actions = {
@@ -35,10 +35,10 @@ export const actions: Actions = {
 		});
 
 		if (error) {
-			return redirect(303, '/auth/error');
+			return redirect(303, "/auth/error");
 		}
 
-		return redirect(303, '/auth/verify');
+		return redirect(303, "/auth/verify");
 	},
 
 	async oauth(event) {
@@ -49,10 +49,10 @@ export const actions: Actions = {
 		} = event;
 
 		const formData = await request.formData();
-		const method = formData.get('method');
+		const method = formData.get("method");
 
-		if (typeof method !== 'string') {
-			throw error(400, 'Invalid OAuth method provided. Please try again.');
+		if (typeof method !== "string") {
+			throw error(400, "Invalid OAuth method provided. Please try again.");
 		}
 
 		const { data, error: authError } = await supabase.auth.signInWithOAuth({
@@ -60,8 +60,8 @@ export const actions: Actions = {
 			options: {
 				redirectTo: `${url.origin}/app`,
 				queryParams: {
-					access_type: 'offline',
-					prompt: 'consent'
+					access_type: "offline",
+					prompt: "consent"
 				}
 			}
 		});

@@ -5,6 +5,7 @@ on: [push]
 env:
   PUBLIC_SUPABASE_URL: 'https://fake_test_url.supabase.co'
   PUBLIC_SUPABASE_ANON_KEY: 'fake_anon_key'
+  PUBLIC_RESEND_TOKEN: 'fake_resend_api_key'
   PRIVATE_SUPABASE_SERVICE_ROLE: 'fake_service_role'
   PRIVATE_STRIPE_API_KEY: 'fake_strip_api_key'
   PRIVATE_LOOPS_API_KEY: 'fake_loops_api_key'
