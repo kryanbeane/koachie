@@ -229,7 +229,29 @@
 	{/each}
 
 	<div class="flex justify-between">
-		<Button variant="secondary" size="xs" class="w-36">Add Exercise</Button>
+		<Button
+			variant="secondary"
+			size="xs"
+			class="w-36"
+			onclick={() => {
+				$formData.exercise_instances = [
+					...$formData.exercise_instances,
+					{
+						exercise_id: "",
+						sets: [
+							{
+								order: $formData.exercise_instances.length,
+								weight: null,
+								reps: null,
+								restTime: "03:00"
+							}
+						]
+					}
+				];
+			}}
+		>
+			Add Exercise
+		</Button>
 
 		<Form.Button variant="default" size="xs" class="ml-auto w-36">Create Workout</Form.Button>
 	</div>
