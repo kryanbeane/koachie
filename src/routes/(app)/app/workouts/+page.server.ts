@@ -1,7 +1,6 @@
 import { fail } from "assert";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-
 import { createWorkoutSchema, workoutSchema } from "@/schemas/workouts.js";
 import { addWorkout, editWorkout, getWorkouts } from "@/server/services/workouts.js";
 
@@ -37,8 +36,6 @@ export const actions: Actions = {
 		const form = await superValidate(event, zod(createWorkoutSchema));
 		if (!form.valid) return fail(400, { form });
 
-		console.log("ACTIONS CREATE WORKOUT", form.data);
-
 		const workout = await addWorkout(event.locals.supabase, {
 			name: form.data.name,
 			description: form.data.description,
@@ -46,21 +43,23 @@ export const actions: Actions = {
 			experience_level: form.data.experience_level
 		});
 
-		const exercise_instances = await exerciseInstanceService.addExerciseInstances(
-			form.data.exercise_instances
-		);
+		const instances_with_workout_id = form.data.exercise_instances.map((inst) => ({
+			...inst,
+			workout_id: workout[0].id
+		}));
+
+		const created_instances =
+			await exerciseInstanceService.addExerciseInstances(instances_with_workout_id);
 
 		return {
 			form,
 			workout,
-			exercise_instances
+			created_instances
 		};
 	},
 	update_workout: async (event) => {
 		const form = await superValidate(event, zod(workoutSchema));
 		if (!form.valid) return fail(400, { form });
-
-		console.log("ACTIONS UPDATE WORKOUT", form.data);
 
 		const workout = await editWorkout(event.locals.supabase, {
 			id: form.data.id,

@@ -7,20 +7,14 @@
 	let { set = $bindable() }: { set: SetPerformance } = $props();
 </script>
 
-{#snippet field(field: number | null, placeholder: string)}
-	<Table.Cell class="text-center">
-		{#if field === null}
-			<InputWithVariant variant="set" sizing="sm" type="text" {placeholder} />
-		{:else}
-			<InputWithVariant variant="set" type="text" {placeholder} value={field} />
-		{/if}
-	</Table.Cell>
-{/snippet}
-
 <Table.Row>
 	<Table.Cell class="text-center">{set.order + 1}</Table.Cell>
-	{@render field(set.weight, "50 kg")}
-	{@render field(set.reps, "6-10")}
+	<Table.Cell class="text-center">
+		<InputWithVariant variant="set" type="text" placeholder="50 kg" bind:value={set.weight} />
+	</Table.Cell>
+	<Table.Cell class="text-center">
+		<InputWithVariant variant="set" type="text" placeholder="6-10" bind:value={set.reps} />
+	</Table.Cell>
 
 	<Table.Cell class="text-center">
 		<TimeWidget />
