@@ -107,6 +107,7 @@
 				)}
 				onclick={() => {
 					selectedWorkoutState.set(workout);
+					goto(`${page.url.pathname}?mode=update`);
 				}}
 			>
 				<div class="flex w-full flex-col gap-1">
