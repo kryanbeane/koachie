@@ -6,8 +6,8 @@ import { fetchClients } from "@/server/repositories/clients";
 import { clientInviteSchema } from "@/schemas/client_invites";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { PUBLIC_RESEND_TOKEN } from "$env/static/public";
-import { Resend } from "resend";
+// import { PUBLIC_RESEND_TOKEN } from "$env/static/public";
+// import { Resend } from "resend";
 import {
 	isClientInviteCreatedService,
 	createClientInviteService
@@ -51,19 +51,19 @@ export const actions: Actions = {
 			});
 		}
 
-		const resend = new Resend(PUBLIC_RESEND_TOKEN);
-		const { data, error } = await resend.emails.send({
-			from: "onboarding@resend.dev",
-			to: "todo@gmail.com", //TODO
-			subject: "Hello World",
-			html: "<p>Congrats on sending your <strong>first email</strong>!</p>"
-		});
+		//const resend = new Resend(PUBLIC_RESEND_TOKEN);
+		// const { data, error } = await resend.emails.send({
+		// 	from: "onboarding@resend.dev",
+		// 	to: "todo@gmail.com", //TODO
+		// 	subject: "Hello World",
+		// 	html: "<p>Congrats on sending your <strong>first email</strong>!</p>"
+		// });
 
-		if (error) {
-			return console.error({ error });
-		}
+		// if (error) {
+		// 	return console.error({ error });
+		// }
 
-		console.log({ data });
+		// console.log({ data });
 
 		return {
 			form

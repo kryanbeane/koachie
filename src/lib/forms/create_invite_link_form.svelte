@@ -24,15 +24,14 @@
 
 		async onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
-
-			if (form.id) {
+			console.log("Validation result:", result);
+			console.log("Form data:", form.data);
+			if (form.valid) {
 				toast.success(`Email Sent!`);
 				copyCode = true;
 				formEmail = form.data.email;
 			} else {
 				console.error("onUpdate", result.data.form.errors);
-				//form data
-				console.log("form data", form.data);
 			}
 		}
 	});
