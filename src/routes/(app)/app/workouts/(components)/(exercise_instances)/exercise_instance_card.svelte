@@ -22,8 +22,7 @@
 
 		<Table.Root>
 			<Table.Header>
-				<Table.Row
-					>x§x§§§x
+				<Table.Row>
 					<!-- TODO: Construct this as variables including custom ones -->
 					<Table.Head class="flex-1 text-center">Set</Table.Head>
 					<Table.Head class="flex-1 text-center">Weight (kg)</Table.Head>
