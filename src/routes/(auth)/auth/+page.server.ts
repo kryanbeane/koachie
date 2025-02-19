@@ -1,13 +1,12 @@
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
-import { emailPasswordAuthSchema } from "@/schemas";
 import { error, fail, redirect } from "@sveltejs/kit";
 
 import type { Actions, PageServerLoad } from "./$types";
 
 import type { AuthTokenResponsePassword, Provider } from "@supabase/supabase-js";
-
+import { emailPasswordAuthSchema } from "@/schemas";
 export const load: PageServerLoad = async () => {
 	throw redirect(303, "/login");
 };
@@ -32,11 +31,10 @@ export const actions: Actions = {
 		});
 
 		if (error) {
-			console.log("AUTH ERROR", error);
 			return redirect(303, "/auth/error");
 		}
 
-		return redirect(303, "/app");
+		return redirect(303, "/auth/verify");
 	},
 
 	async oauth(event) {

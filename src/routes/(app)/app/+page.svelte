@@ -10,6 +10,12 @@
 	import { toast } from "svelte-sonner";
 	import ClientCard from "@/components/client-card.svelte";
 	import { fetchImage, uploadImageFromUrl } from "@/storage/images";
+	import * as Popover from "$lib/components/ui/popover/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import { Label } from "$lib/components/ui/label/index.js";
+	import { buttonVariants } from "$lib/components/ui/button/index.js";
+	import Fa from "svelte-fa";
+	import CreateInviteLinkForm from "@/forms/create_invite_link_form.svelte";
 
 	let { data }: { data: PageData } = $props();
 	routeStore.set("Dashboard");
@@ -63,11 +69,6 @@
 
 		profileURL = await getProfilePic();
 	});
-
-	function copyInviteLink() {
-		toast.success("Invite link copied to clipboard");
-		navigator.clipboard.writeText("https://example.com/invite");
-	}
 </script>
 
 <div class="hidden flex-col md:flex">
@@ -92,25 +93,19 @@
 
 			<!-- Right Section: Invite Link Button -->
 			<div>
-				<Button size="sm" onclick={copyInviteLink}>
-					<Copy class="mr-2 h-4 w-4" />
-					Invite Link
-				</Button>
+				<Popover.Root>
+					<Popover.Trigger class={buttonVariants({ variant: "outline" })}>
+						<Copy class="mr-2 h-4 w-4" /> Invite</Popover.Trigger
+					>
+					<Popover.Content class="w-80">
+						<CreateInviteLinkForm {data} />
+					</Popover.Content>
+				</Popover.Root>
 			</div>
 		</div>
 
 		<div class="space-y-4">
 			<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-				<Card.Root>
-					<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-						<Card.Title class="text-sm font-medium">Total Revenue</Card.Title>
-						<DollarSign class="h-4 w-4 text-muted-foreground" />
-					</Card.Header>
-					<Card.Content>
-						<div class="text-2xl font-bold">$45,231.89</div>
-						<p class="text-xs text-muted-foreground">+20.1% from last month</p>
-					</Card.Content>
-				</Card.Root>
 				<Card.Root>
 					<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
 						<Card.Title class="text-sm font-medium">Subscriptions</Card.Title>
@@ -121,16 +116,7 @@
 						<p class="text-xs text-muted-foreground">+180.1% from last month</p>
 					</Card.Content>
 				</Card.Root>
-				<Card.Root>
-					<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-						<Card.Title class="text-sm font-medium">Sales</Card.Title>
-						<CreditCard class="h-4 w-4 text-muted-foreground" />
-					</Card.Header>
-					<Card.Content>
-						<div class="text-2xl font-bold">+12,234</div>
-						<p class="text-xs text-muted-foreground">+19% from last month</p>
-					</Card.Content>
-				</Card.Root>
+
 				<Card.Root>
 					<Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
 						<Card.Title class="text-sm font-medium">Active Now</Card.Title>
