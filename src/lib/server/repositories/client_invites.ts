@@ -11,7 +11,11 @@ export async function deleteClientInvite(supabase: SupabaseClient, invite: Clien
 }
 
 export async function isClientInviteCreated(supabase: SupabaseClient, invite: ClientInvite) {
-	return await supabase.from("client_invites").select("*").eq("email", invite.email);
+	return await supabase
+		.from("client_invites")
+		.select("*")
+		.eq("email", invite.email)
+		.eq("coach_id", invite.coach_id);
 }
 
 export async function fetchClientInvite(supabase: SupabaseClient, invite: ClientInvite) {

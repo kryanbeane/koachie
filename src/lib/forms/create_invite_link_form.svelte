@@ -16,6 +16,7 @@
 	let copyCode = $state(false);
 	const inviteCode = crypto.randomUUID().slice(0, 6);
 	let formEmail = $state("");
+	let getCode = $state("");
 
 	const form = superForm(data.createForm, {
 		id: "create-invite-form",
@@ -30,6 +31,13 @@
 				toast.success(`Email Sent!`);
 				copyCode = true;
 				formEmail = form.data.email;
+				const inviteResponse = await handleGetInvite({
+					email: form.data.email,
+					coach_id: data.user.id,
+					code: ""
+				});
+				console.log("Invite response:", inviteResponse);
+				getCode = inviteResponse.data[0].code;
 			} else {
 				console.error("onUpdate", result.data.form.errors);
 			}
@@ -113,6 +121,15 @@
 									placeholder="Enter email"
 									class="h-8"
 								/>
+							{/snippet}
+						</Form.Control>
+						<Form.FieldErrors class="text-sm text-red-500" />
+					</Form.Field>
+				{:else}
+					<Form.Field {form} name="code" class="col-span-2">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Input {...props} bind:value={getCode} class="h-8" />
 							{/snippet}
 						</Form.Control>
 						<Form.FieldErrors class="text-sm text-red-500" />
