@@ -6,8 +6,7 @@ import { error, fail, redirect } from "@sveltejs/kit";
 
 import type { Actions, PageServerLoad } from "./$types";
 
-import type { AuthTokenResponsePassword, Provider } from "@supabase/supabase-js";
-
+import type { Provider } from "@supabase/supabase-js";
 export const load: PageServerLoad = async () => {
 	throw redirect(303, "/login");
 };
