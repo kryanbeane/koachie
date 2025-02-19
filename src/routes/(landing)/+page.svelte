@@ -19,7 +19,7 @@
 	</h1>
 
 	<p class="mb-4 flex items-center justify-center text-[2vw] font-bold">
-		World's First AI Coaching Platform
+		World's Simplest Coaching Platform for Fitness Professionals
 	</p>
 
 	<Button
