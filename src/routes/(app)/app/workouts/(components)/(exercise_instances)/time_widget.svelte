@@ -20,6 +20,7 @@
 </script>
 
 <InputWithVariant
+	class="h-8 w-20"
 	variant="set"
 	type="text"
 	placeholder="00:00"

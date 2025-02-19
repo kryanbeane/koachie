@@ -1,4 +1,4 @@
-import type { Client } from "@/schemas/Clients";
+import type { Client } from "@/schemas/clients";
 import { getContext, setContext } from "svelte";
 
 export class SelectedClientState {
