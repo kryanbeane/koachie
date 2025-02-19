@@ -45,6 +45,10 @@
 				isActive: true,
 				items: [
 					{
+						title: "Programs",
+						url: "/app/programs"
+					},
+					{
 						title: "Workouts",
 						url: "/app/workouts"
 					},
