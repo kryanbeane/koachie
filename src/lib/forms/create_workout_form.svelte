@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		createWorkoutSchema,
 		type CreateWorkoutSchema,
@@ -26,9 +26,7 @@
 	import { page } from "$app/state";
 	import TimeWidget from "../../routes/(app)/app/workouts/(components)/(exercise_instances)/time_widget.svelte";
 	import { Input, InputWithVariant } from "@/components/ui/input";
-</script>
 
-<script lang="ts">
 	let { data, exercises } = $props();
 	let { createForm }: { createForm: CreateWorkoutSchema } = data;
 
@@ -66,14 +64,16 @@
 				sets: [
 					{
 						order: 0,
-						weight: null,
-						reps: null,
+						weight: 0,
+						reps: 0,
 						restTime: "03:00"
 					}
 				]
 			}
 		] as ExerciseInstance[];
 	});
+
+	$inspect($formData);
 
 	let allWorkoutState = getAllWorkoutState();
 	let selectedWorkoutState = getSelectedWorkoutState();
@@ -137,7 +137,6 @@
 			</Form.Field>
 		</div>
 	</div>
-
 	{#each $formData.exercise_instances as instance, i}
 		<Card.Root class="mb-4 mt-2 bg-muted/50 ">
 			<Card.Content class="!p-4">
@@ -147,7 +146,6 @@
 							<SelectExercise
 								bind:exercise_id={$formData.exercise_instances[i].exercise_id}
 								{exercises}
-								{...props}
 							/>
 						{/snippet}
 					</Form.Control>
@@ -207,16 +205,16 @@
 						variant="secondary"
 						onclick={() => {
 							const perf = [
-								...instance.sets,
+								...$formData.exercise_instances[i].sets,
 								{
-									order: instance.sets.length,
+									order: $formData.exercise_instances[i].sets.length,
 									weight: null,
 									reps: null,
 									restTime: ""
 								}
 							];
 
-							instance.sets = perf;
+							$formData.exercise_instances[i].sets = perf;
 						}}
 					>
 						Add Set
