@@ -18,9 +18,18 @@ export const workoutSchema = baseSchema.extend({
 });
 
 export const exerciseInstanceSchema = baseSchema.extend({
-	client_id: z.string().uuid().optional(),
+	client_id: z.string().uuid().nullable().optional(),
 	exercise_id: z.string().uuid().optional(),
 	workout_id: z.string().uuid().optional(),
+	note: z.string().max(500).optional(),
+	sets: z.array(setPerformance)
+});
+
+export const updateExerciseInstanceSchema = z.object({
+	client_id: z.string().uuid().nullable().optional(),
+	exercise_id: z.string().uuid().optional(),
+	workout_id: z.string().uuid().optional(),
+	note: z.string().max(500).optional(),
 	sets: z.array(setPerformance)
 });
 
@@ -39,3 +48,4 @@ export type ExerciseInstance = z.infer<typeof exerciseInstanceSchema>;
 export type Workout = z.infer<typeof workoutSchema>;
 export type SetPerformance = z.infer<typeof setPerformance>;
 export type CreateWorkoutSchema = z.infer<typeof createWorkoutSchema>;
+export type UpdateExerciseInstance = z.infer<typeof updateExerciseInstanceSchema>;

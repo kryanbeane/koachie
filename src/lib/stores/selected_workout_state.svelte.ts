@@ -1,12 +1,12 @@
-import type { Workout } from '@/schemas/workouts';
-import { getContext, setContext } from 'svelte';
+import type { CreateWorkoutSchema } from "@/schemas/workouts";
+import { getContext, setContext } from "svelte";
 
 export class SelectedWorkoutState {
-	workout = $state<Workout | null>();
+	workout = $state<CreateWorkoutSchema | null>();
 
 	constructor() {}
 
-	set(workout: Workout) {
+	set(workout: CreateWorkoutSchema) {
 		this.workout = workout;
 	}
 
@@ -15,7 +15,7 @@ export class SelectedWorkoutState {
 	}
 }
 
-const KEY = 'selectedWorkout';
+const KEY = "selectedWorkout";
 
 export function setSelectedWorkoutState(): SelectedWorkoutState {
 	return setContext(KEY, new SelectedWorkoutState());

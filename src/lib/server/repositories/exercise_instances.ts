@@ -22,6 +22,16 @@ class ExerciseInstanceRepository {
 		return instances;
 	}
 
+	async fetchExerciseInstanceByWorkoutId(workoutId: string): Promise<ExerciseInstance[]> {
+		const query = this.client.from("exercise_instances").select("*").eq("workout_id", workoutId);
+		const { data: instances, error } = await query;
+		if (error) {
+			throw error;
+		}
+
+		return instances;
+	}
+
 	async createExerciseInstance(instance: ExerciseInstance): Promise<ExerciseInstance> {
 		const { data, error } = await this.client
 			.from("exercise_instances")
@@ -57,6 +67,34 @@ class ExerciseInstanceRepository {
 		} else {
 			throw error;
 		}
+	}
+
+	async upsertExerciseInstances(instances: ExerciseInstance[]): Promise<ExerciseInstance[]> {
+		const instancesToUpdate = instances.filter((inst) => inst.id);
+		const instancesToInsert = instances.filter((inst) => !inst.id);
+
+		console.log("UPDATE", instancesToUpdate);
+		console.log("INSERT", instancesToInsert);
+
+		const { data: updatedData, error: updateError } = await this.client
+			.from("exercise_instances")
+			.upsert(instancesToUpdate, { onConflict: "id" })
+			.select("*");
+
+		if (updateError) {
+			throw updateError;
+		}
+
+		const { data: insertedData, error: insertError } = await this.client
+			.from("exercise_instances")
+			.insert(instancesToInsert)
+			.select("*");
+
+		if (insertError) {
+			throw insertError;
+		}
+
+		return [...(updatedData || []), ...(insertedData || [])] as ExerciseInstance[];
 	}
 
 	async deleteExerciseInstances(ids: string[]): Promise<ExerciseInstance[]> {

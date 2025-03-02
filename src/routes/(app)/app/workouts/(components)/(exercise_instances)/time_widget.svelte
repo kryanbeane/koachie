@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { InputWithVariant } from "@/components/ui/input";
 
-	let time = "";
+	let { time } = $props();
 
 	function handleTimeInput(event: Event) {
 		const input = event.target as HTMLInputElement;

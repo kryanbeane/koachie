@@ -12,7 +12,7 @@ export const GET: RequestHandler = async (event) => {
 export const POST: RequestHandler = async (event) => {
 	svc = new ExerciseInstanceService(event.locals.supabase);
 	const instance = await event.request.json();
-	const newInstance = await svc.addExerciseInstance(instance);
+	const newInstance = await svc.addExerciseInstance(instance.instance);
 	return new Response(JSON.stringify(newInstance));
 };
 
@@ -26,6 +26,7 @@ export const PUT: RequestHandler = async (event) => {
 export const DELETE: RequestHandler = async (event) => {
 	svc = new ExerciseInstanceService(event.locals.supabase);
 	const instances = await event.request.json();
-	const deletedInstance = await svc.deleteExerciseInstances(instances);
+	console.log("DELETE INSTANCES", instances);
+	const deletedInstance = await svc.deleteExerciseInstances(instances.instances);
 	return new Response(JSON.stringify(deletedInstance));
 };

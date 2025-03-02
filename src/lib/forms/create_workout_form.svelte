@@ -25,7 +25,7 @@
 	import { goto } from "$app/navigation";
 	import { page } from "$app/state";
 	import TimeWidget from "../../routes/(app)/app/workouts/(components)/(exercise_instances)/time_widget.svelte";
-	import { InputWithVariant } from "@/components/ui/input";
+	import { Input, InputWithVariant } from "@/components/ui/input";
 </script>
 
 <script lang="ts">
@@ -82,7 +82,7 @@
 </script>
 
 <form method="POST" action="?/create_workout" use:createEnhance class="m-4 flex h-full flex-col">
-	<input type="hidden" name="id" bind:value={$formData.id} />
+	<Input type="hidden" name="id" bind:value={$formData.id} />
 	<Form.Field {form} name="name" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
@@ -194,7 +194,7 @@
 								</Table.Cell>
 
 								<Table.Cell class="text-center">
-									<TimeWidget />
+									<TimeWidget time={$formData.exercise_instances[i].sets[j].restTime} />
 								</Table.Cell>
 							</Table.Row>
 						{/each}
@@ -222,7 +222,12 @@
 						Add Set
 					</Button>
 
-					<NoOutlineInput type="text" placeholder="Enter notes here..." class="mt-2 flex-grow" />
+					<NoOutlineInput
+						type="text"
+						placeholder={$formData.exercise_instances[i].note || "Enter notes here..."}
+						bind:value={$formData.exercise_instances[i].note}
+						class="mt-2 flex-grow"
+					/>
 				</div>
 			</Card.Content>
 		</Card.Root>

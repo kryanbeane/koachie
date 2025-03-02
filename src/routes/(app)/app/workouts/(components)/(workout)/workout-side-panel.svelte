@@ -35,7 +35,24 @@
 
 	async function handleDeleteWorkout() {
 		if (selectedWorkoutState.workout) {
-			const response = await fetch(`/api/workouts`, {
+			console.log(
+				"selectedWorkoutExerciseInstances",
+				selectedWorkoutState.workout.exercise_instances
+			);
+
+			const response = await fetch(`/api/exercise_instances`, {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ instances: selectedWorkoutState.workout.exercise_instances })
+			});
+
+			if (response.ok) {
+				toast.success(`Workout Exercise Instances Deleted!`);
+			}
+
+			const response2 = await fetch(`/api/workouts`, {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json"
@@ -43,7 +60,7 @@
 				body: JSON.stringify({ id: selectedWorkoutState.workout.id })
 			});
 
-			if (response.ok) {
+			if (response2.ok) {
 				allWorkoutState.remove(selectedWorkoutState.workout);
 				selectedWorkoutState.clear();
 
@@ -53,14 +70,14 @@
 	}
 </script>
 
-<div class="mt-6 flex h-full flex-grow flex-col">
+<div class="mt-6 flex h-full flex-grow flex-col overflow-x-auto">
 	<div class="mb-1 flex items-center p-2">
 		{#if page.url.searchParams.get("mode") === "create"}
 			<span class="text-lg font-semibold">Create Workout</span>
 		{/if}
 		{#if selectedWorkoutState.workout}
 			<div class="ml-auto flex items-center gap-2">
-				<Tooltip.Root>
+				<!-- <Tooltip.Root>
 					<Tooltip.Trigger id="move_to_trash_tooltip" disabled={!selectedWorkoutState.workout}>
 						<Button size="sm" variant="ghost" onclick={handleDeleteWorkout}>
 							<Trash2 class="size-4" />
@@ -68,25 +85,36 @@
 					</Tooltip.Trigger>
 					<Tooltip.Content>Delete Workout</Tooltip.Content>
 				</Tooltip.Root>
+			</div> -->
+				<Separator orientation="vertical" class="mx-2 h-6" />
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger id="more_options_dropdown" disabled={!selectedWorkoutState.workout}>
+						<Button size="sm" variant="ghost">
+							<EllipsisVertical class="size-4" />
+						</Button>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content align="end">
+						<!-- <DropdownMenu.Item>Mark as unread</DropdownMenu.Item> -->
+						<DropdownMenu.Item class="Item">
+							<Button size="sm" variant="ghost" onclick={handleDeleteWorkout}>
+								<Trash2 class="size-4" />
+								Delete Workout
+							</Button>
+						</DropdownMenu.Item>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
 			</div>
-			<Separator orientation="vertical" class="mx-2 h-6" />
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger id="more_options_dropdown" disabled={!selectedWorkoutState.workout}>
-					<Button size="sm" variant="ghost">
-						<EllipsisVertical class="size-4" />
-					</Button>
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content align="end">
-					<DropdownMenu.Item>Mark as unread</DropdownMenu.Item>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
 		{/if}
 	</div>
 	<Separator />
 	{#if page.url.searchParams.get("mode") === "create"}
-		<CreateWorkoutForm {data} {exercises} />
+		<div class="flex h-full flex-col overflow-y-auto">
+			<CreateWorkoutForm {data} {exercises} />
+		</div>
 	{:else if selectedWorkoutState.workout}
-		<UpdateWorkoutForm {data} />
+		<div class="flex h-full flex-col overflow-y-auto">
+			<UpdateWorkoutForm {data} {exercises} />
+		</div>
 	{:else}
 		<div class="flex h-full items-center justify-center p-6">
 			<span class="font-semibold">No Workouts Selected</span>
