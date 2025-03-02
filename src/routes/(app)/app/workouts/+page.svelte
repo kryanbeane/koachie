@@ -19,7 +19,7 @@
 
 	let searchQuery = $state("");
 
-	workoutsState.set(data.workouts);
+	workoutsState.set(data.workoutsWithInstances);
 	routeStore.set("Workouts");
 
 	let filteredWorkouts = $derived(
@@ -33,7 +33,6 @@
 <Resizable.PaneGroup direction="horizontal">
 	<Resizable.Pane defaultSize={24} minSize={24}>
 		<SearchFilterWorkouts bind:searchQuery />
-		<WorkoutList workouts={filteredWorkouts} />
 		<div class="justify-left flex px-4">
 			<Button
 				variant="default"
@@ -47,6 +46,7 @@
 				Add Workout
 			</Button>
 		</div>
+		<WorkoutList workouts={filteredWorkouts} />
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane

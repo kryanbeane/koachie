@@ -11,7 +11,14 @@
 	let value = $state("");
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
-	const selectedValue = $derived(exercises.find((f: { name: string }) => f.name === value));
+	$effect(() => {
+		const exercise = exercises.find((f: { id: string }) => f.id === exercise_id);
+		if (exercise) {
+			value = exercise.name;
+		}
+	});
+
+	let selectedValue = $derived(exercises.find((f: { name: string }) => f.name === value));
 
 	function closeAndFocusTrigger() {
 		open = false;

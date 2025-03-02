@@ -20,11 +20,22 @@ export const load: PageServerLoad = async ({ locals: { supabase }, cookies }) =>
 	const createForm = await superValidate(zod(createWorkoutSchema));
 	const updateForm = await superValidate(zod(workoutSchema));
 	const workouts = await getWorkouts(supabase);
+	const svc = new ExerciseInstanceService(supabase);
+	const workoutsWithInstances = await Promise.all(
+		workouts.map(async (workout) => {
+			if (workout.id) {
+				const instance = await svc.getExerciseInstancesByWorkoutId(workout.id);
+				return { ...workout, exercise_instances: instance };
+			}
+			return workout;
+		})
+	);
+	console.log("This here", workoutsWithInstances);
 
 	return {
 		layout,
 		collapsed,
-		workouts,
+		workoutsWithInstances,
 		createForm,
 		updateForm
 	};
@@ -58,7 +69,7 @@ export const actions: Actions = {
 		};
 	},
 	update_workout: async (event) => {
-		const form = await superValidate(event, zod(workoutSchema));
+		const form = await superValidate(event, zod(createWorkoutSchema));
 		if (!form.valid) return fail(400, { form });
 
 		const workout = await editWorkout(event.locals.supabase, {
@@ -69,9 +80,19 @@ export const actions: Actions = {
 			experience_level: form.data.experience_level
 		});
 
+		const exerciseInstanceService = new ExerciseInstanceService(event.locals.supabase);
+		const instances_with_workout_id = form.data.exercise_instances.map((inst) => ({
+			...inst,
+			workout_id: workout[0].id
+		}));
+
+		const updated_instances =
+			await exerciseInstanceService.editExerciseInstances(instances_with_workout_id);
+
 		return {
 			form,
-			workout
+			workout,
+			updated_instances
 		};
 	}
 };

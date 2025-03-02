@@ -18,7 +18,17 @@ class ExerciseInstanceService {
 		}
 	}
 
+	async getExerciseInstancesByWorkoutId(workoutId: string): Promise<ExerciseInstance[]> {
+		try {
+			return await this.repository.fetchExerciseInstanceByWorkoutId(workoutId);
+		} catch (e) {
+			console.error(e);
+			throw e;
+		}
+	}
+
 	async addExerciseInstance(instance: ExerciseInstance): Promise<ExerciseInstance> {
+		console.log("ADD INSTANCE", instance);
 		try {
 			return await this.repository.createExerciseInstance(instance);
 		} catch (e) {
@@ -28,6 +38,7 @@ class ExerciseInstanceService {
 	}
 
 	async addExerciseInstances(instances: ExerciseInstance[]): Promise<ExerciseInstance[]> {
+		console.log("ADD INSTANCE", instances);
 		try {
 			return await this.repository.createExerciseInstances(instances);
 		} catch (e) {
@@ -44,10 +55,33 @@ class ExerciseInstanceService {
 		}
 	}
 
+	async editExerciseInstances(
+		instances: ExerciseInstance[]
+	): Promise<ExerciseInstance[] | undefined> {
+		console.log("EDIT INSTANCES", instances);
+		try {
+			return await this.repository.upsertExerciseInstances(instances);
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
 	async deleteExerciseInstances(instances: ExerciseInstance[]) {
+		if (!Array.isArray(instances)) {
+			console.error("Invalid instances:", instances);
+			throw new Error("Invalid instances array");
+		}
+
 		const ids = instances
 			.map((instance) => instance.id)
 			.filter((id): id is string => id !== undefined);
+
+		console.log("DELETE IDS", ids);
+
+		if (ids.length === 0) {
+			console.warn("No valid IDs to delete.");
+			return;
+		}
 
 		const e = await this.repository.deleteExerciseInstances(ids);
 		if (!e) {

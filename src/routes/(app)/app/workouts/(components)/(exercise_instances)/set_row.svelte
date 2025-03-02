@@ -17,6 +17,6 @@
 	</Table.Cell>
 
 	<Table.Cell class="text-center">
-		<TimeWidget />
+		<TimeWidget time={set.restTime} />
 	</Table.Cell>
 </Table.Row>
