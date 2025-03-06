@@ -1,5 +1,10 @@
 <script lang="ts" module>
-	import { createWorkoutSchema, workoutSchema, type CreateWorkoutSchema } from "@/schemas/workouts";
+	import {
+		createWorkoutSchema,
+		workoutSchema,
+		type CreateWorkoutSchema,
+		type ExerciseInstance
+	} from "@/schemas/workouts";
 	import * as Form from "$lib/components/ui/form/index.js";
 	import { superForm, type FormResult } from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
@@ -63,6 +68,12 @@
 			});
 		}
 	});
+
+	function handleRemoveExerciseInstance(instance: ExerciseInstance) {
+		$updateFormData.exercise_instances = $updateFormData.exercise_instances.filter(
+			(i) => i !== instance
+		);
+	}
 
 	let debugState = getDebugState();
 </script>
@@ -128,7 +139,7 @@
 	</Form.Field>
 
 	{#each $updateFormData.exercise_instances as instance, i}
-		<Card.Root class="mb-4 mt-2 bg-muted/50 ">
+		<Card.Root class="group relative mb-4 mt-2 bg-muted/50 ">
 			<Card.Content class="!p-4">
 				<Form.ElementField {form} name="exercise_instances[{i}].exercise_id">
 					<Form.Control>
@@ -211,14 +222,32 @@
 						Add Set
 					</Button>
 
-					<NoOutlineInput
-						type="text"
-						placeholder={$updateFormData.exercise_instances[i].note || "Enter notes here..."}
-						bind:value={$updateFormData.exercise_instances[i].note}
-						class="mt-2 flex-grow"
-					/>
-				</div>
-			</Card.Content>
+					<div class="group relative mt-2 flex w-full items-center">
+						<!-- Input Container -->
+						<NoOutlineInput
+							type="text"
+							placeholder={$updateFormData.exercise_instances[i].note || "Enter notes here..."}
+							bind:value={$updateFormData.exercise_instances[i].note}
+							class="flex-1 transition-all duration-300 ease-in-out group-hover:w-[70%]"
+						/>
+
+						<!-- Remove Exercise Button -->
+						<div
+							class="absolute right-0 top-1/2 flex -translate-y-1/2 translate-x-4 flex-row items-center gap-2 opacity-0 transition-all duration-300 ease-in-out group-hover:translate-x-0 group-hover:opacity-100"
+						>
+							<Button
+								size="sm"
+								variant="destructive"
+								onclick={() => {
+									handleRemoveExerciseInstance(instance);
+								}}
+							>
+								Remove Exercise
+							</Button>
+						</div>
+					</div>
+				</div></Card.Content
+			>
 		</Card.Root>
 	{/each}
 	<div class="flex justify-between">
