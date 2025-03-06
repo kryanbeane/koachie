@@ -14,6 +14,7 @@
 	// function getExerciseById(exerciseId: string): Exercise | undefined {
 	// 	return exercises.find((exercise) => exercise.id === exerciseId);
 	// }
+	// TODO: IS THIS FILE NEEDED?
 </script>
 
 <Card.Root class="mb-4 mt-2 bg-muted/50 ">

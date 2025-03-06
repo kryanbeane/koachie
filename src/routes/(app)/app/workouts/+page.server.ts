@@ -81,10 +81,23 @@ export const actions: Actions = {
 		});
 
 		const exerciseInstanceService = new ExerciseInstanceService(event.locals.supabase);
+		if (!form.data.id) {
+			return fail(400, { form, error: "Workout ID is required" });
+		}
+		const all_instances_with_workout_id =
+			await exerciseInstanceService.getExerciseInstancesByWorkoutId(form.data.id as string);
 		const instances_with_workout_id = form.data.exercise_instances.map((inst) => ({
 			...inst,
 			workout_id: workout[0].id
 		}));
+
+		const removed_instances = all_instances_with_workout_id.filter(
+			(inst) => !instances_with_workout_id.find((i) => i.id === inst.id)
+		);
+
+		if (removed_instances.length > 0) {
+			await exerciseInstanceService.deleteExerciseInstances(removed_instances);
+		}
 
 		const updated_instances =
 			await exerciseInstanceService.editExerciseInstances(instances_with_workout_id);
