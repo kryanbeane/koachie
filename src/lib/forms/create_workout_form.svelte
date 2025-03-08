@@ -192,7 +192,7 @@
 								</Table.Cell>
 
 								<Table.Cell class="text-center">
-									<TimeWidget time={$formData.exercise_instances[i].sets[j].restTime} />
+									<TimeWidget bind:time={$formData.exercise_instances[i].sets[j].restTime} />
 								</Table.Cell>
 							</Table.Row>
 						{/each}
