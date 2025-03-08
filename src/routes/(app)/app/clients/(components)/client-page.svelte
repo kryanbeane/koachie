@@ -23,8 +23,6 @@
 	}
 
 	let age = $derived(calculateAge(data.DOB));
-
-	console.log("age", age);
 </script>
 
 <div class="hidden flex-col md:flex">

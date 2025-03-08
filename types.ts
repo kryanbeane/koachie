@@ -7,16 +7,19 @@ export type Database = {
 				Row: {
 					coach_id: string;
 					code: string;
+					email: string;
 					id: string;
 				};
 				Insert: {
 					coach_id: string;
 					code?: string;
+					email: string;
 					id?: string;
 				};
 				Update: {
 					coach_id?: string;
 					code?: string;
+					email?: string;
 					id?: string;
 				};
 				Relationships: [
@@ -36,6 +39,8 @@ export type Database = {
 					DOB: string | null;
 					email: string | null;
 					first_name: string | null;
+					gender: Database["public"]["Enums"]["gender"] | null;
+					height: number | null;
 					id: number;
 					last_name: string | null;
 					updated_at: string | null;
@@ -46,6 +51,8 @@ export type Database = {
 					DOB?: string | null;
 					email?: string | null;
 					first_name?: string | null;
+					gender?: Database["public"]["Enums"]["gender"] | null;
+					height?: number | null;
 					id?: number;
 					last_name?: string | null;
 					updated_at?: string | null;
@@ -56,6 +63,8 @@ export type Database = {
 					DOB?: string | null;
 					email?: string | null;
 					first_name?: string | null;
+					gender?: Database["public"]["Enums"]["gender"] | null;
+					height?: number | null;
 					id?: number;
 					last_name?: string | null;
 					updated_at?: string | null;
@@ -117,27 +126,30 @@ export type Database = {
 					created_at: string;
 					exercise_id: string;
 					id: string;
-					performance: Json;
+					note: string | null;
+					sets: Json;
 					updated_id: string;
-					workout_id: string;
+					workout_id: string | null;
 				};
 				Insert: {
 					client_id?: string | null;
 					created_at?: string;
 					exercise_id: string;
 					id?: string;
-					performance?: Json;
+					note?: string | null;
+					sets?: Json;
 					updated_id?: string;
-					workout_id: string;
+					workout_id?: string | null;
 				};
 				Update: {
 					client_id?: string | null;
 					created_at?: string;
 					exercise_id?: string;
 					id?: string;
-					performance?: Json;
+					note?: string | null;
+					sets?: Json;
 					updated_id?: string;
-					workout_id?: string;
+					workout_id?: string | null;
 				};
 				Relationships: [
 					{
@@ -199,6 +211,38 @@ export type Database = {
 						columns: ["coach_id"];
 						isOneToOne: false;
 						referencedRelation: "coaches";
+						referencedColumns: ["id"];
+					}
+				];
+			};
+			metrics: {
+				Row: {
+					client_id: number | null;
+					created_at: string;
+					id: string;
+					metric_name: string | null;
+					metric_value: string | null;
+				};
+				Insert: {
+					client_id?: number | null;
+					created_at?: string;
+					id?: string;
+					metric_name?: string | null;
+					metric_value?: string | null;
+				};
+				Update: {
+					client_id?: number | null;
+					created_at?: string;
+					id?: string;
+					metric_name?: string | null;
+					metric_value?: string | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: "metrics_client_id_fkey";
+						columns: ["client_id"];
+						isOneToOne: false;
+						referencedRelation: "clients";
 						referencedColumns: ["id"];
 					}
 				];
@@ -307,6 +351,7 @@ export type Database = {
 				| "%1rm"
 				| "%hr";
 			experience_level: "beginner" | "intermediate" | "advanced";
+			gender: "male" | "female";
 			modality:
 				| "hypertrophy"
 				| "strength"

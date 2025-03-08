@@ -6,12 +6,19 @@
 	import { cn } from "$lib/utils.js";
 	import { ChevronsUpDown, Check } from "lucide-svelte";
 
-	let { exercises } = $props();
+	let { exercises, exercise_id = $bindable("") } = $props();
 	let open = $state(false);
 	let value = $state("");
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
-	const selectedValue = $derived(exercises.find((f: { name: string }) => f.name === value));
+	$effect(() => {
+		const exercise = exercises.find((f: { id: string }) => f.id === exercise_id);
+		if (exercise) {
+			value = exercise.name;
+		}
+	});
+
+	let selectedValue = $derived(exercises.find((f: { name: string }) => f.name === value));
 
 	function closeAndFocusTrigger() {
 		open = false;
@@ -40,7 +47,7 @@
 			</Button>
 		{/snippet}
 	</Popover.Trigger>
-	<Popover.Content class="p-0">
+	<Popover.Content class="w-[450px] p-0">
 		<Command.Root>
 			<Command.Input placeholder="Search exercises..." />
 			<Command.List>
@@ -51,6 +58,7 @@
 							value={exercise.name}
 							onSelect={() => {
 								value = exercise.name;
+								exercise_id = exercise.id;
 								closeAndFocusTrigger();
 							}}
 						>

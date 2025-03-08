@@ -1,0 +1,94 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import ExerciseInstanceRepository from "@/server/repositories/exercise_instances";
+import type { ExerciseInstance } from "@/schemas/workouts";
+
+class ExerciseInstanceService {
+	private repository: ExerciseInstanceRepository;
+
+	constructor(client: SupabaseClient) {
+		this.repository = new ExerciseInstanceRepository(client);
+	}
+
+	async getExerciseInstances(coachId?: string): Promise<ExerciseInstance[]> {
+		try {
+			return await this.repository.fetchExerciseInstances(coachId);
+		} catch (e) {
+			console.error(e);
+			throw e;
+		}
+	}
+
+	async getExerciseInstancesByWorkoutId(workoutId: string): Promise<ExerciseInstance[]> {
+		try {
+			return await this.repository.fetchExerciseInstanceByWorkoutId(workoutId);
+		} catch (e) {
+			console.error(e);
+			throw e;
+		}
+	}
+
+	async addExerciseInstance(instance: ExerciseInstance): Promise<ExerciseInstance> {
+		console.log("ADD INSTANCE", instance);
+		try {
+			return await this.repository.createExerciseInstance(instance);
+		} catch (e) {
+			console.error(e);
+			throw e;
+		}
+	}
+
+	async addExerciseInstances(instances: ExerciseInstance[]): Promise<ExerciseInstance[]> {
+		console.log("ADD INSTANCE", instances);
+		try {
+			return await this.repository.createExerciseInstances(instances);
+		} catch (e) {
+			console.error(e);
+			throw e;
+		}
+	}
+
+	async editExerciseInstance(instance: ExerciseInstance): Promise<ExerciseInstance | undefined> {
+		try {
+			return await this.repository.updateExerciseInstance(instance);
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
+	async editExerciseInstances(
+		instances: ExerciseInstance[]
+	): Promise<ExerciseInstance[] | undefined> {
+		console.log("EDIT INSTANCES", instances);
+		try {
+			return await this.repository.upsertExerciseInstances(instances);
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
+	async deleteExerciseInstances(instances: ExerciseInstance[]) {
+		if (!Array.isArray(instances)) {
+			console.error("Invalid instances:", instances);
+			throw new Error("Invalid instances array");
+		}
+
+		const ids = instances
+			.map((instance) => instance.id)
+			.filter((id): id is string => id !== undefined);
+
+		console.log("DELETE IDS", ids);
+
+		if (ids.length === 0) {
+			console.warn("No valid IDs to delete.");
+			return;
+		}
+
+		const e = await this.repository.deleteExerciseInstances(ids);
+		if (!e) {
+			throw new Error("Failed to delete exercise");
+		}
+		return e;
+	}
+}
+
+export default ExerciseInstanceService;

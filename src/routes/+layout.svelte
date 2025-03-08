@@ -33,7 +33,7 @@
 		return () => data.subscription.unsubscribe();
 	});
 
-	let metaTags = $derived(deepMerge(data.baseMetaTags, $page.data.pageMetaTags || {}));
+	let metaTags = $derived(deepMerge(data.baseMetaTags, $page.data.pageMetaTags ?? {}));
 
 	setAllWorkoutState();
 	setSelectedWorkoutState();

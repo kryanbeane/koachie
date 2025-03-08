@@ -1,8 +1,8 @@
-import { createServerClient } from '@supabase/ssr';
-import { type Handle } from '@sveltejs/kit';
-import { sequence } from '@sveltejs/kit/hooks';
+import { createServerClient } from "@supabase/ssr";
+import { type Handle } from "@sveltejs/kit";
+import { sequence } from "@sveltejs/kit/hooks";
 
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from "$env/static/public";
 
 const supabase: Handle = async ({ event, resolve }) => {
 	/**
@@ -19,7 +19,7 @@ const supabase: Handle = async ({ event, resolve }) => {
 			 */
 			setAll: (cookiesToSet) => {
 				cookiesToSet.forEach(({ name, value, options }) => {
-					event.cookies.set(name, value, { ...options, path: '/' });
+					event.cookies.set(name, value, { ...options, path: "/" });
 				});
 			}
 		}
@@ -56,7 +56,7 @@ const supabase: Handle = async ({ event, resolve }) => {
 			 * Supabase libraries use the `content-range` and `x-supabase-api-version`
 			 * headers, so we need to tell SvelteKit to pass it through.
 			 */
-			return name === 'content-range' || name === 'x-supabase-api-version';
+			return name === "content-range" || name === "x-supabase-api-version";
 		}
 	});
 };

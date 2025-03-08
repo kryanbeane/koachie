@@ -1,24 +1,26 @@
 <script lang="ts">
 	import { cn } from "$lib/utils.js";
-	import type { Workout } from "@/schemas/workouts.js";
+	import type { CreateWorkoutSchema, ExerciseInstance, Workout } from "@/schemas/workouts.js";
 	import { onMount } from "svelte";
 	import { getSelectedWorkoutState } from "@/stores/selected_workout_state.svelte";
 	import { Separator } from "@/components/ui/separator";
 	import * as DropdownMenu from "@/components/ui/dropdown-menu";
-	import { Copy, Ellipsis, Trash2 } from "lucide-svelte";
+	import { Ban, Copy, Ellipsis, Trash2 } from "lucide-svelte";
 	import { getAllWorkoutState } from "@/stores/all_workout_state.svelte";
 	import { toast } from "svelte-sonner";
 	import { Button } from "@/components/ui/button";
+	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
+	import type { Exercise } from "@/schemas/exercises";
 
 	let selectedWorkoutState = getSelectedWorkoutState();
 	let allWorkoutState = getAllWorkoutState();
-	let { workouts, create_mode = $bindable() }: { workouts: Workout[]; create_mode: boolean } =
-		$props();
+	let { workouts }: { workouts: CreateWorkoutSchema[] } = $props();
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === "Escape") {
 			selectedWorkoutState.clear();
-			create_mode = false;
+			goto(`${page.url.pathname}?mode=none`);
 		}
 	}
 
@@ -29,42 +31,100 @@
 		};
 	});
 
-	async function handleDeleteWorkout(workout: Workout) {
-		const response = await fetch(`/api/workouts`, {
+	async function handleDeleteWorkout(workout: CreateWorkoutSchema) {
+		const workout_id = workout.id;
+
+		const response = await fetch(`/api/exercise_instances`, {
 			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json"
 			},
-			body: JSON.stringify({ id: workout.id })
+			body: JSON.stringify({ instances: workout.exercise_instances })
 		});
 
 		if (response.ok) {
-			allWorkoutState.remove(workout);
-			selectedWorkoutState.clear();
-			create_mode = false;
+			toast.success(`Workout Exercise Instances Deleted!`);
 
-			toast.success(`Workout ${workout.name} Deleted!`);
+			// Delete workout if exercise instances are deleted
+
+			const response2 = await fetch(`/api/workouts`, {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ id: workout_id })
+			});
+
+			if (response2.ok) {
+				allWorkoutState.remove(workout);
+				selectedWorkoutState.clear();
+
+				toast.success(`Workout Deleted!`);
+			}
 		}
 	}
 
-	async function handleDuplicateWorkout(workout: Workout) {
-		let newWorkout: Workout = { ...workout, name: `${workout.name.trimEnd()} Copy`, id: undefined };
+	async function handleDuplicateWorkout(workout: CreateWorkoutSchema) {
+		let newWorkout: Workout = {
+			name: `${workout.name.trimEnd()} Copy`,
+			id: undefined,
+			description: workout.description,
+			modality: workout.modality,
+			experience_level: workout.experience_level
+		};
+
+		let newExerciseInstances: ExerciseInstance[] = [...(workout.exercise_instances || [])];
 
 		const response = await fetch(`/api/workouts`, {
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
+			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(newWorkout)
 		});
 
 		if (response.ok) {
 			const responseData = JSON.parse(await response.text());
-			newWorkout = responseData[0];
 
-			allWorkoutState.add(newWorkout);
+			let new_exercise_instances: ExerciseInstance[] = [];
 
-			let selected = allWorkoutState.findById(newWorkout.id!);
+			for (let i = 0; i < newExerciseInstances.length; i++) {
+				let instance = newExerciseInstances[i];
+				if (!instance) {
+					console.warn(`Skipping undefined exercise instance at index ${i}`);
+					continue;
+				}
+
+				let exerciseInstance: ExerciseInstance = {
+					exercise_id: instance.exercise_id,
+					workout_id: responseData[0].id,
+					sets: instance.sets,
+					note: instance.note
+				};
+
+				console.log("Creating exercise instance:", exerciseInstance);
+
+				const response2 = await fetch(`/api/exercise_instances`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ instance: exerciseInstance })
+				});
+
+				if (response2.ok) {
+					console.log("Exercise Instance Created");
+					const response2Data = JSON.parse(await response2.text());
+					console.log("response2Data", response2Data);
+					new_exercise_instances = [...new_exercise_instances, response2Data];
+				}
+			}
+
+			console.log("new_exercise_instances", new_exercise_instances);
+
+			let createdWorkout: CreateWorkoutSchema = {
+				...responseData[0],
+				exercise_instances: new_exercise_instances
+			};
+			allWorkoutState.add(createdWorkout);
+
+			let selected = allWorkoutState.findById(responseData[0].id!);
 			if (selected) {
 				selectedWorkoutState.set(selected);
 			}
@@ -107,7 +167,7 @@
 				)}
 				onclick={() => {
 					selectedWorkoutState.set(workout);
-					create_mode = false;
+					goto(`${page.url.pathname}?mode=update`);
 				}}
 			>
 				<div class="flex w-full flex-col gap-1">
@@ -131,12 +191,9 @@
 				<div class="absolute right-2 top-2">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger id={workout.id}>
-							<Button
-								class="!bg-transparent hover:scale-105"
-								size="xs"
-								onclick={(e) => e.stopPropagation()}
-							>
-								<Ellipsis size="20" />
+							<!-- No propagation -->
+							<Button class="!bg-transparent hover:scale-105" size="xs">
+								<Ellipsis size="20" class="text-muted-foreground" />
 							</Button>
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content align="end">
@@ -155,6 +212,14 @@
 							>
 								<Copy />
 								Duplicate</DropdownMenu.Item
+							>
+							<DropdownMenu.Item
+								onclick={() => {
+									console.log("Cancel");
+								}}
+							>
+								<Ban />
+								Cancel</DropdownMenu.Item
 							>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
