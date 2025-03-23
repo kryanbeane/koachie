@@ -79,7 +79,7 @@
 		"svelte-fa": "^4.0.3",
 		"svelte-sonner": "^0.3.28",
 		"uuid": "^11.0.3",
-		"vercel": "^39.2.5"
+		"vercel": "^41.0.0"
 	},
 	"optionalDependencies": {
 		"@rollup/rollup-linux-x64-gnu": "^4.9.5"
