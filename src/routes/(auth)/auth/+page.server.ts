@@ -1,44 +1,49 @@
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
-import { emailAuthSchema } from "@/schemas";
+import { emailPasswordAuthSchema } from "@/schemas";
 import { error, fail, redirect } from "@sveltejs/kit";
 
 import type { Actions, PageServerLoad } from "./$types";
 
-import type { Provider } from "@supabase/supabase-js";
+import type { AuthTokenResponsePassword, Provider } from "@supabase/supabase-js";
+
 export const load: PageServerLoad = async () => {
 	throw redirect(303, "/login");
 };
 
 export const actions: Actions = {
-	async email(event) {
+	async emailPassword(event) {
 		const {
-			locals: { supabase },
-			url
+			locals: { supabase }
 		} = event;
 
-		const form = await superValidate(event, zod(emailAuthSchema));
+		const form = await superValidate(event, zod(emailPasswordAuthSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
-		const { email } = form.data;
+		const { email, password } = form.data;
 
-		const { error } = await supabase.auth.signInWithOtp({
+		const { error }: AuthTokenResponsePassword = await supabase.auth.signInWithPassword({
 			email,
-			options: {
-				shouldCreateUser: true,
-				emailRedirectTo: `${url.origin}/app`
-			}
+			password
 		});
 
 		if (error) {
+<<<<<<< HEAD
 			return redirect(303, "/auth/error");
 		}
 
 		return redirect(303, "/auth/verify");
+=======
+			console.log("AUTH ERROR", error);
+			return redirect(303, "/auth/error");
+		}
+
+		return redirect(303, "/app");
+>>>>>>> e5bc2b2 (feat/166: checkpoint)
 	},
 
 	async oauth(event) {

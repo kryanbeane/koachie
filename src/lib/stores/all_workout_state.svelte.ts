@@ -1,32 +1,32 @@
-import type { Workout } from "@/schemas/workouts";
+import type { CreateWorkoutSchema } from "@/schemas/workouts";
 import { getContext, setContext } from "svelte";
 
 export class AllWorkoutState {
-	workouts = $state<Workout[]>([]);
+	workouts = $state<CreateWorkoutSchema[]>([]);
 
 	constructor() {}
 
 	//TODO Add more robustness, ie. check if workout already exists
-	add(workout: Workout) {
+	add(workout: CreateWorkoutSchema) {
 		this.workouts.push(workout);
 	}
 
-	set(workouts: Workout[]) {
+	set(workouts: CreateWorkoutSchema[]) {
 		this.workouts = workouts;
 	}
 
-	update(workout: Workout) {
+	update(workout: CreateWorkoutSchema) {
 		const index = this.workouts.findIndex((w) => w.id === workout.id);
 		if (index !== -1) {
 			this.workouts[index] = workout;
 		}
 	}
 
-	findById(id: string): Workout | undefined {
+	findById(id: string): CreateWorkoutSchema | undefined {
 		return this.workouts.find((w) => w.id === id);
 	}
 
-	remove(workout: Workout) {
+	remove(workout: CreateWorkoutSchema) {
 		this.workouts = this.workouts.filter((w) => w.id !== workout.id);
 	}
 }

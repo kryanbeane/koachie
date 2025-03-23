@@ -15,7 +15,7 @@
 	}
 
 	let { data }: Props = $props();
-	let { method, emailAuthForm } = $derived(data);
+	let { method, form } = $derived(data);
 </script>
 
 <div class="absolute left-3 top-3 z-50">
@@ -30,12 +30,6 @@
 	</button>
 </div>
 
-<!-- <BrandedSplitScreen>
-	<AuthForm {method} form={emailAuthForm} />
-</BrandedSplitScreen> -->
-
-<div class="flex h-screen w-screen items-center justify-center">
-	<div class="w-full max-w-md rounded-lg p-6 shadow-lg">
-		<AuthForm {method} form={emailAuthForm} />
-	</div>
-</div>
+<BrandedSplitScreen>
+	<AuthForm {method} {form} />
+</BrandedSplitScreen>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { InputWithVariant } from "@/components/ui/input";
 
-	let time = "";
+	let { time = $bindable() } = $props();
 
 	function handleTimeInput(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -20,6 +20,7 @@
 </script>
 
 <InputWithVariant
+	class="h-8 w-20"
 	variant="set"
 	type="text"
 	placeholder="00:00"
