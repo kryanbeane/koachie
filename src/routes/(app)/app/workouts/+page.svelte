@@ -9,6 +9,8 @@
 	import SearchFilterWorkouts from "./(components)/(workout-list)/search-filter-workouts.svelte";
 	import WorkoutSidePanel from "./(components)/(workout)/workout-side-panel.svelte";
 	import { Dumbbell } from "lucide-svelte";
+	import { page } from "$app/state";
+	import { goto } from "$app/navigation";
 
 	let { data }: { data: PageData } = $props();
 
@@ -17,7 +19,7 @@
 
 	let searchQuery = $state("");
 
-	workoutsState.set(data.workouts);
+	workoutsState.set(data.workoutsWithInstances);
 	routeStore.set("Workouts");
 
 	let filteredWorkouts = $derived(
@@ -25,28 +27,26 @@
 			workout.name.toLowerCase().includes(searchQuery.toLowerCase())
 		)
 	);
-
-	let create_mode = $state(false);
 </script>
 
 <!-- TODO: Add caching to pane sizes -->
 <Resizable.PaneGroup direction="horizontal">
 	<Resizable.Pane defaultSize={24} minSize={24}>
 		<SearchFilterWorkouts bind:searchQuery />
-		<WorkoutList workouts={filteredWorkouts} bind:create_mode />
 		<div class="justify-left flex px-4">
 			<Button
 				variant="default"
 				size="xs"
 				onclick={() => {
-					create_mode = true;
 					selectedWorkoutState.clear();
+					goto(`${page.url.pathname}?mode=create`);
 				}}
 			>
 				<Dumbbell class="h-4 w-4" />
 				Add Workout
 			</Button>
 		</div>
+		<WorkoutList workouts={filteredWorkouts} />
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane
@@ -54,6 +54,6 @@
 		defaultSize={100}
 		class="flex h-full flex-grow items-center justify-center p-6"
 	>
-		<WorkoutSidePanel bind:create_mode {data} />
+		<WorkoutSidePanel {data} />
 	</Resizable.Pane>
 </Resizable.PaneGroup>

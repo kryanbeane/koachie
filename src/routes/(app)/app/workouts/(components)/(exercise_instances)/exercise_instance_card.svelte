@@ -3,16 +3,18 @@
 	import * as Table from "$lib/components/ui/table/index.js";
 	import SetRow from "./set_row.svelte";
 	import NoOutlineInput from "../(other)/no_outline_input.svelte";
-	import { type CreateExerciseInstance, type Exercise } from "@/schemas/exercises";
-	import { Button } from "@/components/ui/button";
+	import Button from "@/components/ui/button/button.svelte";
+	import { ListPlus } from "lucide-svelte";
+	import type { Exercise } from "@/schemas/exercises";
 	import SelectExercise from "./select_exercise.svelte";
+	import type { ExerciseInstance } from "@/schemas/workouts";
 
-	let { instance, exercises }: { instance: CreateExerciseInstance; exercises: Exercise[] } =
-		$props();
+	let { instance, exercises }: { instance: ExerciseInstance; exercises: Exercise[] } = $props();
 
 	// function getExerciseById(exerciseId: string): Exercise | undefined {
 	// 	return exercises.find((exercise) => exercise.id === exerciseId);
 	// }
+	// TODO: IS THIS FILE NEEDED?
 </script>
 
 <Card.Root class="mb-4 mt-2 bg-muted/50 ">
@@ -30,28 +32,27 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				<SetRow setPerformance={instance.performance} />
+				{#each instance.sets as set}
+					<SetRow {set} />
+				{/each}
 			</Table.Body>
 		</Table.Root>
 
 		<Button
-			class="my-2"
-			size="xs"
+			class="ml-auto"
 			variant="secondary"
+			size="sm"
+			type="button"
 			onclick={() => {
-				const perf = [
-					...instance.performance,
-					{
-						order: instance.performance.length,
-						weight: null,
-						reps: null,
-						restTime: "03:00"
-					}
-				];
-
-				instance.performance = perf;
+				instance.sets.push({
+					order: instance.sets.length,
+					weight: null,
+					reps: null,
+					restTime: "03:00"
+				});
 			}}
-			>Add Set
+		>
+			<ListPlus />
 		</Button>
 
 		<NoOutlineInput type="text" placeholder="Enter notes here..." class="mt-2 w-full" />

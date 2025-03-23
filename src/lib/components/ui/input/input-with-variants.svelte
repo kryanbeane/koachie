@@ -5,7 +5,7 @@
 	import type { WithElementRef } from "bits-ui";
 
 	export const inputVariants = tv({
-		base: "flex h-8 w-full rounded-md border-0 bg-background text-base placeholder:text-muted-foreground md:text-sm",
+		base: "",
 		variants: {
 			variant: {
 				default: "",
