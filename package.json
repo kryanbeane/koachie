@@ -19,7 +19,7 @@
 	"devDependencies": {
 		"@snaplet/copycat": "^6.0.0",
 		"@snaplet/seed": "^0.98.0",
-		"@sveltejs/adapter-auto": "^4.0.0",
+		"@sveltejs/adapter-auto": "^5.0.0",
 		"@sveltejs/adapter-node": "^5.2.10",
 		"@sveltejs/kit": "^2.5.27",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
@@ -65,7 +65,7 @@
 	},
 	"dependencies": {
 		"@fortawesome/free-brands-svg-icons": "^6.6.0",
-		"@supabase/ssr": "^0.5.1",
+		"@supabase/ssr": "^0.6.0",
 		"@supabase/supabase-js": "^2.45.4",
 		"@sveltejs/adapter-vercel": "^5.5.2",
 		"@tailwindcss/typography": "^0.5.15",

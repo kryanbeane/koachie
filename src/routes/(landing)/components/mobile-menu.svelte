@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
+	import { enhance } from "$app/forms";
+	import { page } from "$app/stores";
 
-	import MenuIcon from 'lucide-svelte/icons/menu';
-	import LogOutIcon from 'lucide-svelte/icons/log-out';
-	import ChevronDownIcon from 'lucide-svelte/icons/chevron-down';
+	import MenuIcon from "lucide-svelte/icons/menu";
+	import LogOutIcon from "lucide-svelte/icons/log-out";
+	import ChevronDownIcon from "lucide-svelte/icons/chevron-down";
 
-	import { ThemeToggle } from '@/components/theme-controller';
-	import { buttonVariants } from '@/components/ui/button';
-	import { Button } from '@/components/ui/button';
-	import * as Sheet from '@/components/ui/sheet';
+	import { ThemeToggle } from "@/components/theme-controller";
+	import { buttonVariants } from "@/components/ui/button";
+	import { Button } from "@/components/ui/button";
+	import * as Sheet from "@/components/ui/sheet";
 
 	let { session } = $derived($page.data);
 </script>
 
 <div class="md:hidden">
 	<Sheet.Root>
-		<Sheet.Trigger class={buttonVariants({ variant: 'ghost', size: 'sm' })}>
+		<Sheet.Trigger class={buttonVariants({ variant: "ghost", size: "sm" })}>
 			<MenuIcon />
 		</Sheet.Trigger>
 		<Sheet.Content class="flex flex-col">
@@ -37,7 +37,7 @@
 						<Button class="w-full" href="/signup">Sign up</Button>
 					{/if}
 				</div>
-				<div class="text-muted-foreground">
+				<!-- <div class="text-muted-foreground">
 					<Button class="w-full justify-between text-base" variant="ghost">
 						<span> Product </span>
 						<ChevronDownIcon class="h-[1.2rem] w-[1.2rem]" />
@@ -48,7 +48,7 @@
 					<Button class="w-full justify-between text-base" variant="ghost">
 						<span> Blog </span>
 					</Button>
-				</div>
+				</div> -->
 			</div>
 			<div>
 				<ThemeToggle />

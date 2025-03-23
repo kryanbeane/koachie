@@ -31,7 +31,7 @@
 		<OAuth />
 	</Card.Content>
 </Card.Root>
-<div class="text-center text-muted-foreground">
+<div class="text-center">
 	<div>
 		{method === "login" ? "New user?" : "Have an account?"}
 		<a href={method === "login" ? "/signup" : "/login"} class="underline underline-offset-4">
